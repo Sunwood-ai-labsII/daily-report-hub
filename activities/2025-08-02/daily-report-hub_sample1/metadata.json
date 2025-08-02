@@ -2,19 +2,19 @@
   "repository": "Sunwood-ai-labs/daily-report-hub_sample1",
   "date": "2025-08-02",
   "branch": "main",
-  "latest_commit_sha": "bcf9ecd54d297e252e0e1b1ff25763115ec67d70",
-  "sync_timestamp": "2025-08-02T04:37:04Z",
-  "workflow_run": "16689944687",
-  "daily_commit_count": 9,
+  "latest_commit_sha": "54545474119d89db71a45d9b957d101a8967bd3c",
+  "sync_timestamp": "2025-08-02T04:46:48Z",
+  "workflow_run": "16690014072",
+  "daily_commit_count": 10,
   "daily_files_changed": 8,
   "has_activity": true,
   "files": {
     "summary": "daily_summary.md",
-    "commits": "daily_commits.txt",
-    "file_changes": "daily_cumulative_diff.txt",
-    "stats": "daily_diff_stats.txt",
-    "code_diff": "daily_code_diff.txt",
-    "latest_diff": "latest_diff.txt",
-    "latest_code_diff": "latest_code_diff.txt"
+    "commits": "daily_commits.md",
+    "file_changes": "daily_cumulative_diff.md",
+    "stats": "daily_diff_stats.md",
+    "code_diff": "daily_code_diff.md",
+    "latest_diff": "latest_diff.md",
+    "latest_code_diff": "latest_code_diff.md"
   }
 }

@@ -1,1 +1,4 @@
-M	.github/workflows/sync-to-report.yml
+M	README.md
+A	index.html
+A	script.js
+A	style.css

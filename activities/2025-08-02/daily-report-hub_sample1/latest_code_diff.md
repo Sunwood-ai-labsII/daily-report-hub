@@ -1,26 +1,17 @@
 # 🔄 Latest Code Changes
 
     diff --git a/README.md b/README.md
-    index 3960c2f..ab655de 100644
+    index ab655de..f2432b3 100644
     --- a/README.md
     +++ b/README.md
-    @@ -1,11 +1,11 @@
+    @@ -1,5 +1,10 @@
      # daily-report-hub_sample1
      
-    -## おみくじアプリ
-    +## おみくじアプリ ⛩️
+    +> [!IMPORTANT]
+    +> このリポジトリは、GitHub Actionsを利用してGitのコミット履歴から自動で日報を作成・集約するワークフローのサンプルです。
+    +>
+    +> ここでの開発アクティビティ（コミットや差分）は、[`sync-to-report.yml`](./.github/workflows/sync-to-report.yml) ワークフローによって自動的に[`daily-report-hub`](https://github.com/Sunwood-ai-labs/daily-report-hub)リポジトリへレポートとして送信されます。
+    +
+     ## おみくじアプリ ⛩️
      
-    -シンプルなウェブベースのおみくじアプリケーションです。
-    +シンプルなウェブベースのおみくじアプリケーションです。あなたの今日の運勢を占ってみましょう！🔮
-     
-    -### 遊び方
-    +### 遊び方 🎮
-     
-    -1.  このリポジトリをクローンまたはダウンロードします。
-    -2.  `index.html`ファイルをウェブブラウザで開きます。
-    -3.  「おみくじを引く」ボタンをクリックすると、今日の運勢が表示されます。
-    \ No newline at end of file
-    +1️⃣ このリポジトリをクローンまたはダウンロードします。 💻
-    +2️⃣ `index.html`ファイルをウェブブラウザで開きます。 🌐
-    +3️⃣ 「おみくじを引く」ボタンをクリックすると、今日の運勢が表示されます。 ✨
-    \ No newline at end of file
+     シンプルなウェブベースのおみくじアプリケーションです。あなたの今日の運勢を占ってみましょう！🔮

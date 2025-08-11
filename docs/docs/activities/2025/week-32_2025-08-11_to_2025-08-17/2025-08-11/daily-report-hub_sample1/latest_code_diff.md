@@ -13,49 +13,60 @@ new mode 100755
 diff --git a/.github/scripts/generate-markdown-reports.sh b/.github/scripts/generate-markdown-reports.sh
 old mode 100644
 new mode 100755
-index 693725b..7d2251f
+index 7d2251f..b5738eb
 --- a/.github/scripts/generate-markdown-reports.sh
 +++ b/.github/scripts/generate-markdown-reports.sh
-@@ -89,7 +89,9 @@ get_status_icon() {
-   echo ""
-   echo "## Full Diff"
-   echo ""
--  add_indent daily_code_diff_raw.txt
-+  echo "\`\`\`diff"
-+  cat daily_code_diff_raw.txt
-+  echo "\`\`\`"
- } > daily_code_diff.md
- 
- # 最新差分をMarkdown形式で作成
-@@ -113,7 +115,9 @@ get_status_icon() {
+@@ -33,14 +33,14 @@ get_status_icon() {
+       
+       # 各コミットの変更ファイル一覧を表示
+       echo "### 📋 Changed Files"
+-      echo "\`\`\`"
++      echo "\`\`\`bash"
+       git show --name-status $hash 2>/dev/null | grep -E '^[AMDRC]' || echo "No file changes"
+       echo "\`\`\`"
+       echo ""
+       
+       # 各コミットの統計情報を表示
+       echo "### 📊 Statistics"
+-      echo "\`\`\`"
++      echo "\`\`\`bash"
+       git show --stat $hash 2>/dev/null | tail -n +2 || echo "No statistics available"
+       echo "\`\`\`"
+       echo ""
+@@ -80,7 +80,9 @@ get_status_icon() {
  {
-   echo "# 🔄 Latest Code Changes"
+   echo "# 📈 Daily Statistics"
    echo ""
--  add_indent latest_code_diff_raw.txt
+-  add_indent daily_diff_stats_raw.txt
 +  echo "\`\`\`diff"
-+  cat latest_code_diff_raw.txt
++  cat daily_diff_stats_raw.txt
 +  echo "\`\`\`"
- } > latest_code_diff.md
+ } > daily_diff_stats.md
  
- # 詳細なアクティビティサマリーをMarkdown形式で作成
+ # コード差分をMarkdown形式で作成
+@@ -159,7 +161,9 @@ fi
+     
+     echo "## 📈 File Changes Statistics"
+     echo ""
+-    add_indent daily_diff_stats_raw.txt
++    echo "\`\`\`diff"
++    cat daily_diff_stats_raw.txt
++    echo "\`\`\`"
+     echo ""
+     
+     echo "## 📋 Changed Files List"
 diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
 old mode 100644
 new mode 100755
-diff --git a/README.md b/README.md
-index 28c2ccc..e5baa3d 100644
---- a/README.md
-+++ b/README.md
-@@ -5,9 +5,9 @@
- # daily-report-hub_sample1
- 
- <p>
--  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
--  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
--  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
-+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
- </p>
- 
- </div>
+index 9e96989..fc870c6
+--- a/.github/scripts/sync-to-hub.sh
++++ b/.github/scripts/sync-to-hub.sh
+@@ -46,6 +46,7 @@ cat > "$TARGET_DIR/metadata.json" << EOF
+   "daily_files_changed": $FILES_CHANGED,
+   "has_activity": $([ $COMMIT_COUNT -gt 0 ] && echo "true" || echo "false"),
+   "files": {
++    "readme": "README.md",
+     "summary": "daily_summary.md",
+     "commits": "daily_commits.md",
+     "file_changes": "daily_cumulative_diff.md",
 ```

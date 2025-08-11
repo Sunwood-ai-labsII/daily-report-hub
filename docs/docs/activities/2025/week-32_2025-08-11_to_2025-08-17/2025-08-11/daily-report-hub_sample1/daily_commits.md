@@ -5,14 +5,14 @@
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:39:53 2025 +0900
 M	.github/workflows/sync-to-report.yml
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:39:53 2025 +0900
 
@@ -53,14 +53,14 @@ index 05e88cd..4c230f7 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:40:58 2025 +0900
 M	.github/workflows/sync-to-report.yml
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:40:58 2025 +0900
 
@@ -91,14 +91,14 @@ index 4c230f7..463703d 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:43:18 2025 +0900
 M	.github/workflows/sync-to-report.yml
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:43:18 2025 +0900
 
@@ -145,14 +145,14 @@ index 463703d..6d66b7a 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:43:41 2025 +0900
 M	.github/workflows/sync-to-report.yml
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
 Date:   Mon Aug 11 13:43:41 2025 +0900
 
@@ -183,7 +183,7 @@ index 6d66b7a..20876db 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:25 2025 +0900
 A	.env.example
@@ -192,7 +192,7 @@ A	CONTRIBUTING.md
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:25 2025 +0900
 
@@ -319,14 +319,14 @@ index 0000000..1962486
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:35 2025 +0900
 M	README.md
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:35 2025 +0900
 
@@ -451,14 +451,14 @@ index f2432b3..e26ebfc 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:45 2025 +0900
 M	index.html
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:45 2025 +0900
 
@@ -528,14 +528,14 @@ index 5d6aa93..e7b086f 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:54 2025 +0900
 M	script.js
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:55:54 2025 +0900
 
@@ -592,14 +592,14 @@ index 4259f77..ceaa046 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:56:03 2025 +0900
 M	style.css
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:56:03 2025 +0900
 
@@ -725,14 +725,14 @@ index c90ae90..5023f7d 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: f9d6702 147c1cd
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:56:20 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: f9d6702 147c1cd
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:56:20 2025 +0900
@@ -760,14 +760,14 @@ Date:   Mon Aug 11 13:56:20 2025 +0900
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: f9d6702 43a16f4
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:58:05 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: f9d6702 43a16f4
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 13:58:05 2025 +0900
@@ -795,14 +795,14 @@ Date:   Mon Aug 11 13:58:05 2025 +0900
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:07:21 2025 +0900
 M	.github/workflows/sync-to-report.yml
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:07:21 2025 +0900
 
@@ -927,14 +927,14 @@ index 20876db..a830de9 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:07:32 2025 +0900
 M	README.md
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:07:32 2025 +0900
 
@@ -981,14 +981,14 @@ index e26ebfc..28c2ccc 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: 43a16f4 8df2ff3
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:07:50 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: 43a16f4 8df2ff3
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:07:50 2025 +0900
@@ -1011,14 +1011,14 @@ Date:   Mon Aug 11 14:07:50 2025 +0900
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: df5b892 b32fa35
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:08:56 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: df5b892 b32fa35
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 14:08:56 2025 +0900
@@ -1041,7 +1041,7 @@ Date:   Mon Aug 11 14:08:56 2025 +0900
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:20:14 2025 +0900
 A	.github/scripts/README.md
@@ -1053,7 +1053,7 @@ A	.github/scripts/sync-to-hub.sh
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:20:14 2025 +0900
 
@@ -1186,14 +1186,14 @@ index 0000000..4e2fff1
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:20:34 2025 +0900
 M	.github/workflows/sync-to-report.yml
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:20:34 2025 +0900
 
@@ -1320,14 +1320,14 @@ index a830de9..b0a97ba 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: b32fa35 aeb86c7
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:21:05 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: b32fa35 aeb86c7
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:21:05 2025 +0900
@@ -1355,14 +1355,14 @@ Date:   Mon Aug 11 15:21:05 2025 +0900
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: 1b906db b3fd498
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:28:58 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: 1b906db b3fd498
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 15:28:58 2025 +0900
@@ -1390,14 +1390,14 @@ Date:   Mon Aug 11 15:28:58 2025 +0900
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 16:14:14 2025 +0900
 M	.github/scripts/generate-markdown-reports.sh
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 16:14:14 2025 +0900
 
@@ -1448,14 +1448,14 @@ index 693725b..7d2251f 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 16:15:28 2025 +0900
 M	README.md
 ```
 
 ### 📊 Statistics
-```
+```bash
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 16:15:28 2025 +0900
 
@@ -1497,14 +1497,14 @@ index 28c2ccc..e5baa3d 100644
 *by Maki*
 
 ### 📋 Changed Files
-```
+```bash
 Merge: b3fd498 c14853c
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 16:15:44 2025 +0900
 ```
 
 ### 📊 Statistics
-```
+```bash
 Merge: b3fd498 c14853c
 Author: Maki <sunwood.ai.labs@gmail.com>
 Date:   Mon Aug 11 16:15:44 2025 +0900
@@ -1514,6 +1514,185 @@ Date:   Mon Aug 11 16:15:44 2025 +0900
  .github/scripts/generate-markdown-reports.sh | 8 ++++++--
  README.md                                    | 6 +++---
  2 files changed, 9 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 16:16:11 - `ffa346d`
+**Merge branch 'develop'**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: f26c465 a51dc61
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:16:11 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: f26c465 a51dc61
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:16:11 2025 +0900
+
+    Merge branch 'develop'
+
+ .github/scripts/generate-markdown-reports.sh | 8 ++++++--
+ README.md                                    | 6 +++---
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 16:28:35 - `1227831`
+**✨ Markdownレポート生成スクリプトの表示形式を改善**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:28:35 2025 +0900
+M	.github/scripts/generate-markdown-reports.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:28:35 2025 +0900
+
+    ✨ Markdownレポート生成スクリプトの表示形式を改善
+    
+    - コードブロックにbash言語指定を追加して構文ハイライトを有効化
+    - 統計情報の表示をdiffブロック形式に変更して可読性を向上
+    - Changed FilesとStatisticsセクションの表示品質を改善
+
+ .github/scripts/generate-markdown-reports.sh | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/generate-markdown-reports.sh b/.github/scripts/generate-markdown-reports.sh
+index 7d2251f..b5738eb 100644
+--- a/.github/scripts/generate-markdown-reports.sh
++++ b/.github/scripts/generate-markdown-reports.sh
+@@ -33,14 +33,14 @@ get_status_icon() {
+       
+       # 各コミットの変更ファイル一覧を表示
+       echo "### 📋 Changed Files"
+-      echo "\`\`\`"
++      echo "\`\`\`bash"
+       git show --name-status $hash 2>/dev/null | grep -E '^[AMDRC]' || echo "No file changes"
+       echo "\`\`\`"
+       echo ""
+       
+       # 各コミットの統計情報を表示
+       echo "### 📊 Statistics"
+-      echo "\`\`\`"
++      echo "\`\`\`bash"
+       git show --stat $hash 2>/dev/null | tail -n +2 || echo "No statistics available"
+       echo "\`\`\`"
+       echo ""
+@@ -80,7 +80,9 @@ get_status_icon() {
+ {
+   echo "# 📈 Daily Statistics"
+   echo ""
+-  add_indent daily_diff_stats_raw.txt
++  echo "\`\`\`diff"
++  cat daily_diff_stats_raw.txt
++  echo "\`\`\`"
+ } > daily_diff_stats.md
+ 
+ # コード差分をMarkdown形式で作成
+@@ -159,7 +161,9 @@ fi
+     
+     echo "## 📈 File Changes Statistics"
+     echo ""
+-    add_indent daily_diff_stats_raw.txt
++    echo "\`\`\`diff"
++    cat daily_diff_stats_raw.txt
++    echo "\`\`\`"
+     echo ""
+     
+     echo "## 📋 Changed Files List"
+```
+
+---
+
+## ⏰ 16:28:44 - `738ad97`
+**🔧 ハブ同期スクリプトのメタデータ構造を拡張**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:28:44 2025 +0900
+M	.github/scripts/sync-to-hub.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:28:44 2025 +0900
+
+    🔧 ハブ同期スクリプトのメタデータ構造を拡張
+    
+    - metadata.jsonにreadmeファイルの参照情報を追加
+    - ファイル構造の一貫性を向上させてハブ側での処理を改善
+    - READMEファイルの自動認識機能を強化
+
+ .github/scripts/sync-to-hub.sh | 1 +
+ 1 file changed, 1 insertion(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
+index 9e96989..fc870c6 100644
+--- a/.github/scripts/sync-to-hub.sh
++++ b/.github/scripts/sync-to-hub.sh
+@@ -46,6 +46,7 @@ cat > "$TARGET_DIR/metadata.json" << EOF
+   "daily_files_changed": $FILES_CHANGED,
+   "has_activity": $([ $COMMIT_COUNT -gt 0 ] && echo "true" || echo "false"),
+   "files": {
++    "readme": "README.md",
+     "summary": "daily_summary.md",
+     "commits": "daily_commits.md",
+     "file_changes": "daily_cumulative_diff.md",
+```
+
+---
+
+## ⏰ 16:29:01 - `3dcfde5`
+**🔀 Merge: Markdownレポート表示形式とメタデータ構造の改善**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: a51dc61 738ad97
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:29:01 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: a51dc61 738ad97
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:29:01 2025 +0900
+
+    🔀 Merge: Markdownレポート表示形式とメタデータ構造の改善
+
+ .github/scripts/generate-markdown-reports.sh | 12 ++++++++----
+ .github/scripts/sync-to-hub.sh               |  1 +
+ 2 files changed, 9 insertions(+), 4 deletions(-)
 ```
 
 ### 💻 Code Changes

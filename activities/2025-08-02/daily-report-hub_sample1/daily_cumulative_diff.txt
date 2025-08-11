@@ -1,8 +1,0 @@
-A	.github/workflows/sync-to-report.yml
-A	.gitignore
-A	LICENSE
-A	README.md
-A	index.html
-A	memo.md
-A	script.js
-A	style.css

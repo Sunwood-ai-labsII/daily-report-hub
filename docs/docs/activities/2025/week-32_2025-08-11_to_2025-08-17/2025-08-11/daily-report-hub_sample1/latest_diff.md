@@ -6,3 +6,4 @@
 - ✏️ **Modified:** `.github/scripts/generate-markdown-reports.sh`
 - ✏️ **Modified:** `.github/scripts/sync-to-hub-gh.sh`
 - ✏️ **Modified:** `.github/scripts/sync-to-hub.sh`
+- ✏️ **Modified:** `.github/workflows/sync-to-report-gh.yml`

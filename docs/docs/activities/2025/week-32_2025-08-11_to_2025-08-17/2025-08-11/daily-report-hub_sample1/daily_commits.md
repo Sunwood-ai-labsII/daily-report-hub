@@ -3180,3 +3180,93 @@ Date:   Mon Aug 11 20:14:28 2025 +0900
 
 ---
 
+## ⏰ 20:14:43 - `4e4b677`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:14:43 2025 +0900
+M	.github/scripts/sync-to-hub-gh.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:14:43 2025 +0900
+
+    Update sync-to-hub-gh.sh
+
+ .github/scripts/sync-to-hub-gh.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+index 142df6d..e3a82a1 100644
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -17,6 +17,12 @@ CREATE_PR=${CREATE_PR:-true}
+ AUTO_APPROVE=${AUTO_APPROVE:-false}
+ AUTO_MERGE=${AUTO_MERGE:-false}
+ 
++# デバッグ用：環境変数を表示
++echo "🔍 Environment Variables:"
++echo "  CREATE_PR: $CREATE_PR"
++echo "  AUTO_APPROVE: $AUTO_APPROVE"
++echo "  AUTO_MERGE: $AUTO_MERGE"
++
+ # daily-report-hubは既にクローン済み
+ 
+ # README.mdをコピー
+```
+
+---
+
+## ⏰ 20:18:52 - `837b68f`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:18:52 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:18:52 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index df796aa..6562c20 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -8,9 +8,9 @@ on:
+ # 週の開始日を制御する設定
+ env:
+   WEEK_START_DAY: 1 # 週の開始日 (0=日曜日, 1=月曜日, 2=火曜日, 3=水曜日, 4=木曜日, 5=金曜日, 6=土曜日)
+-  AUTO_APPROVE: false # プルリクエストの自動承認 (true/false) - 自分のPRは承認不可
+-  AUTO_MERGE: false # プルリクエストの自動マージ (true/false) - 承認なしではマージ不可
+-  CREATE_PR: false # 完全自動化のため直接プッシュ
++  AUTO_APPROVE: true # プルリクエストの自動承認 (true/false) - 自分のPRは承認不可
++  AUTO_MERGE: true # プルリクエストの自動マージ (true/false) - 承認なしではマージ不可
++  CREATE_PR: true # 完全自動化のため直接プッシュ
+ 
+ jobs:
+   sync-data:
+```
+
+---
+

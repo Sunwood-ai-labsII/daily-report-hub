@@ -3624,3 +3624,160 @@ index 5e6aaac..3688357 100644
 
 ---
 
+## ⏰ 21:06:29 - `1ff8e93`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 21:06:29 2025 +0900
+M	.github/scripts/sync-to-hub-gh.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 21:06:29 2025 +0900
+
+    Update sync-to-hub-gh.sh
+
+ .github/scripts/sync-to-hub-gh.sh | 36 ++++++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 18 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+index 9f41d75..9ba5232 100644
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -137,25 +137,25 @@ if [ -n "$PR_URL" ]; then
+   
+   PR_NUMBER=$(gh pr view "$PR_URL" --repo "$REPORT_HUB_REPO" --json number --jq '.number')
+   
+-  # CI完了待機
+-  echo "⏳ CI完了を待機中..."
+-  max_wait=300
+-  wait_time=0
+-  while [ $wait_time -lt $max_wait ]; do
+-    CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
++  # # CI完了待機
++  # echo "⏳ CI完了を待機中..."
++  # max_wait=300
++  # wait_time=0
++  # while [ $wait_time -lt $max_wait ]; do
++  #   CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
+     
+-    if [ "$CHECK_STATUS" = "SUCCESS" ]; then
+-      echo "✅ CI完了！"
+-      break
+-    elif [ "$CHECK_STATUS" = "FAILURE" ]; then
+-      echo "❌ CI失敗"
+-      exit 1
+-    else
+-      echo "⏳ CI実行中... (${wait_time}秒)"
+-      sleep 10
+-      wait_time=$((wait_time + 10))
+-    fi
+-  done
++  #   if [ "$CHECK_STATUS" = "SUCCESS" ]; then
++  #     echo "✅ CI完了！"
++  #     break
++  #   elif [ "$CHECK_STATUS" = "FAILURE" ]; then
++  #     echo "❌ CI失敗"
++  #     exit 1
++  #   else
++  #     echo "⏳ CI実行中... (${wait_time}秒)"
++  #     sleep 10
++  #     wait_time=$((wait_time + 10))
++  #   fi
++  # done
+   
+   # 🔥 ここがポイント：元のトークンで承認
+   echo "👍 元のアカウントで承認実行中..."
+```
+
+---
+
+## ⏰ 23:33:07 - `20c564f`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 23:33:07 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 23:33:07 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 3688357..fa2809c 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,4 +1,4 @@
+-name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版)
++name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 直接実行)
+ on:
+   push:
+     branches: [main, master]
+@@ -10,6 +10,10 @@ env:
+   AUTO_APPROVE: true
+   AUTO_MERGE: true  
+   CREATE_PR: true
++  # リモートスクリプトの設定
++  REMOTE_SCRIPTS_REPO: Sunwood-ai-labsII/daily-report-hub_dev
++  REMOTE_SCRIPTS_BRANCH: main
++  SCRIPTS_BASE_URL: https://raw.githubusercontent.com/Sunwood-ai-labsII/daily-report-hub_dev/main/.github/scripts
+ 
+ jobs:
+   sync-data:
+@@ -20,8 +24,14 @@ jobs:
+         with:
+           fetch-depth: 0
+ 
+-      - name: 🔧 スクリプトを実行可能にする
+-        run: chmod +x .github/scripts/*.sh
++      - name: 📅 週情報を計算
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/calculate-week-info.sh | sh -s -- ${{ env.WEEK_START_DAY }}
++
++      - name: 🔍 Git活動を分析
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/analyze-git-activity.sh | sh
++
++      - name: 📝 Markdownレポートを生成
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/generate-markdown-reports.sh | sh
+ 
+       - name: 📅 週情報を計算
+         run: ./.github/scripts/calculate-week-info.sh ${{ env.WEEK_START_DAY }}
+@@ -42,7 +52,7 @@ jobs:
+           git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
+ 
+       - name: 🏗️ Docusaurus構造を作成
+-        run: ./.github/scripts/create-docusaurus-structure.sh
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/create-docusaurus-structure.sh | sh
+ 
+       - name: 🚀 YUKIHIKO権限でPR作成＆自動承認
+         env:
+@@ -50,4 +60,4 @@ jobs:
+           YUKIHIKO_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}     # PR作成用
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}              # デフォルト
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+-        run: ./.github/scripts/sync-to-hub-gh.sh
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/sync-to-hub-gh.sh | sh
+```
+
+---
+

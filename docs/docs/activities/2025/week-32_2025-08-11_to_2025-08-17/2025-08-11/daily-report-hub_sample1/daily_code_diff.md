@@ -987,11 +987,11 @@ index 0000000..0a7d604
 \ No newline at end of file
 diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
 new file mode 100644
-index 0000000..3688357
+index 0000000..6dc1edd
 --- /dev/null
 +++ b/.github/workflows/sync-to-report-gh.yml
-@@ -0,0 +1,53 @@
-+name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版)
+@@ -0,0 +1,52 @@
++name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 完全リモート実行)
 +on:
 +  push:
 +    branches: [main, master]
@@ -1003,6 +1003,8 @@ index 0000000..3688357
 +  AUTO_APPROVE: true
 +  AUTO_MERGE: true  
 +  CREATE_PR: true
++  # リモートスクリプトの設定
++  SCRIPTS_BASE_URL: https://raw.githubusercontent.com/Sunwood-ai-labsII/daily-report-hub_dev/main/.github/scripts
 +
 +jobs:
 +  sync-data:
@@ -1013,17 +1015,14 @@ index 0000000..3688357
 +        with:
 +          fetch-depth: 0
 +
-+      - name: 🔧 スクリプトを実行可能にする
-+        run: chmod +x .github/scripts/*.sh
-+
 +      - name: 📅 週情報を計算
-+        run: ./.github/scripts/calculate-week-info.sh ${{ env.WEEK_START_DAY }}
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/calculate-week-info.sh | sh -s -- ${{ env.WEEK_START_DAY }}
 +
 +      - name: 🔍 Git活動を分析
-+        run: ./.github/scripts/analyze-git-activity.sh
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/analyze-git-activity.sh | sh
 +
 +      - name: 📝 Markdownレポートを生成
-+        run: ./.github/scripts/generate-markdown-reports.sh
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/generate-markdown-reports.sh | sh
 +
 +      - name: 📂 レポートハブをクローン
 +        env:
@@ -1035,7 +1034,7 @@ index 0000000..3688357
 +          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
 +
 +      - name: 🏗️ Docusaurus構造を作成
-+        run: ./.github/scripts/create-docusaurus-structure.sh
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/create-docusaurus-structure.sh | sh
 +
 +      - name: 🚀 YUKIHIKO権限でPR作成＆自動承認
 +        env:
@@ -1043,7 +1042,7 @@ index 0000000..3688357
 +          YUKIHIKO_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}     # PR作成用
 +          GITHUB_TOKEN: ${{ secrets.GH_PAT }}              # デフォルト
 +          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
-+        run: ./.github/scripts/sync-to-hub-gh.sh
++        run: curl -LsSf ${SCRIPTS_BASE_URL}/sync-to-hub-gh.sh | sh
 diff --git a/.github/workflows/sync-to-report.yml b/.github/workflows/sync-to-report.yml
 deleted file mode 100644
 index 05e88cd..0000000

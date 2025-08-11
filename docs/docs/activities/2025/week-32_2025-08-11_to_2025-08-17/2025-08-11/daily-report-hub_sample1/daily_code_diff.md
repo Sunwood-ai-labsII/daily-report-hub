@@ -608,7 +608,7 @@ index 0000000..b5738eb
 \ No newline at end of file
 diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
 new file mode 100644
-index 0000000..9f41d75
+index 0000000..9ba5232
 --- /dev/null
 +++ b/.github/scripts/sync-to-hub-gh.sh
 @@ -0,0 +1,182 @@
@@ -751,25 +751,25 @@ index 0000000..9f41d75
 +  
 +  PR_NUMBER=$(gh pr view "$PR_URL" --repo "$REPORT_HUB_REPO" --json number --jq '.number')
 +  
-+  # CI完了待機
-+  echo "⏳ CI完了を待機中..."
-+  max_wait=300
-+  wait_time=0
-+  while [ $wait_time -lt $max_wait ]; do
-+    CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
++  # # CI完了待機
++  # echo "⏳ CI完了を待機中..."
++  # max_wait=300
++  # wait_time=0
++  # while [ $wait_time -lt $max_wait ]; do
++  #   CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
 +    
-+    if [ "$CHECK_STATUS" = "SUCCESS" ]; then
-+      echo "✅ CI完了！"
-+      break
-+    elif [ "$CHECK_STATUS" = "FAILURE" ]; then
-+      echo "❌ CI失敗"
-+      exit 1
-+    else
-+      echo "⏳ CI実行中... (${wait_time}秒)"
-+      sleep 10
-+      wait_time=$((wait_time + 10))
-+    fi
-+  done
++  #   if [ "$CHECK_STATUS" = "SUCCESS" ]; then
++  #     echo "✅ CI完了！"
++  #     break
++  #   elif [ "$CHECK_STATUS" = "FAILURE" ]; then
++  #     echo "❌ CI失敗"
++  #     exit 1
++  #   else
++  #     echo "⏳ CI実行中... (${wait_time}秒)"
++  #     sleep 10
++  #     wait_time=$((wait_time + 10))
++  #   fi
++  # done
 +  
 +  # 🔥 ここがポイント：元のトークンで承認
 +  echo "👍 元のアカウントで承認実行中..."

@@ -3583,3 +3583,44 @@ index 4627d61..5e6aaac 100644
 
 ---
 
+## ⏰ 21:01:34 - `687106a`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 21:01:34 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 21:01:34 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 5e6aaac..3688357 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -47,7 +47,7 @@ jobs:
+       - name: 🚀 YUKIHIKO権限でPR作成＆自動承認
+         env:
+           GITHUB_TOKEN_ORIGINAL: ${{ secrets.GH_PAT }}      # 承認用
+-          YUKIHIKO_TOKEN: ${{ secrets.YUKIHIKO_TOKEN }}     # PR作成用
++          YUKIHIKO_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}     # PR作成用
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}              # デフォルト
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+         run: ./.github/scripts/sync-to-hub-gh.sh
+```
+
+---
+

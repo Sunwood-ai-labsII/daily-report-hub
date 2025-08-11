@@ -7,6 +7,7 @@
 
 ## Performance Analytics & Navigation for Development Activities
 
+> [!IMPORTANT]
 > **自動日報生成・集約システム**  
 > GitHub Actionsを活用したCI/CDベースの開発活動レポートハブ
 

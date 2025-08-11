@@ -2827,3 +2827,200 @@ index 2b339fe..df796aa 100644
 
 ---
 
+## ⏰ 20:02:41 - `8787dce`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:02:41 2025 +0900
+M	.github/scripts/sync-to-hub-gh.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:02:41 2025 +0900
+
+    Update sync-to-hub-gh.sh
+
+ .github/scripts/sync-to-hub-gh.sh | 16 ++++++++++++----
+ 1 file changed, 12 insertions(+), 4 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+index 79bed22..52888b5 100644
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -88,6 +88,10 @@ if [ "$CREATE_PR" = "true" ]; then
+   # 新しいブランチを作成してチェックアウト
+   git checkout -b "$BRANCH_NAME"
+   
++  # コミット作成者を別の人に設定（PATの所有者）
++  git config user.name "Yukihiko Kondo"
++  git config user.email "yukihiko.kondo@example.com"  # 実際のメールアドレスに変更
++  
+   # コミットしてプッシュ
+   git commit -m "$COMMIT_MESSAGE"
+   git push origin "$BRANCH_NAME"
+@@ -131,11 +135,15 @@ if [ "$CREATE_PR" = "true" ]; then
+   if [ -n "$PR_URL" ]; then
+     echo "✅ Pull request created: $PR_URL"
+     
+-    # 自動承認が有効な場合
++    # 自動承認が有効な場合（自分のPRは承認できないので注意）
+     if [ "$AUTO_APPROVE" = "true" ]; then
+       echo "👍 Auto-approving pull request..."
+-      gh pr review "$PR_URL" --approve --body "✅ Auto-approved by GitHub Actions" --repo "$REPORT_HUB_REPO"
+-      echo "✅ Pull request approved"
++      if gh pr review "$PR_URL" --approve --body "✅ Auto-approved by GitHub Actions" --repo "$REPORT_HUB_REPO" 2>/dev/null; then
++        echo "✅ Pull request approved"
++      else
++        echo "⚠️ Cannot approve own pull request. Manual approval required."
++        AUTO_MERGE="false"  # 承認できない場合は自動マージも無効にする
++      fi
+     fi
+     
+     # 自動マージが有効な場合
+@@ -166,4 +174,4 @@ else
+   git commit -m "$COMMIT_MESSAGE"
+   git push
+   echo "✅ Successfully synced to report hub!"
+-fi
+\ No newline at end of file
++fi
+```
+
+---
+
+## ⏰ 20:06:07 - `dfa5666`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:06:07 2025 +0900
+M	.github/scripts/sync-to-hub-gh.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:06:07 2025 +0900
+
+    Update sync-to-hub-gh.sh
+
+ .github/scripts/sync-to-hub-gh.sh | 44 +++++++++++++++++++++++++++------------
+ 1 file changed, 31 insertions(+), 13 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+index 52888b5..b32fc9a 100644
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -1,6 +1,6 @@
+ #!/bin/bash
+ 
+-# レポートハブに同期するスクリプト（GitHub CLI使用版）
++# レポートハブに同期するスクリプト（GitHub CLI使用版・強制上書き対応）
+ 
+ set -e
+ 
+@@ -70,6 +70,13 @@ EOF
+ 
+ # プルリクエストフローまたは直接プッシュ
+ cd daily-report-hub
++
++# 最新のmainブランチを取得
++git fetch origin main
++git checkout main
++git reset --hard origin/main
++
++# 変更をステージング
+ git add .
+ 
+ if git diff --staged --quiet; then
+@@ -80,8 +87,10 @@ fi
+ COMMIT_MESSAGE="📊 Weekly sync: $REPO_NAME ($DATE) - Week $WEEK_NUMBER - $COMMIT_COUNT commits"
+ 
+ if [ "$CREATE_PR" = "true" ]; then
+-  # プルリクエストフロー（GitHub CLI使用）
+-  BRANCH_NAME="sync/$REPO_NAME-$DATE-$(date +%s)"
++  # 既存のPRブランチがあれば削除
++  BRANCH_NAME="sync/$REPO_NAME-$DATE"
++  git push origin --delete "$BRANCH_NAME" 2>/dev/null || true
++  git branch -D "$BRANCH_NAME" 2>/dev/null || true
+   
+   echo "🔀 Creating pull request flow with branch: $BRANCH_NAME"
+   
+@@ -90,11 +99,20 @@ if [ "$CREATE_PR" = "true" ]; then
+   
+   # コミット作成者を別の人に設定（PATの所有者）
+   git config user.name "Yukihiko Kondo"
+-  git config user.email "yukihiko.kondo@example.com"  # 実際のメールアドレスに変更
++  git config user.email "yukihiko.fuyuki@example.com"
+   
+-  # コミットしてプッシュ
++  # コミットして強制プッシュ
+   git commit -m "$COMMIT_MESSAGE"
+-  git push origin "$BRANCH_NAME"
++  git push -f origin "$BRANCH_NAME"
++  
++  # 既存のPRがあれば閉じる
++  echo "🔍 Checking for existing pull requests..."
++  EXISTING_PR=$(gh pr list --repo "$REPORT_HUB_REPO" --head "$BRANCH_NAME" --json number --jq '.[0].number' 2>/dev/null || echo "")
++  
++  if [ -n "$EXISTING_PR" ] && [ "$EXISTING_PR" != "null" ]; then
++    echo "🗑️ Closing existing PR #$EXISTING_PR"
++    gh pr close "$EXISTING_PR" --repo "$REPORT_HUB_REPO" --comment "Superseded by new sync" 2>/dev/null || true
++  fi
+   
+   # GitHub CLIでプルリクエストを作成
+   PR_BODY="## 📊 Daily Report Sync
+@@ -120,7 +138,7 @@ if [ "$CREATE_PR" = "true" ]; then
+ - **Auto Merge:** $AUTO_MERGE
+ 
+ ---
+-*Auto-generated by GitHub Actions*"
++*Auto-generated by GitHub Actions - Force overwrite enabled*"
+ 
+   echo "📝 Creating pull request with GitHub CLI..."
+   
+@@ -149,7 +167,7 @@ if [ "$CREATE_PR" = "true" ]; then
+     # 自動マージが有効な場合
+     if [ "$AUTO_MERGE" = "true" ]; then
+       echo "🔀 Auto-merging pull request..."
+-      sleep 2  # APIの反映を待つ
++      sleep 3  # APIの反映を待つ
+       
+       if gh pr merge "$PR_URL" --squash --delete-branch --repo "$REPORT_HUB_REPO" 2>/dev/null; then
+         echo "✅ Pull request merged and branch deleted successfully"
+@@ -163,15 +181,15 @@ if [ "$CREATE_PR" = "true" ]; then
+   else
+     echo "❌ Failed to create pull request with GitHub CLI. Falling back to direct push."
+     git checkout main
+-    git merge "$BRANCH_NAME"
++    git merge "$BRANCH_NAME" --strategy-option=theirs  # コンフリクト時は新しい内容を優先
+     git push origin main
+     git branch -d "$BRANCH_NAME"
+     git push origin --delete "$BRANCH_NAME" 2>/dev/null || true
+   fi
+ else
+-  # 直接プッシュフロー
+-  echo "⚡ Direct push mode"
++  # 直接プッシュフロー（強制上書き）
++  echo "⚡ Direct push mode (force overwrite)"
+   git commit -m "$COMMIT_MESSAGE"
+-  git push
+-  echo "✅ Successfully synced to report hub!"
++  git push origin main
+```
+
+---
+

@@ -975,11 +975,11 @@ index 0000000..0a7d604
 \ No newline at end of file
 diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
 new file mode 100644
-index 0000000..89b88fd
+index 0000000..16e1235
 --- /dev/null
 +++ b/.github/workflows/sync-to-report-gh.yml
-@@ -0,0 +1,66 @@
-+name: Sync to Daily Report Hub v2.0 (GitHub CLI)
+@@ -0,0 +1,58 @@
++name: Sync to Daily Report Hub v2.0
 +on:
 +  push:
 +    branches: [main, master]
@@ -1002,11 +1002,6 @@ index 0000000..89b88fd
 +        with:
 +          fetch-depth: 0 # 全履歴を取得してその日の全コミットを追跡
 +
-+      - name: Setup GitHub CLI
-+        run: |
-+          # GitHub CLIは既にubuntu-latestにインストール済み
-+          gh --version
-+
 +      - name: Make scripts executable
 +        run: chmod +x .github/scripts/*.sh
 +
@@ -1028,51 +1023,40 @@ index 0000000..89b88fd
 +          git config --global user.name "GitHub Actions Bot"
 +          git config --global user.email "actions@github.com"
 +
-+          # GitHub CLI認証
-+          echo "$GITHUB_TOKEN" | gh auth login --with-token
-+
 +          # daily-report-hubをクローン
 +          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
 +
 +      - name: Create Docusaurus structure
 +        run: ./.github/scripts/create-docusaurus-structure.sh
 +
-+      - name: Sync to report hub with PR flow (GitHub CLI)
++      - name: Sync to report hub with PR flow
 +        env:
 +          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 +          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
 +          AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
 +          AUTO_MERGE: ${{ env.AUTO_MERGE }}
 +          CREATE_PR: ${{ env.CREATE_PR }}
-+        run: ./.github/scripts/sync-to-hub-gh.sh
-\ No newline at end of file
++        run: ./.github/scripts/sync-to-hub.sh
 diff --git a/.github/workflows/sync-to-report.yml b/.github/workflows/sync-to-report.yml
-index 05e88cd..ae47540 100644
+deleted file mode 100644
+index 05e88cd..0000000
 --- a/.github/workflows/sync-to-report.yml
-+++ b/.github/workflows/sync-to-report.yml
-@@ -1,9 +1,16 @@
++++ /dev/null
+@@ -1,300 +0,0 @@
 -name: Sync to Daily Report Hub
-+name: Sync to Daily Report Hub v2.1
- on:
-   push:
-     branches: [main, master]
-   pull_request:
+-on:
+-  push:
+-    branches: [main, master]
+-  pull_request:
 -    types: [merged]
-+    types: [opened, synchronize, closed]
-+
-+# 週の開始日を制御する設定
-+env:
-+  WEEK_START_DAY: 1 # 週の開始日 (0=日曜日, 1=月曜日, 2=火曜日, 3=水曜日, 4=木曜日, 5=金曜日, 6=土曜日)
-+  AUTO_APPROVE: true # プルリクエストの自動承認 (true/false)
-+  AUTO_MERGE: true # プルリクエストの自動マージ (true/false)
-+  CREATE_PR: true # プルリクエストを作成するか直接プッシュするか (true/false)
- 
- jobs:
-   sync-data:
-@@ -12,289 +19,40 @@ jobs:
-       - name: Checkout current repo
-         uses: actions/checkout@v4
-         with:
+-
+-jobs:
+-  sync-data:
+-    runs-on: ubuntu-latest
+-    steps:
+-      - name: Checkout current repo
+-        uses: actions/checkout@v4
+-        with:
 -          fetch-depth: 0  # 全履歴を取得してその日の全コミットを追跡
 -      
 -      - name: Get repository info and daily activities
@@ -1296,32 +1280,14 @@ index 05e88cd..ae47540 100644
 -          echo "✅ Daily activity analysis complete!"
 -      
 -      - name: Clone and update report hub
-+          fetch-depth: 0 # 全履歴を取得してその日の全コミットを追跡
-+
-+      - name: Make scripts executable
-+        run: chmod +x .github/scripts/*.sh
-+
-+      - name: Calculate week information
-+        run: ./.github/scripts/calculate-week-info.sh ${{ env.WEEK_START_DAY }}
-+
-+      - name: Analyze Git activity
-+        run: ./.github/scripts/analyze-git-activity.sh
-+
-+      - name: Generate Markdown reports
-+        run: ./.github/scripts/generate-markdown-reports.sh
-+
-+      - name: Clone report hub and create structure
-         env:
+-        env:
 -          GITHUB_TOKEN: ${{ secrets.REPORT_TOKEN }}
-+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-+          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
-         run: |
-           # Git設定
-           git config --global user.name "GitHub Actions Bot"
-           git config --global user.email "actions@github.com"
+-        run: |
+-          # Git設定
+-          git config --global user.name "GitHub Actions Bot"
+-          git config --global user.email "actions@github.com"
 -          
-+
-           # daily-report-hubをクローン
+-          # daily-report-hubをクローン
 -          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/Sunwood-ai-labs/daily-report-hub.git
 -          
 -          # 日付ベースのディレクトリ構造を作成
@@ -1378,19 +1344,6 @@ index 05e88cd..ae47540 100644
 -            git push
 -          fi
 \ No newline at end of file
-+          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
-+
-+      - name: Create Docusaurus structure
-+        run: ./.github/scripts/create-docusaurus-structure.sh
-+
-+      - name: Sync to report hub with PR flow
-+        env:
-+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-+          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
-+          AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
-+          AUTO_MERGE: ${{ env.AUTO_MERGE }}
-+          CREATE_PR: ${{ env.CREATE_PR }}
-+        run: ./.github/scripts/sync-to-hub.sh
 diff --git a/CHANGELOG.md b/CHANGELOG.md
 new file mode 100644
 index 0000000..20aeb24

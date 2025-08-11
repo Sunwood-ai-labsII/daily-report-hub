@@ -39,11 +39,21 @@
  docs/blog/tags.yml                                 |    19 +
  docs/docs/activities/2025/_category_.json          |     8 +
  .../2025-08-11/_category_.json                     |     8 +
+ .../2025-08-11/daily-report-hub/README.md          |   297 +
+ .../2025-08-11/daily-report-hub/_category_.json    |     8 +
+ .../2025-08-11/daily-report-hub/daily_code_diff.md | 29622 +++++++++++++++++++
+ .../2025-08-11/daily-report-hub/daily_commits.md   |  8210 +++++
+ .../daily-report-hub/daily_cumulative_diff.md      |    88 +
+ .../daily-report-hub/daily_diff_stats.md           |    91 +
+ .../2025-08-11/daily-report-hub/daily_summary.md   |   526 +
+ .../daily-report-hub/latest_code_diff.md           |  1023 +
+ .../2025-08-11/daily-report-hub/latest_diff.md     |    10 +
+ .../2025-08-11/daily-report-hub/metadata.json      |    27 +
  .../2025-08-11/daily-report-hub_sample1/README.md  |    90 +
  .../daily-report-hub_sample1/_category_.json       |     8 +
  .../daily-report-hub_sample1/ai_daily_report.md    |    68 +
  .../daily-report-hub_sample1/daily_code_diff.md    |  1744 ++
- .../daily-report-hub_sample1/daily_commits.md      |  3626 ++++
+ .../daily-report-hub_sample1/daily_commits.md      |  3626 +++
  .../daily_cumulative_diff.md                       |    18 +
  .../daily-report-hub_sample1/daily_diff_stats.md   |    21 +
  .../daily-report-hub_sample1/daily_summary.md      |   274 +
@@ -58,7 +68,7 @@
  docs/docs/intro.md                                 |   106 +
  docs/docs/scripts-guide.md                         |   262 +
  docs/docusaurus.config.ts                          |   179 +
- docs/package-lock.json                             | 18807 +++++++++++++++++++
+ docs/package-lock.json                             | 18807 ++++++++++++
  docs/package.json                                  |    49 +
  docs/sidebars.ts                                   |    33 +
  docs/src/components/HomepageFeatures/index.tsx     |    72 +
@@ -87,5 +97,5 @@
  projects/daily-report-hub_sample1/diff.txt         |     4 -
  projects/daily-report-hub_sample1/metadata.json    |     7 -
  projects/daily-report-hub_sample1/update_time.txt  |     1 -
- 86 files changed, 28472 insertions(+), 627 deletions(-)
+ 96 files changed, 68374 insertions(+), 627 deletions(-)
 ```

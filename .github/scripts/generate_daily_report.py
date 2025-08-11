@@ -72,6 +72,26 @@ def generate_repo_daily_report(repo_data, date):
     repo_name = repo_data['name']
     print(f"\n🤖 AI日報生成開始: {repo_name}")
     
+    # まず最初にフォールバック用のコンテンツを準備
+    fallback_content = f"""<output-report>
+# 📅 {repo_name} - 日報 ({date})
+
+## ⚠️ 注意
+AI による日報生成に失敗しました。
+
+## 📊 利用可能なデータ
+"""
+    
+    # 利用可能なデータを追加
+    if 'summary' in repo_data:
+        fallback_content += f"\n### サマリー\n{repo_data['summary'][:500]}...\n"
+    if 'commits' in repo_data:
+        fallback_content += f"\n### コミット\n{repo_data['commits'][:500]}...\n"
+    if 'stats' in repo_data:
+        fallback_content += f"\n### 統計\n{repo_data['stats'][:200]}...\n"
+    
+    fallback_content += "\n</output-report>"
+    
     prompt_parts = [f"以下の{repo_name}リポジトリの{date}の活動データから、日報をMarkdown形式で作成してください:\n"]
     
     if 'summary' in repo_data: prompt_parts.append(f"## サマリー:\n{repo_data['summary']}\n")
@@ -116,8 +136,6 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
 
 """)
 
-
-
     prompt = "\n".join(prompt_parts)
     
     try:
@@ -128,17 +146,21 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
             temperature=0.7,
         )
         
-        content = response.choices[0].message.content
-        print(f"✅ AI応答受信完了。")
-        return content
+        if response and response.choices and len(response.choices) > 0:
+            content = response.choices[0].message.content
+            if content and content.strip():
+                print(f"✅ AI応答受信完了。")
+                return content
+            else:
+                print(f"⚠️ AI応答が空でした。フォールバックコンテンツを使用します。")
+                return fallback_content
+        else:
+            print(f"⚠️ 不正なAPI応答でした。フォールバックコンテンツを使用します。")
+            return fallback_content
         
     except Exception as e:
         print(f"❌ AI生成エラー ({repo_name}): {e}")
-        fallback_content = f"""# 📅 {repo_name} - 日報 ({date})
-## ⚠️ 注意
-AI による日報生成に失敗しました。"""
-        # フォールバック時も、後続処理のためにタグで囲む
-        return f"<output-report>\n{fallback_content}\n</output-report>"
+        return fallback_content
 
 def save_repo_daily_report(repo_data, clean_report_content, date):
     """リポジトリフォルダに、タグなしのクリーンな日報を保存"""
@@ -192,6 +214,8 @@ def main():
         # AIにタグ付きで日報を生成させる
         ai_response_with_tags = generate_repo_daily_report(repo_data, date)
         
+        # この時点でai_response_with_tagsは必ず有効な文字列のはず（関数内で保証）
+        
         # --- ★★★ ここが最重要ポイント ★★★ ---
         # AIの応答から<output-report>タグの中身だけを抽出する
         print("🔍 AI応答から日報コンテンツを抽出中...")
@@ -207,6 +231,15 @@ def main():
             clean_report = ai_response_with_tags.strip()
         # --- ★★★ ★★★ ★★★ ★★★ ★★★
         
+        # clean_reportが空でないことを確認
+        if not clean_report:
+            print("⚠️ 警告: 抽出されたコンテンツが空です。基本的な日報を生成します。")
+            clean_report = f"""# 📅 {repo_data['name']} - 日報 ({date})
+
+## ⚠️ 注意
+日報の生成で問題が発生しました。データは正常に収集されています。
+"""
+        
         # タグが削除されたクリーンなコンテンツをファイルに保存
         save_repo_daily_report(repo_data, clean_report, date)
     
@@ -216,5 +249,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-

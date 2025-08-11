@@ -143,7 +143,6 @@ def generate_repo_daily_report(repo_data, date):
             model="gemini/gemini-2.5-pro",  # 正しいモデル名に修正
             messages=[{"role": "user", "content": prompt}],
             temperature=0.7,
-            max_tokens=2000
         )
         
         content = response.choices[0].message.content

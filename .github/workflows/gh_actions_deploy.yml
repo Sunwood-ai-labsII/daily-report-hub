@@ -21,6 +21,12 @@ jobs:
 
       - name: Install dependencies
         run: cd docs && npm ci
+
+      # ▼▼▼【修正】ビルド前に<br>タグをコマンドで直接置換▼▼▼
+      - name: Fix br tags in Markdown files
+        run: find ./docs -type f -name "*.md" -exec sed -i 's|<br(?! \/)>|<br />|g' {} +
+      # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
       - name: Test build website
         run: cd docs && npm run build
 
@@ -28,7 +34,6 @@ jobs:
     name: Deploy to GitHub Pages
     runs-on: ubuntu-latest
     needs: test
-    # Deploy to GitHub Pages only on pushes to main branch
     if: github.ref == 'refs/heads/main'
     permissions:
       contents: read
@@ -46,10 +51,18 @@ jobs:
           node-version: 18
           cache: npm
           cache-dependency-path: docs/package-lock.json
+          
       - name: Install dependencies
         run: cd docs && npm ci
+
+      # ▼▼▼【修正】ビルド前に<br>タグをコマンドで直接置換▼▼▼
+      - name: Fix br tags in Markdown files
+        run: find ./docs -type f -name "*.md" -exec sed -i 's|<br(?! \/)>|<br />|g' {} +
+      # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
       - name: Build website
         run: cd docs && npm run build
+        
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact

@@ -3180,3 +3180,48 @@ Date:   Mon Aug 11 20:14:28 2025 +0900
 
 ---
 
+## ⏰ 20:14:43 - `4e4b677`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:14:43 2025 +0900
+M	.github/scripts/sync-to-hub-gh.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:14:43 2025 +0900
+
+    Update sync-to-hub-gh.sh
+
+ .github/scripts/sync-to-hub-gh.sh | 6 ++++++
+ 1 file changed, 6 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+index 142df6d..e3a82a1 100644
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -17,6 +17,12 @@ CREATE_PR=${CREATE_PR:-true}
+ AUTO_APPROVE=${AUTO_APPROVE:-false}
+ AUTO_MERGE=${AUTO_MERGE:-false}
+ 
++# デバッグ用：環境変数を表示
++echo "🔍 Environment Variables:"
++echo "  CREATE_PR: $CREATE_PR"
++echo "  AUTO_APPROVE: $AUTO_APPROVE"
++echo "  AUTO_MERGE: $AUTO_MERGE"
++
+ # daily-report-hubは既にクローン済み
+ 
+ # README.mdをコピー
+```
+
+---
+

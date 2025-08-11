@@ -331,7 +331,6 @@ index e5baa3d..d0ce306 100644
 -# ブラウザでindex.htmlを開く
 -open index.html  # macOS
 -start index.html # Windows
- ```
 +.
 +├── .github/
 +│   ├── scripts/

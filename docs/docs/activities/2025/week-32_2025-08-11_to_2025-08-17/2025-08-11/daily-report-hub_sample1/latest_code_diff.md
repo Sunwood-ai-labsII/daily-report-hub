@@ -16,23 +16,17 @@ new mode 100755
 diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
 old mode 100644
 new mode 100755
-index 142df6d..e3a82a1
---- a/.github/scripts/sync-to-hub-gh.sh
-+++ b/.github/scripts/sync-to-hub-gh.sh
-@@ -17,6 +17,12 @@ CREATE_PR=${CREATE_PR:-true}
- AUTO_APPROVE=${AUTO_APPROVE:-false}
- AUTO_MERGE=${AUTO_MERGE:-false}
- 
-+# デバッグ用：環境変数を表示
-+echo "🔍 Environment Variables:"
-+echo "  CREATE_PR: $CREATE_PR"
-+echo "  AUTO_APPROVE: $AUTO_APPROVE"
-+echo "  AUTO_MERGE: $AUTO_MERGE"
-+
- # daily-report-hubは既にクローン済み
- 
- # README.mdをコピー
 diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
 old mode 100644
 new mode 100755
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 6562c20..bf22ace 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,4 +1,4 @@
+-name: Sync to Daily Report Hub v2.0
++name: Sync to Daily Report Hub v2.3
+ on:
+   push:
+     branches: [main, master]
 ```

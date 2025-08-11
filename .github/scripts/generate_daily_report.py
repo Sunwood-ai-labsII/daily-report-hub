@@ -88,8 +88,28 @@ def generate_repo_daily_report(repo_data, date):
 - 明日以降の開発への提案があれば記載
 - 日本語で読みやすく、簡潔に記述
 - 絵文字を効果的に使用
-- **重要**: 完成した日報は、必ず `<output-report>` と `</output-report>` で全体を囲んでください。""")
-    
+- **重要**: 完成した日報は、必ず `<output-report>` と `</output-report>` で全体を囲んでください。
+
+また、下記を活用してエージェントからのこの日報の一言レビューを記載して
+PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行います。
+```
+:::tip PANDA 先生
+
+一言レビュー
+
+:::
+
+:::danger FOX 教官
+
+一言レビュー
+
+:::
+```
+
+""")
+
+
+
     prompt = "\n".join(prompt_parts)
     
     try:

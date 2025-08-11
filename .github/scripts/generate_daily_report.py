@@ -92,6 +92,7 @@ def generate_repo_daily_report(repo_data, date):
 
 また、下記を活用してエージェントからのこの日報の一言レビューを記載して
 PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行います。
+キャット ギャル はギャル口調で本質を捉えつつ経営者的な観点からの評価をします
 ```
 :::tip PANDA 先生
 
@@ -104,6 +105,13 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
 一言レビュー
 
 :::
+
+:::caution キャット ギャル
+
+In development, you can only use one locale at a time.
+
+:::
+
 ```
 
 """)
@@ -208,3 +216,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

@@ -21,7 +21,13 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             to="/docs/intro">
-            Docusaurus Tutorial - 5min ⏱️
+            🚀 はじめる - 5分で完了 ⏱️
+          </Link>
+          <Link
+            className="button button--outline button--lg"
+            to="/docs/activities"
+            style={{marginLeft: '1rem'}}>
+            📊 サンプルレポートを見る
           </Link>
         </div>
       </div>
@@ -33,8 +39,8 @@ export default function Home(): ReactNode {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Hello from ${siteConfig.title}`}
-      description="Description will go into a meta tag in <head />">
+      title={`${siteConfig.title} - AI-Powered Development Analytics`}
+      description="Transform your Git repositories into intelligent development reports with automated analytics and AI-powered insights.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

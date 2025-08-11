@@ -3270,6 +3270,37 @@ index df796aa..6562c20 100644
 
 ---
 
+## ⏰ 20:48:42 - `dd19e29`
+**Merge branch 'main' into develop**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 0269cc7 837b68f
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 20:48:42 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 0269cc7 837b68f
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 20:48:42 2025 +0900
+
+    Merge branch 'main' into develop
+
+ .github/scripts/sync-to-hub-gh.sh       | 67 ++++++++++++++++++++++++++-------
+ .github/workflows/sync-to-report-gh.yml | 22 ++++-------
+ .github/workflows/sync-to-report.yml    | 58 ----------------------------
+ 3 files changed, 61 insertions(+), 86 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
 ## ⏰ 20:50:33 - `57bcc4a`
 **Update sync-to-report-gh.yml**
 *by Maki*
@@ -3777,6 +3808,241 @@ index 3688357..fa2809c 100644
            REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
 -        run: ./.github/scripts/sync-to-hub-gh.sh
 +        run: curl -LsSf ${SCRIPTS_BASE_URL}/sync-to-hub-gh.sh | sh
+```
+
+---
+
+## ⏰ 23:45:56 - `ee34ef4`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 23:45:56 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 23:45:56 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 13 +------------
+ 1 file changed, 1 insertion(+), 12 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index fa2809c..6dc1edd 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,4 +1,4 @@
+-name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 直接実行)
++name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 完全リモート実行)
+ on:
+   push:
+     branches: [main, master]
+@@ -11,8 +11,6 @@ env:
+   AUTO_MERGE: true  
+   CREATE_PR: true
+   # リモートスクリプトの設定
+-  REMOTE_SCRIPTS_REPO: Sunwood-ai-labsII/daily-report-hub_dev
+-  REMOTE_SCRIPTS_BRANCH: main
+   SCRIPTS_BASE_URL: https://raw.githubusercontent.com/Sunwood-ai-labsII/daily-report-hub_dev/main/.github/scripts
+ 
+ jobs:
+@@ -33,15 +31,6 @@ jobs:
+       - name: 📝 Markdownレポートを生成
+         run: curl -LsSf ${SCRIPTS_BASE_URL}/generate-markdown-reports.sh | sh
+ 
+-      - name: 📅 週情報を計算
+-        run: ./.github/scripts/calculate-week-info.sh ${{ env.WEEK_START_DAY }}
+-
+-      - name: 🔍 Git活動を分析
+-        run: ./.github/scripts/analyze-git-activity.sh
+-
+-      - name: 📝 Markdownレポートを生成
+-        run: ./.github/scripts/generate-markdown-reports.sh
+-
+       - name: 📂 レポートハブをクローン
+         env:
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+```
+
+---
+
+## ⏰ 23:49:19 - `aa181e8`
+**🗑️ GitHub Actions用スクリプト一式を削除**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 23:49:19 2025 +0900
+D	.github/scripts/README.md
+D	.github/scripts/analyze-git-activity.sh
+D	.github/scripts/calculate-week-info.sh
+D	.github/scripts/create-docusaurus-structure.sh
+D	.github/scripts/generate-markdown-reports.sh
+D	.github/scripts/sync-to-hub.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 23:49:19 2025 +0900
+
+    🗑️ GitHub Actions用スクリプト一式を削除
+
+ .github/scripts/README.md                      | 141 ------------------
+ .github/scripts/analyze-git-activity.sh        |  59 --------
+ .github/scripts/calculate-week-info.sh         |  44 ------
+ .github/scripts/create-docusaurus-structure.sh | 111 --------------
+ .github/scripts/generate-markdown-reports.sh   | 191 -------------------------
+ .github/scripts/sync-to-hub.sh                 | 184 ------------------------
+ 6 files changed, 730 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/README.md b/.github/scripts/README.md
+deleted file mode 100644
+index c7e07f4..0000000
+--- a/.github/scripts/README.md
++++ /dev/null
+@@ -1,141 +0,0 @@
+-# GitHub Actions Scripts
+-
+-このディレクトリには、Daily Report Hub同期ワークフローで使用されるスクリプトが含まれています。
+-
+-## スクリプト一覧
+-
+-### 1. `calculate-week-info.sh`
+-週情報を計算し、環境変数を設定します。
+-
+-**使用方法:**
+-```bash
+-./calculate-week-info.sh [WEEK_START_DAY]
+-```
+-
+-**パラメータ:**
+-- `WEEK_START_DAY`: 週の開始日 (0=日曜日, 1=月曜日, ..., 6=土曜日)
+-
+-**出力環境変数:**
+-- `REPO_NAME`: リポジトリ名
+-- `DATE`: 現在の日付 (YYYY-MM-DD)
+-- `YEAR`: 現在の年
+-- `WEEK_FOLDER`: 週フォルダ名
+-- `WEEK_START_DATE`: 週の開始日
+-- `WEEK_END_DATE`: 週の終了日
+-- `WEEK_NUMBER`: 週番号
+-
+-### 2. `analyze-git-activity.sh`
+-Gitの活動を分析し、生データファイルを生成します。
+-
+-**生成ファイル:**
+-- `daily_commits_raw.txt`: その日のコミット一覧
+-- `daily_cumulative_diff_raw.txt`: その日の累積差分
+-- `daily_diff_stats_raw.txt`: その日の統計情報
+-- `daily_code_diff_raw.txt`: その日のコード差分
+-- `latest_diff_raw.txt`: 最新の差分
+-- `latest_code_diff_raw.txt`: 最新のコード差分
+-
+-### 3. `generate-markdown-reports.sh`
+-生データからMarkdownレポートを生成します。
+-
+-**生成ファイル:**
+-- `daily_commits.md`: コミット詳細レポート
+-- `daily_cumulative_diff.md`: ファイル変更レポート
+-- `daily_diff_stats.md`: 統計レポート
+-- `daily_code_diff.md`: コード差分レポート
+-- `latest_diff.md`: 最新変更レポート
+-- `latest_code_diff.md`: 最新コード差分レポート
+-- `daily_summary.md`: 日次サマリーレポート
+-
+-### 4. `create-docusaurus-structure.sh`
+-Docusaurusの構造と`_category_.json`ファイルを作成します。
+-
+-**必要な環境変数:**
+-- `REPO_NAME`, `DATE`, `YEAR`, `WEEK_FOLDER`, `WEEK_NUMBER`, `WEEK_START_DATE`, `WEEK_END_DATE`
+-
+-**出力環境変数:**
+-- `TARGET_DIR`: ターゲットディレクトリのパス
+-
+-### 5. `sync-to-hub.sh`
+-レポートハブにファイルを同期します。
+-
+-**必要な環境変数:**
+-- `GITHUB_TOKEN`: GitHubアクセストークン
+-- `REPORT_HUB_REPO`: レポートハブのリポジトリ
+-- `TARGET_DIR`: ターゲットディレクトリ
+-- その他の週情報変数
+-
+-## 週の開始日設定
+-
+-ワークフローファイルの`env.WEEK_START_DAY`を変更することで、週の開始日を制御できます：
+-
+-```yaml
+-env:
+-  WEEK_START_DAY: 1  # 0=日曜日, 1=月曜日, 2=火曜日, etc.
+-```
+-
+-## プルリクエストフロー設定
+-
+-v2.0では、プルリクエストベースのフローと自動承認機能が追加されました：
+-
+-```yaml
+-env:
+-  WEEK_START_DAY: 1     # 週の開始日
+-  AUTO_APPROVE: true    # プルリクエストの自動承認
+-  AUTO_MERGE: true      # プルリクエストの自動マージ
+-  CREATE_PR: true       # プルリクエストを作成するか直接プッシュするか
+-```
+-
+-### 設定オプション
+-
+-| 設定 | 説明 | デフォルト |
+-|------|------|------------|
+-| `CREATE_PR` | `true`: プルリクエストを作成<br>`false`: 直接プッシュ | `true` |
+-| `AUTO_APPROVE` | `true`: プルリクエストを自動承認<br>`false`: 手動承認が必要 | `false` |
+```
+
+---
+
+## ⏰ 23:49:28 - `82ab863`
+**🔀 Merge: Remove GitHub Actions scripts**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Merge: dd19e29 aa181e8
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 23:49:28 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: dd19e29 aa181e8
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 23:49:28 2025 +0900
+
+    🔀 Merge: Remove GitHub Actions scripts
+
+ .github/scripts/README.md                      | 141 ------------------
+ .github/scripts/analyze-git-activity.sh        |  59 --------
+ .github/scripts/calculate-week-info.sh         |  44 ------
+ .github/scripts/create-docusaurus-structure.sh | 111 --------------
+ .github/scripts/generate-markdown-reports.sh   | 191 -------------------------
+ .github/scripts/sync-to-hub.sh                 | 184 ------------------------
+ 6 files changed, 730 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
 ```
 
 ---

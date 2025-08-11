@@ -5,8 +5,8 @@ import type * as Preset from '@docusaurus/preset-classic';
 // This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
 
 const config: Config = {
-  title: 'Docusaurus GitHub Pages Starter',
-  tagline: 'Effortless documentation with automated deployment',
+  title: 'Daily Report Hub',
+  tagline: 'AI駆動の開発活動分析プラットフォーム',
   favicon: 'img/favicon-Pteranodon.ico',
 
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
@@ -35,6 +35,11 @@ const config: Config = {
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
+  },
+
+  // Mermaid設定を追加
+  markdown: {
+    mermaid: true,
   },
 
   presets: [
@@ -70,13 +75,16 @@ const config: Config = {
     ],
   ],
 
+  // Mermaidテーマを追加
+  themes: ['@docusaurus/theme-mermaid'],
+
   themeConfig: {
     // Replace with your project's social card
     image: 'img/Pteranodon-social-card.jpg',
     navbar: {
-      title: 'Pteranodon Starter',
+      title: 'Daily Report Hub',
       logo: {
-        alt: 'Pteranodon Logo',
+        alt: 'Daily Report Hub Logo',
         // src: 'img/logo.svg',
         src: 'img/Pteranodon.png',
       },
@@ -85,9 +93,15 @@ const config: Config = {
           type: 'docSidebar',
           sidebarId: 'tutorialSidebar',
           position: 'left',
-          label: 'Tutorial',
+          label: 'ドキュメント',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
+        {
+          type: 'docSidebar',
+          sidebarId: 'tutorialSidebar',
+          position: 'left',
+          label: 'アクティビティ',
+        },
+        {to: '/blog', label: 'ブログ', position: 'left'},
         {
           href: 'https://github.com/sunwood-ai-labs/daily-report-hub',
           label: 'GitHub',
@@ -99,28 +113,32 @@ const config: Config = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Documentation',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Getting Started',
               to: '/docs/intro',
+            },
+            {
+              label: 'Activities',
+              to: '/docs/activities',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Features',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Auto Report Generation',
+              to: '/docs/intro',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'AI Analytics (Coming Soon)',
+              to: '/docs/intro',
             },
             {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'Multi-Repository Support',
+              to: '/docs/intro',
             },
           ],
         },
@@ -138,12 +156,19 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} Docusaurus GitHub Pages Starter. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} Daily Report Hub. Built with Docusaurus & Enhanced by AI.`,
     },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
       additionalLanguages: ['diff'],
+    },
+    // Mermaidテーマ設定（オプション）
+    mermaid: {
+      theme: {light: 'neutral', dark: 'forest'},
+      options: {
+        maxTextSize: 50,
+      },
     },
   } satisfies Preset.ThemeConfig,
 };

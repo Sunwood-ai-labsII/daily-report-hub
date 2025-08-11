@@ -975,7 +975,7 @@ index 0000000..0a7d604
 \ No newline at end of file
 diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
 new file mode 100644
-index 0000000..16e1235
+index 0000000..32fdc85
 --- /dev/null
 +++ b/.github/workflows/sync-to-report-gh.yml
 @@ -0,0 +1,58 @@
@@ -1017,7 +1017,7 @@ index 0000000..16e1235
 +      - name: Clone report hub and create structure
 +        env:
 +          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-+          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
++          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
 +        run: |
 +          # Git設定
 +          git config --global user.name "GitHub Actions Bot"
@@ -1029,14 +1029,14 @@ index 0000000..16e1235
 +      - name: Create Docusaurus structure
 +        run: ./.github/scripts/create-docusaurus-structure.sh
 +
-+      - name: Sync to report hub with PR flow
++      - name: Sync to report hub with PR flow (GitHub CLI)
 +        env:
 +          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-+          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
++          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
 +          AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
 +          AUTO_MERGE: ${{ env.AUTO_MERGE }}
 +          CREATE_PR: ${{ env.CREATE_PR }}
-+        run: ./.github/scripts/sync-to-hub.sh
++        run: ./.github/scripts/sync-to-hub-gh.sh
 diff --git a/.github/workflows/sync-to-report.yml b/.github/workflows/sync-to-report.yml
 deleted file mode 100644
 index 05e88cd..0000000

@@ -8208,3 +8208,329 @@ Date:   Mon Aug 11 23:12:57 2025 +0900
 
 ---
 
+## ⏰ 23:13:33 - `919bf47`
+**Merge branch 'develop'**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Merge: 73ea345 c8a0a0f
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 23:13:33 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 73ea345 c8a0a0f
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 23:13:33 2025 +0900
+
+    Merge branch 'develop'
+
+ .github/scripts/README.md                      | 141 ++++++++++++++++++
+ .github/scripts/analyze-git-activity.sh        |  59 ++++++++
+ .github/scripts/calculate-week-info.sh         |  44 ++++++
+ .github/scripts/create-docusaurus-structure.sh | 111 ++++++++++++++
+ .github/scripts/generate-markdown-reports.sh   | 191 +++++++++++++++++++++++++
+ .github/scripts/sync-to-hub-gh.sh              | 182 +++++++++++++++++++++++
+ .github/scripts/sync-to-hub.sh                 | 184 ++++++++++++++++++++++++
+ .github/workflows/sync-to-report-gh.yml        |  53 +++++++
+ 8 files changed, 965 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 23:14:03 - `d746b7f`
+**📊 週次同期: daily-report-hub (2025-08-11) - 第32週 - 82件のコミット (#8)**
+*by Yukihiko.F@sunwood.ai.labs*
+
+### 📋 Changed Files
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Mon Aug 11 23:14:03 2025 +0900
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/_category_.json
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_code_diff.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_commits.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_cumulative_diff.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_diff_stats.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_summary.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/latest_code_diff.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/latest_diff.md
+A	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/metadata.json
+```
+
+### 📊 Statistics
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Mon Aug 11 23:14:03 2025 +0900
+
+    📊 週次同期: daily-report-hub (2025-08-11) - 第32週 - 82件のコミット (#8)
+    
+    Co-authored-by: Yukihiko Kondo <yukihiko.fuyuki@example.com>
+
+ .../2025-08-11/daily-report-hub/README.md          |   297 +
+ .../2025-08-11/daily-report-hub/_category_.json    |     8 +
+ .../2025-08-11/daily-report-hub/daily_code_diff.md | 29622 +++++++++++++++++++
+ .../2025-08-11/daily-report-hub/daily_commits.md   |  8210 +++++
+ .../daily-report-hub/daily_cumulative_diff.md      |    88 +
+ .../daily-report-hub/daily_diff_stats.md           |    91 +
+ .../2025-08-11/daily-report-hub/daily_summary.md   |   526 +
+ .../daily-report-hub/latest_code_diff.md           |  1023 +
+ .../2025-08-11/daily-report-hub/latest_diff.md     |    10 +
+ .../2025-08-11/daily-report-hub/metadata.json      |    27 +
+ 10 files changed, 39902 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md b/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md
+new file mode 100644
+index 0000000..dff8cbd
+--- /dev/null
++++ b/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md
+@@ -0,0 +1,297 @@
++
++<div align="center">
++
++![](https://github.com/user-attachments/assets/78d1e905-da04-4b2e-aba5-fa797218fb4f)
++
++# 📊 Daily Report Hub P.A.N.D.A
++
++## Performance Analytics & Navigation for Development Activities
++
++> **自動日報生成・集約システム**  
++> GitHub Actionsを活用したCI/CDベースの開発活動レポートハブ
++
++
++![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222222?style=for-the-badge&logo=github-pages&logoColor=white)
++![Docusaurus](https://img.shields.io/badge/Docusaurus-3ECC5F?style=for-the-badge&logo=docusaurus&logoColor=white)
++![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
++![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
++![AI Powered](https://img.shields.io/badge/AI%20Powered-FF6B6B?style=for-the-badge&logo=openai&logoColor=white)
++
++</div>
++
++## 🌟 概要
++
++Daily Report Hubは、複数のリポジトリから自動的に開発活動データを収集し、美しいドキュメントサイトとして公開するシステムです。GitHub Actionsワークフローを通じて、コミット履歴、コード差分、統計情報を自動的に集約・整理し、週次・日次レポートを生成します。
++
++**🚀 次世代機能**: LLM統合により、単なるデータ収集を超えた**インテリジェントな開発分析プラットフォーム**へと進化予定です。
++
++## 🏗️ システム構成
++
++### 📂 プロジェクト構造
++
++```
++daily-report-hub/
++├── 📁 docs/                          # Docusaurusサイト
++│   ├── 📁 docs/activities/           # 活動レポート
++│   │   └── 📁 2025/                  # 年別フォルダ
++│   │       └── 📁 week-32_2025-08-11_to_2025-08-17/
++│   │           └── 📁 2025-08-11/    # 日別フォルダ
++│   │               └── 📁 [repo-name]/
++│   │                   ├── 📄 daily_summary.md
++│   │                   ├── 📄 daily_commits.md
++│   │                   ├── 📄 daily_code_diff.md
++│   │                   ├── 📄 daily_diff_stats.md
++│   │                   ├── 📄 latest_diff.md
++│   │                   ├── 📄 metadata.json
++│   │                   └── 📄 README.md
++│   ├── 📄 docusaurus.config.ts       # サイト設定
++│   ├── 📄 sidebars.ts                # サイドバー設定
++│   └── 📄 package.json               # 依存関係
++├── 📁 .github/workflows/             # CI/CD設定
++└── 📄 README.md                      # このファイル
++```
++
++## 🔄 自動化ワークフロー
++
++### 📊 データ収集プロセス
++
++1. **トリガー**: 連携リポジトリでのpush/PR作成
++2. **データ抽出**: Git履歴・差分・統計情報の収集
++3. **レポート生成**: Markdown形式での日報作成
++4. **構造化**: Docusaurus対応のディレクトリ構造で整理
++5. **同期**: 本リポジトリへの自動コミット・プッシュ
++6. **公開**: GitHub Pagesでの自動デプロイ
++
++### 🤖 LLM統合ワークフロー (開発中)
++
++```mermaid
++graph TD
++    A[Git Activity Data] --> B[LLM Analysis Engine]
++    B --> C[Context Understanding]
++    B --> D[Pattern Recognition]
++    B --> E[Insight Generation]
++    C --> F[Smart Summary]
++    D --> G[Trend Analysis]
++    E --> H[Recommendations]
++    F --> I[Enhanced Reports]
++    G --> I
++    H --> I
++    I --> J[AI-Powered Dashboard]
++```
++
++**予定機能**:
++- 📝 **自動要約**: コミット内容の自然言語要約
++- 🔍 **パターン分析**: 開発習慣・傾向の自動検出
++- 💡 **改善提案**: コード品質・効率性の向上案
++- 📊 **予測分析**: プロジェクト進捗・リスクの予測
++- 🎯 **目標設定**: データ駆動型の開発目標提案
++
++### 📈 生成されるレポート
++
++| レポート種別   | ファイル名            | 内容                   |
++| -------------- | --------------------- | ---------------------- |
++| 📝 日次サマリー | `daily_summary.md`    | その日の活動概要・統計 |
++| 💻 コミット詳細 | `daily_commits.md`    | 全コミットの詳細情報   |
+```
+
+---
+
+## ⏰ 14:14:09 - `61e8807`
+**📊 週次同期: daily-report-hub (2025-08-11) - 第32週 - 84件のコミット**
+*by Yukihiko Kondo*
+
+### 📋 Changed Files
+```bash
+Author: Yukihiko Kondo <yukihiko.fuyuki@example.com>
+Date:   Mon Aug 11 14:14:09 2025 +0000
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_code_diff.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_commits.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_cumulative_diff.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_diff_stats.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_summary.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/latest_code_diff.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/latest_diff.md
+M	docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/metadata.json
+```
+
+### 📊 Statistics
+```bash
+Author: Yukihiko Kondo <yukihiko.fuyuki@example.com>
+Date:   Mon Aug 11 14:14:09 2025 +0000
+
+    📊 週次同期: daily-report-hub (2025-08-11) - 第32週 - 84件のコミット
+
+ .../2025-08-11/daily-report-hub/daily_code_diff.md | 39962 ++++++++++++++++++
+ .../2025-08-11/daily-report-hub/daily_commits.md   |   182 +
+ .../daily-report-hub/daily_cumulative_diff.md      |    10 +
+ .../daily-report-hub/daily_diff_stats.md           |    16 +-
+ .../2025-08-11/daily-report-hub/daily_summary.md   |    44 +-
+ .../daily-report-hub/latest_code_diff.md           | 40813 ++++++++++++++++++-
+ .../2025-08-11/daily-report-hub/latest_diff.md     |    24 +-
+ .../2025-08-11/daily-report-hub/metadata.json      |    12 +-
+ 8 files changed, 80112 insertions(+), 951 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_code_diff.md b/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_code_diff.md
+index 2d38cf8..aa7b733 100644
+--- a/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_code_diff.md
++++ b/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/daily_code_diff.md
+@@ -2675,6 +2675,39968 @@ index 0000000..e87412e
+ +    "description": "Activities for 2025-08-11"
+ +  }
+ +}
++diff --git a/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md b/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md
++new file mode 100644
++index 0000000..dff8cbd
++--- /dev/null
+++++ b/docs/docs/activities/2025/week-32_2025-08-11_to_2025-08-17/2025-08-11/daily-report-hub/README.md
++@@ -0,0 +1,297 @@
+++
+++<div align="center">
+++
+++![](https://github.com/user-attachments/assets/78d1e905-da04-4b2e-aba5-fa797218fb4f)
+++
+++# 📊 Daily Report Hub P.A.N.D.A
+++
+++## Performance Analytics & Navigation for Development Activities
+++
+++> **自動日報生成・集約システム**  
+++> GitHub Actionsを活用したCI/CDベースの開発活動レポートハブ
+++
+++
+++![GitHub Pages](https://img.shields.io/badge/GitHub%20Pages-222222?style=for-the-badge&logo=github-pages&logoColor=white)
+++![Docusaurus](https://img.shields.io/badge/Docusaurus-3ECC5F?style=for-the-badge&logo=docusaurus&logoColor=white)
+++![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+++![GitHub Actions](https://img.shields.io/badge/GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+++![AI Powered](https://img.shields.io/badge/AI%20Powered-FF6B6B?style=for-the-badge&logo=openai&logoColor=white)
+++
+++</div>
+++
+++## 🌟 概要
+++
+++Daily Report Hubは、複数のリポジトリから自動的に開発活動データを収集し、美しいドキュメントサイトとして公開するシステムです。GitHub Actionsワークフローを通じて、コミット履歴、コード差分、統計情報を自動的に集約・整理し、週次・日次レポートを生成します。
+++
+++**🚀 次世代機能**: LLM統合により、単なるデータ収集を超えた**インテリジェントな開発分析プラットフォーム**へと進化予定です。
+++
+++## 🏗️ システム構成
+++
+++### 📂 プロジェクト構造
+++
+++```
+++daily-report-hub/
+++├── 📁 docs/                          # Docusaurusサイト
+++│   ├── 📁 docs/activities/           # 活動レポート
+++│   │   └── 📁 2025/                  # 年別フォルダ
+++│   │       └── 📁 week-32_2025-08-11_to_2025-08-17/
+++│   │           └── 📁 2025-08-11/    # 日別フォルダ
+++│   │               └── 📁 [repo-name]/
+++│   │                   ├── 📄 daily_summary.md
+++│   │                   ├── 📄 daily_commits.md
+++│   │                   ├── 📄 daily_code_diff.md
+++│   │                   ├── 📄 daily_diff_stats.md
+++│   │                   ├── 📄 latest_diff.md
+++│   │                   ├── 📄 metadata.json
+++│   │                   └── 📄 README.md
+++│   ├── 📄 docusaurus.config.ts       # サイト設定
+++│   ├── 📄 sidebars.ts                # サイドバー設定
+++│   └── 📄 package.json               # 依存関係
+++├── 📁 .github/workflows/             # CI/CD設定
+++└── 📄 README.md                      # このファイル
+++```
+++
+++## 🔄 自動化ワークフロー
+++
+++### 📊 データ収集プロセス
+++
+++1. **トリガー**: 連携リポジトリでのpush/PR作成
+++2. **データ抽出**: Git履歴・差分・統計情報の収集
+++3. **レポート生成**: Markdown形式での日報作成
+++4. **構造化**: Docusaurus対応のディレクトリ構造で整理
+++5. **同期**: 本リポジトリへの自動コミット・プッシュ
+++6. **公開**: GitHub Pagesでの自動デプロイ
+++
+++### 🤖 LLM統合ワークフロー (開発中)
+++
+++```mermaid
+++graph TD
+++    A[Git Activity Data] --> B[LLM Analysis Engine]
+++    B --> C[Context Understanding]
+++    B --> D[Pattern Recognition]
+++    B --> E[Insight Generation]
+++    C --> F[Smart Summary]
+++    D --> G[Trend Analysis]
+++    E --> H[Recommendations]
+++    F --> I[Enhanced Reports]
+++    G --> I
+++    H --> I
+++    I --> J[AI-Powered Dashboard]
+++```
+++
+++**予定機能**:
+++- 📝 **自動要約**: コミット内容の自然言語要約
+++- 🔍 **パターン分析**: 開発習慣・傾向の自動検出
+++- 💡 **改善提案**: コード品質・効率性の向上案
+++- 📊 **予測分析**: プロジェクト進捗・リスクの予測
+```
+
+---
+

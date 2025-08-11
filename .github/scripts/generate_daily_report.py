@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-AIへのプロンプトを修正し、AI自身に出力をタグで囲ませるスクリプト。
-デバッグ情報を大幅に追加。
+AIにタグ付きで日報を生成させ、保存時にタグを削除して
+純粋なMarkdownコンテンツのみをファイルに書き込むスクリプト。
 """
 
 import os
@@ -18,13 +18,13 @@ def find_todays_repos():
     year = today.split('-')[0]
     
     print(f"🔍 検索開始: {today}")
-    print(f"📅 年: {year}")
-    
     activities_dir = Path('docs/docs/activities')
-    print(f"📁 ベースディレクトリ: {activities_dir}")
     
     repo_dirs = []
-    
+    if not activities_dir.exists():
+        print(f"❌ ベースディレクトリが見つかりません: {activities_dir}")
+        return today, repo_dirs
+
     year_dirs = list(activities_dir.glob(year))
     for year_dir in year_dirs:
         week_dirs = list(year_dir.glob('week-*'))
@@ -35,7 +35,7 @@ def find_todays_repos():
                     metadata_file = repo_dir / 'metadata.json'
                     if repo_dir.is_dir() and metadata_file.exists():
                         repo_dirs.append(repo_dir)
-                        print(f"✅ 追加: {repo_dir}")
+                        print(f"✅ 対象リポジトリを追加: {repo_dir.name}")
 
     print(f"📊 最終的に見つかったリポジトリ数: {len(repo_dirs)}")
     return today, repo_dirs
@@ -62,7 +62,6 @@ def load_repo_data(repo_dir):
                     if key == 'commits':
                         content = content[:3000]
                     repo_data[key] = content
-                    print(f"    ✅ {filename}: 読み込み成功")
             except Exception as e:
                 print(f"    ❌ {filename}: 読み込みエラー: {e}")
 
@@ -80,8 +79,6 @@ def generate_repo_daily_report(repo_data, date):
     if 'changes' in repo_data: prompt_parts.append(f"## ファイル変更:\n{repo_data['changes']}\n")
     if 'stats' in repo_data: prompt_parts.append(f"## 統計:\n{repo_data['stats']}\n")
     
-    # --- ★★★ ここが修正点 ★★★ ---
-    # プロンプトの末尾に、XMLタグで囲むよう明確な指示を追加
     prompt_parts.append("""
 日報作成要求:
 - このリポジトリの今日の開発活動を要約
@@ -94,7 +91,6 @@ def generate_repo_daily_report(repo_data, date):
 - **重要**: 完成した日報は、必ず `<output-report>` と `</output-report>` で全体を囲んでください。""")
     
     prompt = "\n".join(prompt_parts)
-    print(f"🤖 プロンプト長: {len(prompt)} 文字")
     
     try:
         print("🤖 API呼び出し開始...")
@@ -104,25 +100,20 @@ def generate_repo_daily_report(repo_data, date):
             temperature=0.7,
         )
         
-        # --- ★★★ ここが修正点 ★★★ ---
-        # AIからの応答をそのまま返す（AIがタグを付けてくれるはず）
         content = response.choices[0].message.content
-        print(f"✅ AI応答受信: {len(content)} 文字")
-        print(f"📝 AI応答プレビュー: {content[:150]}...")
-        
+        print(f"✅ AI応答受信完了。")
         return content
         
     except Exception as e:
         print(f"❌ AI生成エラー ({repo_name}): {e}")
-        
-        # フォールバックコンテンツは、後続処理のために引き続きPython側でタグ付け
         fallback_content = f"""# 📅 {repo_name} - 日報 ({date})
 ## ⚠️ 注意
 AI による日報生成に失敗しました。"""
+        # フォールバック時も、後続処理のためにタグで囲む
         return f"<output-report>\n{fallback_content}\n</output-report>"
 
-def save_repo_daily_report(repo_data, ai_generated_content, date):
-    """リポジトリフォルダに日報を保存"""
+def save_repo_daily_report(repo_data, clean_report_content, date):
+    """リポジトリフォルダに、タグなしのクリーンな日報を保存"""
     repo_dir = repo_data['path']
     report_file = repo_dir / 'ai_daily_report.md'
     
@@ -137,8 +128,8 @@ tags: ["daily-report", "ai-generated", "{repo_data['name']}", "{date}"]
 ---
 
 """
-    # AIがタグ付けしたコンテンツをそのまま結合する
-    full_content = frontmatter + ai_generated_content
+    # フロントマターと、タグが削除されたクリーンなコンテンツを結合
+    full_content = frontmatter + clean_report_content
     
     try:
         with open(report_file, 'w', encoding='utf-8') as f:
@@ -147,30 +138,11 @@ tags: ["daily-report", "ai-generated", "{repo_data['name']}", "{date}"]
     except Exception as e:
         print(f"❌ ファイル保存エラー: {e}")
 
-def extract_report_content(filepath):
-    """指定されたファイルから <output-report> タグ内のコンテンツを抽出"""
-    try:
-        with open(filepath, 'r', encoding='utf-8') as f:
-            content = f.read()
-        match = re.search(r'<output-report>(.*?)</output-report>', content, re.DOTALL)
-        if match:
-            return match.group(1).strip()
-        else:
-            print(f"⚠️ 警告: ファイル内に <output-report> タグが見つかりませんでした。 in {filepath}")
-            # タグが見つからない場合は、フロントマター以降の全内容を返すなどの代替案も考えられる
-            return None
-    except FileNotFoundError:
-        print(f"❌ 抽出エラー: ファイル '{filepath}' が見つかりません。")
-        return None
-    except Exception as e:
-        print(f"❌ 抽出中にエラーが発生しました: {e}")
-        return None
-
 def main():
-    print("🚀 Gemini 2.5 Pro で個別リポジトリ日報生成開始")
+    print("🚀 Gemini 2.5 Pro 日報生成スクリプト開始")
     
     if not os.getenv('GOOGLE_API_KEY'):
-        print("❌ GOOGLE_API_KEY が未設定です。")
+        print("❌ GOOGLE_API_KEY が未設定です。処理を終了します。")
         return
     
     print("\n" + "="*50)
@@ -178,31 +150,40 @@ def main():
     date, repo_dirs = find_todays_repos()
     
     if not repo_dirs:
-        print("📝 本日の活動なし - 処理終了")
+        print("📝 本日の活動は記録されていませんでした。処理を終了します。")
         return
     
     print("\n" + "="*50)
-    print("🤖 日報生成・保存・抽出フェーズ")
+    print("🤖 日報生成・保存フェーズ")
     
     for i, repo_dir in enumerate(repo_dirs, 1):
         print(f"\n--- {i}/{len(repo_dirs)}: {repo_dir.name} ---")
         
         repo_data = load_repo_data(repo_dir)
-        ai_generated_content = generate_repo_daily_report(repo_data, date)
-        save_repo_daily_report(repo_data, ai_generated_content, date)
         
-        # 保存したファイルからコンテンツを抽出して確認
-        report_file_path = repo_dir / 'ai_daily_report.md'
-        print(f"\n🔍 保存ファイルからコンテンツ抽出を実行: {report_file_path}")
-        extracted_content = extract_report_content(report_file_path)
+        # AIにタグ付きで日報を生成させる
+        ai_response_with_tags = generate_repo_daily_report(repo_data, date)
         
-        if extracted_content:
-            print("✅ 抽出成功！")
+        # --- ★★★ ここが最重要ポイント ★★★ ---
+        # AIの応答から<output-report>タグの中身だけを抽出する
+        print("🔍 AI応答から日報コンテンツを抽出中...")
+        clean_report = None
+        match = re.search(r'<output-report>(.*?)</output-report>', ai_response_with_tags, re.DOTALL)
+        
+        if match:
+            clean_report = match.group(1).strip()
+            print("✅ 抽出成功。")
         else:
-            print("❌ 抽出に失敗、またはタグが見つかりませんでした。")
+            print("⚠️ 警告: AIの応答に<output-report>タグが見つかりませんでした。")
+            print("AIの応答をそのまま日報コンテンツとして使用します。")
+            clean_report = ai_response_with_tags.strip()
+        # --- ★★★ ★★★ ★★★ ★★★ ★★★
+        
+        # タグが削除されたクリーンなコンテンツをファイルに保存
+        save_repo_daily_report(repo_data, clean_report, date)
     
     print("\n" + "="*50)
-    print("✅ 全リポジトリの処理完了")
+    print("✅ 全てのリポジトリの日報生成が完了しました。")
     print("="*50)
 
 if __name__ == "__main__":

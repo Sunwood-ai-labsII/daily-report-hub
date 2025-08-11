@@ -1047,12 +1047,12 @@ index 0000000..89b88fd
 +        run: ./.github/scripts/sync-to-hub-gh.sh
 \ No newline at end of file
 diff --git a/.github/workflows/sync-to-report.yml b/.github/workflows/sync-to-report.yml
-index 05e88cd..16e1235 100644
+index 05e88cd..ae47540 100644
 --- a/.github/workflows/sync-to-report.yml
 +++ b/.github/workflows/sync-to-report.yml
 @@ -1,9 +1,16 @@
 -name: Sync to Daily Report Hub
-+name: Sync to Daily Report Hub v2.0
++name: Sync to Daily Report Hub v2.1
  on:
    push:
      branches: [main, master]

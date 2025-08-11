@@ -2173,3 +2173,36 @@ Date:   Mon Aug 11 19:26:58 2025 +0900
 
 ---
 
+## ⏰ 19:28:35 - `cb49c38`
+**Merge branch 'develop'**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 18c42d6 0269cc7
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 19:28:35 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 18c42d6 0269cc7
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 19:28:35 2025 +0900
+
+    Merge branch 'develop'
+
+ .github/scripts/README.md               |  41 ++++++++
+ .github/scripts/sync-to-hub-gh.sh       | 169 ++++++++++++++++++++++++++++++++
+ .github/scripts/sync-to-hub.sh          | 119 +++++++++++++++++++++-
+ .github/workflows/sync-to-report-gh.yml |  66 +++++++++++++
+ .github/workflows/sync-to-report.yml    |  14 ++-
+ 5 files changed, 402 insertions(+), 7 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

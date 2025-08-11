@@ -2,46 +2,105 @@
 sidebar_position: 1
 ---
 
-# Tutorial Intro
+# Daily Report Hub へようこそ
 
-Let's discover **Docusaurus in less than 5 minutes**.
+**Daily Report Hub** - AI駆動の開発活動分析プラットフォームを発見しましょう。
 
-## Getting Started
+## 🌟 Daily Report Hub とは？
 
-Get started by **creating a new site**.
+Daily Report Hub は、Gitリポジトリを包括的でインテリジェントなレポートに変換する **自動開発活動追跡・分析システム** です。GitHub Actions と AI技術を使用して、開発パターンとチーム生産性に関する深いインサイトを提供します。
 
-Or **try Docusaurus immediately** with **[docusaurus.new](https://docusaurus.new)**.
+### 🚀 Key Features
 
-### What you'll need
+- **📊 Automatic Report Generation**: Transform Git activity into beautiful, structured reports
+- **🤖 AI-Powered Analysis**: LLM integration for intelligent insights (coming soon)
+- **📈 Multi-Repository Support**: Centralized tracking across all your projects
+- **🔄 Real-time Updates**: Instant report generation on every commit
+- **📱 Beautiful UI**: Responsive, modern interface built with Docusaurus
 
-- [Node.js](https://nodejs.org/en/download/) version 18.0 or above:
-  - When installing Node.js, you are recommended to check all checkboxes related to dependencies.
+## 🏗️ How It Works
 
-## Generate a new site
+### 1. **Repository Integration**
+Connect your repositories with our GitHub Actions workflow:
 
-Generate a new Docusaurus site using the **classic template**.
-
-The classic template will automatically be added to your project after you run the command:
-
-```bash
-npm init docusaurus@latest my-website classic
+```yaml
+name: Sync to Daily Report Hub
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    types: [opened, synchronize, closed]
 ```
 
-You can type this command into Command Prompt, Powershell, Terminal, or any other integrated terminal of your code editor.
+### 2. **Automatic Data Collection**
+Our system automatically collects:
+- 📝 Commit messages and metadata
+- 🔄 Code differences and statistics
+- 📊 File change patterns
+- ⏰ Development timeline data
 
-The command also installs all necessary dependencies you need to run Docusaurus.
+### 3. **Intelligent Processing**
+Data is processed and structured into:
+- Daily activity summaries
+- Code change visualizations
+- Development pattern analysis
+- Team productivity metrics
 
-## Start your site
+### 4. **Beautiful Reports**
+Generated reports include:
+- **Daily Summary**: Overview of the day's activities
+- **Commit Details**: Comprehensive commit analysis
+- **Code Differences**: Visual code change tracking
+- **Statistics**: Quantitative development metrics
 
-Run the development server:
+## 🤖 AI Integration (Coming Soon)
 
+We're building advanced AI capabilities:
+
+- **🧠 Smart Analysis**: LLM-powered code review and insights
+- **📈 Trend Prediction**: Forecast development patterns
+- **💡 Recommendations**: AI-driven improvement suggestions
+- **🎯 Goal Setting**: Data-driven development objectives
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 18.0 or above
+- Git repository access
+- GitHub Actions permissions
+
+### Quick Setup
+
+1. **Clone the repository**:
 ```bash
-cd my-website
-npm run start
+git clone https://github.com/Sunwood-ai-labsII/daily-report-hub.git
+cd daily-report-hub
 ```
 
-The `cd` command changes the directory you're working with. In order to work with your newly created Docusaurus site, you'll need to navigate the terminal there.
+2. **Install dependencies**:
+```bash
+cd docs
+npm install
+```
 
-The `npm run start` command builds your website locally and serves it through a development server, ready for you to view at http://localhost:3000/.
+3. **Start development server**:
+```bash
+npm start
+```
 
-Open `docs/intro.md` (this page) and edit some lines: the site **reloads automatically** and displays your changes.
+4. **View your site**: Open [http://localhost:3000](http://localhost:3000)
+
+## 📊 Explore Sample Reports
+
+Check out our sample project reports in the [Activities](/docs/activities) section to see Daily Report Hub in action!
+
+## 🔗 Next Steps
+
+- 📖 **[View Activities](/docs/activities)**: Explore generated reports
+- 🛠️ **[Setup Guide](/docs/tutorial-basics/create-a-document)**: Integrate your repositories
+- 🤝 **[Contributing](/docs/tutorial-basics/congratulations)**: Help improve the platform
+
+---
+
+Ready to transform your development workflow? Let's get started! 🚀

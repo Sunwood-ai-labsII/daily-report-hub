@@ -3270,3 +3270,316 @@ index df796aa..6562c20 100644
 
 ---
 
+## ⏰ 20:50:33 - `57bcc4a`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:50:33 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:50:33 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 6562c20..bf22ace 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,4 +1,4 @@
+-name: Sync to Daily Report Hub v2.0
++name: Sync to Daily Report Hub v2.3
+ on:
+   push:
+     branches: [main, master]
+```
+
+---
+
+## ⏰ 20:59:26 - `2f8edfb`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:59:26 2025 +0900
+M	.github/scripts/sync-to-hub-gh.sh
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:59:26 2025 +0900
+
+    Update sync-to-hub-gh.sh
+
+ .github/scripts/sync-to-hub-gh.sh | 218 +++++++++++++++++---------------------
+ 1 file changed, 95 insertions(+), 123 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+index e3a82a1..9f41d75 100644
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -1,34 +1,22 @@
+ #!/bin/bash
+ 
+-# レポートハブに同期するスクリプト（GitHub CLI使用版・強制上書き対応）
++# YUKIHIKOアカウントでPR作成＆自動承認するスクリプト
+ 
+ set -e
+ 
+ # 必要な環境変数をチェック
+ : ${GITHUB_TOKEN:?}
++: ${YUKIHIKO_TOKEN:?}  # YUKIHIKOのトークン
+ : ${REPORT_HUB_REPO:?}
+ : ${TARGET_DIR:?}
+ : ${REPO_NAME:?}
+ : ${DATE:?}
+ : ${WEEK_NUMBER:?}
+ 
+-# プルリクエストフロー設定（デフォルト値）
+-CREATE_PR=${CREATE_PR:-true}
+-AUTO_APPROVE=${AUTO_APPROVE:-false}
+-AUTO_MERGE=${AUTO_MERGE:-false}
++echo "🔥 YUKIHIKOアカウントでPR作成モード開始！"
+ 
+-# デバッグ用：環境変数を表示
+-echo "🔍 Environment Variables:"
+-echo "  CREATE_PR: $CREATE_PR"
+-echo "  AUTO_APPROVE: $AUTO_APPROVE"
+-echo "  AUTO_MERGE: $AUTO_MERGE"
+-
+-# daily-report-hubは既にクローン済み
+-
+-# README.mdをコピー
++# ファイルコピー処理
+ cp README.md "$TARGET_DIR/" 2>/dev/null || echo "# $REPO_NAME" > "$TARGET_DIR/README.md"
+-
+-# 当日のアクティビティファイルをコピー（全て.mdファイル）
+ cp daily_commits.md "$TARGET_DIR/"
+ cp daily_cumulative_diff.md "$TARGET_DIR/"
+ cp daily_diff_stats.md "$TARGET_DIR/"
+@@ -37,7 +25,7 @@ cp latest_diff.md "$TARGET_DIR/"
+ cp latest_code_diff.md "$TARGET_DIR/"
+ cp daily_summary.md "$TARGET_DIR/"
+ 
+-# 詳細メタデータを作成
++# メタデータ作成
+ COMMIT_COUNT=$(wc -l < daily_commits_raw.txt)
+ FILES_CHANGED=$(grep -c '^' daily_cumulative_diff_raw.txt 2>/dev/null || echo "0")
+ 
+@@ -56,11 +44,8 @@ cat > "$TARGET_DIR/metadata.json" << EOF
+   "daily_commit_count": $COMMIT_COUNT,
+   "daily_files_changed": $FILES_CHANGED,
+   "has_activity": $([ $COMMIT_COUNT -gt 0 ] && echo "true" || echo "false"),
+-  "pr_flow": {
+-    "create_pr": $CREATE_PR,
+-    "auto_approve": $AUTO_APPROVE,
+-    "auto_merge": $AUTO_MERGE
+-  },
++  "pr_creator": "yukihiko",
++  "auto_approved": true,
+   "files": {
+     "readme": "README.md",
+     "summary": "daily_summary.md",
+@@ -74,7 +59,6 @@ cat > "$TARGET_DIR/metadata.json" << EOF
+ }
+ EOF
+ 
+-# プルリクエストフローまたは直接プッシュ
+ cd daily-report-hub
+ 
+ # 最新のmainブランチを取得
+@@ -85,126 +69,114 @@ git pull origin main
+ # 変更をステージング
+ git add .
+ 
+-# ステージされた変更をチェック（リセット前に）
+ if git diff --staged --quiet; then
+-  echo "No changes to commit"
++  echo "📝 変更がありません"
+   exit 0
+ fi
+ 
+-COMMIT_MESSAGE="📊 Weekly sync: $REPO_NAME ($DATE) - Week $WEEK_NUMBER - $COMMIT_COUNT commits"
++COMMIT_MESSAGE="📊 週次同期: $REPO_NAME ($DATE) - 第${WEEK_NUMBER}週 - ${COMMIT_COUNT}件のコミット"
++BRANCH_NAME="sync/$REPO_NAME-$DATE"
+ 
+-if [ "$CREATE_PR" = "true" ]; then
+-  # 既存の同名PRブランチを削除（安全に）
+-  BRANCH_NAME="sync/$REPO_NAME-$DATE"
+-  
+-  # ローカルブランチがあれば削除
+-  git branch -D "$BRANCH_NAME" 2>/dev/null || true
+-  
+-  # リモートブランチがあれば削除
+-  git push origin --delete "$BRANCH_NAME" 2>/dev/null || true
+-  
+-  echo "🔀 Creating pull request flow with branch: $BRANCH_NAME"
+```
+
+---
+
+## ⏰ 20:59:35 - `8ff3601`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:59:35 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:59:35 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 41 +++++++++++++++------------------
+ 1 file changed, 18 insertions(+), 23 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index bf22ace..4627d61 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,58 +1,53 @@
+-name: Sync to Daily Report Hub v2.3
++name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版)
+ on:
+   push:
+     branches: [main, master]
+   pull_request:
+     types: [opened, synchronize, closed]
+ 
+-# 週の開始日を制御する設定
+ env:
+-  WEEK_START_DAY: 1 # 週の開始日 (0=日曜日, 1=月曜日, 2=火曜日, 3=水曜日, 4=木曜日, 5=金曜日, 6=土曜日)
+-  AUTO_APPROVE: true # プルリクエストの自動承認 (true/false) - 自分のPRは承認不可
+-  AUTO_MERGE: true # プルリクエストの自動マージ (true/false) - 承認なしではマージ不可
+-  CREATE_PR: true # 完全自動化のため直接プッシュ
++  WEEK_START_DAY: 1
++  AUTO_APPROVE: true
++  AUTO_MERGE: true  
++  CREATE_PR: true
+ 
+ jobs:
+   sync-data:
+     runs-on: ubuntu-latest
+     steps:
+-      - name: Checkout current repo
++      - name: 📥 現在のリポジトリをチェックアウト
+         uses: actions/checkout@v4
+         with:
+-          fetch-depth: 0 # 全履歴を取得してその日の全コミットを追跡
++          fetch-depth: 0
+ 
+-      - name: Make scripts executable
++      - name: 🔧 スクリプトを実行可能にする
+         run: chmod +x .github/scripts/*.sh
+ 
+-      - name: Calculate week information
++      - name: 📅 週情報を計算
+         run: ./.github/scripts/calculate-week-info.sh ${{ env.WEEK_START_DAY }}
+ 
+-      - name: Analyze Git activity
++      - name: 🔍 Git活動を分析
+         run: ./.github/scripts/analyze-git-activity.sh
+ 
+-      - name: Generate Markdown reports
++      - name: 📝 Markdownレポートを生成
+         run: ./.github/scripts/generate-markdown-reports.sh
+ 
+-      - name: Clone report hub and create structure
++      - name: 📂 レポートハブをクローン
+         env:
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+         run: |
+-          # Git設定
+           git config --global user.name "GitHub Actions Bot"
+           git config --global user.email "actions@github.com"
+-
+-          # daily-report-hubをクローン
+           git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
+ 
+-      - name: Create Docusaurus structure
++      - name: 🏗️ Docusaurus構造を作成
+         run: ./.github/scripts/create-docusaurus-structure.sh
+ 
+-      - name: Sync to report hub with PR flow (GitHub CLI)
++      - name: 🚀 YUKIHIKO権限でPR作成＆自動承認
+         env:
+-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
++          GITHUB_TOKEN_ORIGINAL: ${{ secrets.GH_PAT }}      # 承認用
++          YUKIHIKO_TOKEN: ${{ secrets.YUKIHIKO_TOKEN }}     # PR作成用
++          GITHUB_TOKEN: ${{ secrets.GH_PAT }}              # デフォルト
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+-          AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
+-          AUTO_MERGE: ${{ env.AUTO_MERGE }}
+-          CREATE_PR: ${{ env.CREATE_PR }}
+-        run: ./.github/scripts/sync-to-hub-gh.sh
++        run: ./.github/scripts/sync-to-hub-yukihiko.sh
+```
+
+---
+
+## ⏰ 21:00:27 - `1c9e80a`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 21:00:27 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 21:00:27 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 4627d61..5e6aaac 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -50,4 +50,4 @@ jobs:
+           YUKIHIKO_TOKEN: ${{ secrets.YUKIHIKO_TOKEN }}     # PR作成用
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}              # デフォルト
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+-        run: ./.github/scripts/sync-to-hub-yukihiko.sh
++        run: ./.github/scripts/sync-to-hub-gh.sh
+```
+
+---
+

@@ -3156,3 +3156,27 @@ Date:   Mon Aug 11 20:11:37 2025 +0900
 
 ---
 
+## ⏰ 20:14:28 - `329d521`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:14:28 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 20:14:28 2025 +0900
+
+    Update sync-to-report-gh.yml
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

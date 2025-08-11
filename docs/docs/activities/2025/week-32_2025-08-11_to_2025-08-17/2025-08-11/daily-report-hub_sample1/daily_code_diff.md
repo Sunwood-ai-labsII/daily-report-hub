@@ -608,10 +608,10 @@ index 0000000..b5738eb
 \ No newline at end of file
 diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
 new file mode 100644
-index 0000000..142df6d
+index 0000000..e3a82a1
 --- /dev/null
 +++ b/.github/scripts/sync-to-hub-gh.sh
-@@ -0,0 +1,204 @@
+@@ -0,0 +1,210 @@
 +#!/bin/bash
 +
 +# レポートハブに同期するスクリプト（GitHub CLI使用版・強制上書き対応）
@@ -630,6 +630,12 @@ index 0000000..142df6d
 +CREATE_PR=${CREATE_PR:-true}
 +AUTO_APPROVE=${AUTO_APPROVE:-false}
 +AUTO_MERGE=${AUTO_MERGE:-false}
++
++# デバッグ用：環境変数を表示
++echo "🔍 Environment Variables:"
++echo "  CREATE_PR: $CREATE_PR"
++echo "  AUTO_APPROVE: $AUTO_APPROVE"
++echo "  AUTO_MERGE: $AUTO_MERGE"
 +
 +# daily-report-hubは既にクローン済み
 +

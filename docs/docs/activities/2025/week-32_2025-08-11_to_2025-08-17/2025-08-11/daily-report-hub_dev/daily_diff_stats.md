@@ -6,12 +6,12 @@
  .github/scripts/analyze-git-activity.sh        |  59 +++++++
  .github/scripts/calculate-week-info.sh         |  44 ++++++
  .github/scripts/create-docusaurus-structure.sh | 111 +++++++++++++
- .github/scripts/generate-markdown-reports.sh   | 191 +++++++++++++++++++++++
+ .github/scripts/generate-markdown-reports.sh   | 201 ++++++++++++++++++++++++
  .github/scripts/sync-to-hub-gh.sh              | 182 ++++++++++++++++++++++
  .github/scripts/sync-to-hub.sh                 | 184 ++++++++++++++++++++++
  .github/workflows/sync-to-report-gh.yml        |  53 +++++++
  .gitignore                                     | 208 +++++++++++++++++++++++++
  LICENSE                                        |  21 +++
  README.md                                      | 113 ++++++++++++++
- 12 files changed, 1361 insertions(+)
+ 12 files changed, 1371 insertions(+)
 ```

@@ -108,7 +108,7 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
 
 :::caution キャット ギャル
 
-In development, you can only use one locale at a time.
+一言レビュー
 
 :::
 
@@ -216,4 +216,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

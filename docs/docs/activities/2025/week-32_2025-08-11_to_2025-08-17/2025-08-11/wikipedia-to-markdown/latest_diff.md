@@ -1,3 +1,5 @@
 # 🔄 Latest Changes (File List)
 
-- 📝 **No recent diff available:** `No recent diff available`
+- ✏️ **Modified:** `README.md`
+- 🆕 **Added:** `app.py`
+- 🆕 **Added:** `requirements.txt`

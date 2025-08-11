@@ -7,7 +7,7 @@
  .github/scripts/calculate-week-info.sh         |  44 ++++
  .github/scripts/create-docusaurus-structure.sh | 111 +++++++++
  .github/scripts/generate-markdown-reports.sh   | 191 ++++++++++++++++
- .github/scripts/sync-to-hub-gh.sh              | 169 ++++++++++++++
+ .github/scripts/sync-to-hub-gh.sh              | 177 +++++++++++++++
  .github/scripts/sync-to-hub.sh                 | 184 +++++++++++++++
  .github/workflows/sync-to-report-gh.yml        |  58 +++++
  .github/workflows/sync-to-report.yml           | 300 -------------------------
@@ -17,5 +17,5 @@
  index.html                                     |  26 ++-
  script.js                                      |  17 ++
  style.css                                      |  83 ++++++-
- 16 files changed, 1243 insertions(+), 316 deletions(-)
+ 16 files changed, 1251 insertions(+), 316 deletions(-)
 ```

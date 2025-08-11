@@ -16,42 +16,47 @@ new mode 100755
 diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
 old mode 100644
 new mode 100755
+index 79bed22..52888b5
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -88,6 +88,10 @@ if [ "$CREATE_PR" = "true" ]; then
+   # 新しいブランチを作成してチェックアウト
+   git checkout -b "$BRANCH_NAME"
+   
++  # コミット作成者を別の人に設定（PATの所有者）
++  git config user.name "Yukihiko Kondo"
++  git config user.email "yukihiko.kondo@example.com"  # 実際のメールアドレスに変更
++  
+   # コミットしてプッシュ
+   git commit -m "$COMMIT_MESSAGE"
+   git push origin "$BRANCH_NAME"
+@@ -131,11 +135,15 @@ if [ "$CREATE_PR" = "true" ]; then
+   if [ -n "$PR_URL" ]; then
+     echo "✅ Pull request created: $PR_URL"
+     
+-    # 自動承認が有効な場合
++    # 自動承認が有効な場合（自分のPRは承認できないので注意）
+     if [ "$AUTO_APPROVE" = "true" ]; then
+       echo "👍 Auto-approving pull request..."
+-      gh pr review "$PR_URL" --approve --body "✅ Auto-approved by GitHub Actions" --repo "$REPORT_HUB_REPO"
+-      echo "✅ Pull request approved"
++      if gh pr review "$PR_URL" --approve --body "✅ Auto-approved by GitHub Actions" --repo "$REPORT_HUB_REPO" 2>/dev/null; then
++        echo "✅ Pull request approved"
++      else
++        echo "⚠️ Cannot approve own pull request. Manual approval required."
++        AUTO_MERGE="false"  # 承認できない場合は自動マージも無効にする
++      fi
+     fi
+     
+     # 自動マージが有効な場合
+@@ -166,4 +174,4 @@ else
+   git commit -m "$COMMIT_MESSAGE"
+   git push
+   echo "✅ Successfully synced to report hub!"
+-fi
+\ No newline at end of file
++fi
 diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
 old mode 100644
 new mode 100755
-diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
-index 2b339fe..df796aa 100644
---- a/.github/workflows/sync-to-report-gh.yml
-+++ b/.github/workflows/sync-to-report-gh.yml
-@@ -8,9 +8,9 @@ on:
- # 週の開始日を制御する設定
- env:
-   WEEK_START_DAY: 1 # 週の開始日 (0=日曜日, 1=月曜日, 2=火曜日, 3=水曜日, 4=木曜日, 5=金曜日, 6=土曜日)
--  AUTO_APPROVE: true # プルリクエストの自動承認 (true/false)
--  AUTO_MERGE: true # プルリクエストの自動マージ (true/false)
--  CREATE_PR: true # プルリクエストを作成するか直接プッシュするか (true/false)
-+  AUTO_APPROVE: false # プルリクエストの自動承認 (true/false) - 自分のPRは承認不可
-+  AUTO_MERGE: false # プルリクエストの自動マージ (true/false) - 承認なしではマージ不可
-+  CREATE_PR: false # 完全自動化のため直接プッシュ
- 
- jobs:
-   sync-data:
-@@ -35,7 +35,7 @@ jobs:
- 
-       - name: Clone report hub and create structure
-         env:
--          GITHUB_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}
-+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
-         run: |
-           # Git設定
-@@ -50,7 +50,7 @@ jobs:
- 
-       - name: Sync to report hub with PR flow (GitHub CLI)
-         env:
--          GITHUB_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}
-+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
-           AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
-           AUTO_MERGE: ${{ env.AUTO_MERGE }}
 ```

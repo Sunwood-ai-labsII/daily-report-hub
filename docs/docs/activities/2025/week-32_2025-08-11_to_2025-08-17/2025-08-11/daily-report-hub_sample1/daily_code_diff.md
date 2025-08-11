@@ -608,10 +608,10 @@ index 0000000..b5738eb
 \ No newline at end of file
 diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
 new file mode 100644
-index 0000000..79bed22
+index 0000000..52888b5
 --- /dev/null
 +++ b/.github/scripts/sync-to-hub-gh.sh
-@@ -0,0 +1,169 @@
+@@ -0,0 +1,177 @@
 +#!/bin/bash
 +
 +# レポートハブに同期するスクリプト（GitHub CLI使用版）
@@ -702,6 +702,10 @@ index 0000000..79bed22
 +  # 新しいブランチを作成してチェックアウト
 +  git checkout -b "$BRANCH_NAME"
 +  
++  # コミット作成者を別の人に設定（PATの所有者）
++  git config user.name "Yukihiko Kondo"
++  git config user.email "yukihiko.kondo@example.com"  # 実際のメールアドレスに変更
++  
 +  # コミットしてプッシュ
 +  git commit -m "$COMMIT_MESSAGE"
 +  git push origin "$BRANCH_NAME"
@@ -745,11 +749,15 @@ index 0000000..79bed22
 +  if [ -n "$PR_URL" ]; then
 +    echo "✅ Pull request created: $PR_URL"
 +    
-+    # 自動承認が有効な場合
++    # 自動承認が有効な場合（自分のPRは承認できないので注意）
 +    if [ "$AUTO_APPROVE" = "true" ]; then
 +      echo "👍 Auto-approving pull request..."
-+      gh pr review "$PR_URL" --approve --body "✅ Auto-approved by GitHub Actions" --repo "$REPORT_HUB_REPO"
-+      echo "✅ Pull request approved"
++      if gh pr review "$PR_URL" --approve --body "✅ Auto-approved by GitHub Actions" --repo "$REPORT_HUB_REPO" 2>/dev/null; then
++        echo "✅ Pull request approved"
++      else
++        echo "⚠️ Cannot approve own pull request. Manual approval required."
++        AUTO_MERGE="false"  # 承認できない場合は自動マージも無効にする
++      fi
 +    fi
 +    
 +    # 自動マージが有効な場合
@@ -781,7 +789,6 @@ index 0000000..79bed22
 +  git push
 +  echo "✅ Successfully synced to report hub!"
 +fi
-\ No newline at end of file
 diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
 new file mode 100644
 index 0000000..0a7d604

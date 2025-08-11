@@ -6,12 +6,17 @@
   "week_start_date": "2025-08-11",
   "week_end_date": "2025-08-17",
   "branch": "main",
-  "latest_commit_sha": "2279136186123deba7a2245d6b751b7352927a84",
-  "sync_timestamp": "2025-08-11T10:46:41Z",
-  "workflow_run": "16877814959",
-  "daily_commit_count": 38,
+  "latest_commit_sha": "001142c823de694ade71a4535b8618c6747ece56",
+  "sync_timestamp": "2025-08-11T10:58:13Z",
+  "workflow_run": "16878058317",
+  "daily_commit_count": 40,
   "daily_files_changed": 16,
   "has_activity": true,
+  "pr_flow": {
+    "create_pr": true,
+    "auto_approve": true,
+    "auto_merge": true
+  },
   "files": {
     "readme": "README.md",
     "summary": "daily_summary.md",

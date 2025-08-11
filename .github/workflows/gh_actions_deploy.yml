@@ -22,10 +22,29 @@ jobs:
       - name: Install dependencies
         run: cd docs && npm ci
 
-      # ▼▼▼【修正】ビルド前に<br>タグをコマンドで直接置換▼▼▼
-      - name: Fix br tags in Markdown files
-        run: find ./docs -type f -name "*.md" -exec sed -i 's|<br(?! \/)>|<br />|g' {} +
-      # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+      # ▼▼▼▼▼【修正】ここからデバッグと置換処理▼▼▼▼▼
+      - name: 1. Check current directory and file existence
+        run: |
+          pwd
+          ls -R ./docs
+
+      - name: 2. Show <br> tags BEFORE replacement
+        # grep will exit with 1 if no lines are found, so we add `|| true` to prevent the job from failing here.
+        run: |
+          echo "--- Searching for <br> in all .md files before replacement ---"
+          grep -r --color=auto "<br>" ./docs || true
+
+      - name: 3. Replace <br> with <br />
+        # Use a simpler, more compatible sed command. Using # as a delimiter avoids issues with /.
+        run: |
+          find ./docs -type f -name "*.md" -exec sed -i 's#<br>#<br />#g' {} +
+          echo "Replacement command executed."
+
+      - name: 4. Show <br> tags AFTER replacement
+        run: |
+          echo "--- Searching for <br> in all .md files after replacement ---"
+          grep -r --color=auto "<br>" ./docs || true
+      # ▲▲▲▲▲【修正】ここまでデバッグと置換処理▲▲▲▲▲
 
       - name: Test build website
         run: cd docs && npm run build
@@ -55,10 +74,27 @@ jobs:
       - name: Install dependencies
         run: cd docs && npm ci
 
-      # ▼▼▼【修正】ビルド前に<br>タグをコマンドで直接置換▼▼▼
-      - name: Fix br tags in Markdown files
-        run: find ./docs -type f -name "*.md" -exec sed -i 's|<br(?! \/)>|<br />|g' {} +
-      # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+      # ▼▼▼▼▼【修正】ここからデバッグと置換処理▼▼▼▼▼
+      - name: 1. Check current directory and file existence
+        run: |
+          pwd
+          ls -R ./docs
+          
+      - name: 2. Show <br> tags BEFORE replacement
+        run: |
+          echo "--- Searching for <br> in all .md files before replacement ---"
+          grep -r --color=auto "<br>" ./docs || true
+
+      - name: 3. Replace <br> with <br />
+        run: |
+          find ./docs -type f -name "*.md" -exec sed -i 's#<br>#<br />#g' {} +
+          echo "Replacement command executed."
+
+      - name: 4. Show <br> tags AFTER replacement
+        run: |
+          echo "--- Searching for <br> in all .md files after replacement ---"
+          grep -r --color=auto "<br>" ./docs || true
+      # ▲▲▲▲▲【修正】ここまでデバッグと置換処理▲▲▲▲▲
 
       - name: Build website
         run: cd docs && npm run build

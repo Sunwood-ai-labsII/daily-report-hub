@@ -1,69 +1,39 @@
 # 🔄 Latest Code Changes
 
 ```diff
-diff --git a/.github/scripts/analyze-git-activity.sh b/.github/scripts/analyze-git-activity.sh
-old mode 100644
-new mode 100755
-diff --git a/.github/scripts/calculate-week-info.sh b/.github/scripts/calculate-week-info.sh
-old mode 100644
-new mode 100755
-diff --git a/.github/scripts/create-docusaurus-structure.sh b/.github/scripts/create-docusaurus-structure.sh
-old mode 100644
-new mode 100755
-diff --git a/.github/scripts/generate-markdown-reports.sh b/.github/scripts/generate-markdown-reports.sh
-old mode 100644
-new mode 100755
-diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
-old mode 100644
-new mode 100755
-index 9f41d75..9ba5232
---- a/.github/scripts/sync-to-hub-gh.sh
-+++ b/.github/scripts/sync-to-hub-gh.sh
-@@ -137,25 +137,25 @@ if [ -n "$PR_URL" ]; then
-   
-   PR_NUMBER=$(gh pr view "$PR_URL" --repo "$REPORT_HUB_REPO" --json number --jq '.number')
-   
--  # CI完了待機
--  echo "⏳ CI完了を待機中..."
--  max_wait=300
--  wait_time=0
--  while [ $wait_time -lt $max_wait ]; do
--    CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
-+  # # CI完了待機
-+  # echo "⏳ CI完了を待機中..."
-+  # max_wait=300
-+  # wait_time=0
-+  # while [ $wait_time -lt $max_wait ]; do
-+  #   CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
-     
--    if [ "$CHECK_STATUS" = "SUCCESS" ]; then
--      echo "✅ CI完了！"
--      break
--    elif [ "$CHECK_STATUS" = "FAILURE" ]; then
--      echo "❌ CI失敗"
--      exit 1
--    else
--      echo "⏳ CI実行中... (${wait_time}秒)"
--      sleep 10
--      wait_time=$((wait_time + 10))
--    fi
--  done
-+  #   if [ "$CHECK_STATUS" = "SUCCESS" ]; then
-+  #     echo "✅ CI完了！"
-+  #     break
-+  #   elif [ "$CHECK_STATUS" = "FAILURE" ]; then
-+  #     echo "❌ CI失敗"
-+  #     exit 1
-+  #   else
-+  #     echo "⏳ CI実行中... (${wait_time}秒)"
-+  #     sleep 10
-+  #     wait_time=$((wait_time + 10))
-+  #   fi
-+  # done
-   
-   # 🔥 ここがポイント：元のトークンで承認
-   echo "👍 元のアカウントで承認実行中..."
-diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
-old mode 100644
-new mode 100755
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index fa2809c..6dc1edd 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,4 +1,4 @@
+-name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 直接実行)
++name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 完全リモート実行)
+ on:
+   push:
+     branches: [main, master]
+@@ -11,8 +11,6 @@ env:
+   AUTO_MERGE: true  
+   CREATE_PR: true
+   # リモートスクリプトの設定
+-  REMOTE_SCRIPTS_REPO: Sunwood-ai-labsII/daily-report-hub_dev
+-  REMOTE_SCRIPTS_BRANCH: main
+   SCRIPTS_BASE_URL: https://raw.githubusercontent.com/Sunwood-ai-labsII/daily-report-hub_dev/main/.github/scripts
+ 
+ jobs:
+@@ -33,15 +31,6 @@ jobs:
+       - name: 📝 Markdownレポートを生成
+         run: curl -LsSf ${SCRIPTS_BASE_URL}/generate-markdown-reports.sh | sh
+ 
+-      - name: 📅 週情報を計算
+-        run: ./.github/scripts/calculate-week-info.sh ${{ env.WEEK_START_DAY }}
+-
+-      - name: 🔍 Git活動を分析
+-        run: ./.github/scripts/analyze-git-activity.sh
+-
+-      - name: 📝 Markdownレポートを生成
+-        run: ./.github/scripts/generate-markdown-reports.sh
+-
+       - name: 📂 レポートハブをクローン
+         env:
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
 ```

@@ -975,7 +975,7 @@ index 0000000..0a7d604
 \ No newline at end of file
 diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
 new file mode 100644
-index 0000000..16e1235
+index 0000000..df796aa
 --- /dev/null
 +++ b/.github/workflows/sync-to-report-gh.yml
 @@ -0,0 +1,58 @@
@@ -989,9 +989,9 @@ index 0000000..16e1235
 +# 週の開始日を制御する設定
 +env:
 +  WEEK_START_DAY: 1 # 週の開始日 (0=日曜日, 1=月曜日, 2=火曜日, 3=水曜日, 4=木曜日, 5=金曜日, 6=土曜日)
-+  AUTO_APPROVE: true # プルリクエストの自動承認 (true/false)
-+  AUTO_MERGE: true # プルリクエストの自動マージ (true/false)
-+  CREATE_PR: true # プルリクエストを作成するか直接プッシュするか (true/false)
++  AUTO_APPROVE: false # プルリクエストの自動承認 (true/false) - 自分のPRは承認不可
++  AUTO_MERGE: false # プルリクエストの自動マージ (true/false) - 承認なしではマージ不可
++  CREATE_PR: false # 完全自動化のため直接プッシュ
 +
 +jobs:
 +  sync-data:
@@ -1017,7 +1017,7 @@ index 0000000..16e1235
 +      - name: Clone report hub and create structure
 +        env:
 +          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-+          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
++          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
 +        run: |
 +          # Git設定
 +          git config --global user.name "GitHub Actions Bot"
@@ -1029,14 +1029,14 @@ index 0000000..16e1235
 +      - name: Create Docusaurus structure
 +        run: ./.github/scripts/create-docusaurus-structure.sh
 +
-+      - name: Sync to report hub with PR flow
++      - name: Sync to report hub with PR flow (GitHub CLI)
 +        env:
 +          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
-+          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
++          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
 +          AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
 +          AUTO_MERGE: ${{ env.AUTO_MERGE }}
 +          CREATE_PR: ${{ env.CREATE_PR }}
-+        run: ./.github/scripts/sync-to-hub.sh
++        run: ./.github/scripts/sync-to-hub-gh.sh
 diff --git a/.github/workflows/sync-to-report.yml b/.github/workflows/sync-to-report.yml
 deleted file mode 100644
 index 05e88cd..0000000

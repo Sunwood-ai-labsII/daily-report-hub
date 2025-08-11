@@ -2585,3 +2585,182 @@ index 0b98b5a..1589d29 100644
 
 ---
 
+## ⏰ 19:46:32 - `2279136`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 19:46:32 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 19:46:32 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 14 +++-----------
+ 1 file changed, 3 insertions(+), 11 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 1589d29..16e1235 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -1,4 +1,4 @@
+-name: Sync to Daily Report Hub v2.0 (GitHub CLI)
++name: Sync to Daily Report Hub v2.0
+ on:
+   push:
+     branches: [main, master]
+@@ -21,11 +21,6 @@ jobs:
+         with:
+           fetch-depth: 0 # 全履歴を取得してその日の全コミットを追跡
+ 
+-      - name: Setup GitHub CLI
+-        run: |
+-          # GitHub CLIは既にubuntu-latestにインストール済み
+-          gh --version
+-
+       - name: Make scripts executable
+         run: chmod +x .github/scripts/*.sh
+ 
+@@ -47,20 +42,17 @@ jobs:
+           git config --global user.name "GitHub Actions Bot"
+           git config --global user.email "actions@github.com"
+ 
+-          # GitHub CLI認証
+-          echo "$GITHUB_TOKEN" | gh auth login --with-token
+-
+           # daily-report-hubをクローン
+           git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
+ 
+       - name: Create Docusaurus structure
+         run: ./.github/scripts/create-docusaurus-structure.sh
+ 
+-      - name: Sync to report hub with PR flow (GitHub CLI)
++      - name: Sync to report hub with PR flow
+         env:
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
+           AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
+           AUTO_MERGE: ${{ env.AUTO_MERGE }}
+           CREATE_PR: ${{ env.CREATE_PR }}
+-        run: ./.github/scripts/sync-to-hub-gh.sh
++        run: ./.github/scripts/sync-to-hub.sh
+```
+
+---
+
+## ⏰ 19:50:39 - `876a08e`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 19:50:39 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 19:50:39 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 16e1235..32fdc85 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -36,7 +36,7 @@ jobs:
+       - name: Clone report hub and create structure
+         env:
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+-          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
++          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+         run: |
+           # Git設定
+           git config --global user.name "GitHub Actions Bot"
+@@ -48,11 +48,11 @@ jobs:
+       - name: Create Docusaurus structure
+         run: ./.github/scripts/create-docusaurus-structure.sh
+ 
+-      - name: Sync to report hub with PR flow
++      - name: Sync to report hub with PR flow (GitHub CLI)
+         env:
+           GITHUB_TOKEN: ${{ secrets.GH_PAT }}
+-          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
++          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+           AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
+           AUTO_MERGE: ${{ env.AUTO_MERGE }}
+           CREATE_PR: ${{ env.CREATE_PR }}
+-        run: ./.github/scripts/sync-to-hub.sh
++        run: ./.github/scripts/sync-to-hub-gh.sh
+```
+
+---
+
+## ⏰ 19:58:03 - `001142c`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 19:58:03 2025 +0900
+M	.github/workflows/sync-to-report-gh.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Aug 11 19:58:03 2025 +0900
+
+    Update sync-to-report-gh.yml
+
+ .github/workflows/sync-to-report-gh.yml | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-report-gh.yml b/.github/workflows/sync-to-report-gh.yml
+index 32fdc85..2b339fe 100644
+--- a/.github/workflows/sync-to-report-gh.yml
++++ b/.github/workflows/sync-to-report-gh.yml
+@@ -35,7 +35,7 @@ jobs:
+ 
+       - name: Clone report hub and create structure
+         env:
+-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
++          GITHUB_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+         run: |
+           # Git設定
+@@ -50,7 +50,7 @@ jobs:
+ 
+       - name: Sync to report hub with PR flow (GitHub CLI)
+         env:
+-          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
++          GITHUB_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}
+           REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
+           AUTO_APPROVE: ${{ env.AUTO_APPROVE }}
+           AUTO_MERGE: ${{ env.AUTO_MERGE }}
+```
+
+---
+

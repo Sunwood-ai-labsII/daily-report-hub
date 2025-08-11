@@ -1,4 +1,9 @@
-# 📊 Daily Report Hub
+
+![](https://github.com/user-attachments/assets/78d1e905-da04-4b2e-aba5-fa797218fb4f)
+
+# 📊 Daily Report Hub P.A.N.D.A
+
+## Performance Analytics & Navigation for Development Activities
 
 > **自動日報生成・集約システム**  
 > GitHub Actionsを活用したCI/CDベースの開発活動レポートハブ

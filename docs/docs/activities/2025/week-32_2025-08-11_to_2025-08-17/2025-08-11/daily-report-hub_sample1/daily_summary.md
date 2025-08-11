@@ -5,11 +5,11 @@
 |------|-------|
 | Repository | `Sunwood-ai-labsII/daily-report-hub_sample1` |
 | Date | 2025-08-11 |
-| Total Commits | **22** |
-| Files Changed | **14** |
+| Total Commits | **54** |
+| Files Changed | **16** |
 | First Activity | 13:39:53 |
-| Last Activity | 16:16:11 |
-| Sync Time | 07:16:23 |
+| Last Activity | 21:06:29 |
+| Sync Time | 12:06:39 |
 
 ## 📝 Commit Details
 
@@ -101,23 +101,155 @@
 **🔀 Merge: Markdownフォーマット改善とHTMLタグ標準化**
 *by Maki*
 
+### ⏰ 16:16:11 - `ffa346d`
+**Merge branch 'develop'**
+*by Maki*
+
+### ⏰ 16:28:35 - `1227831`
+**✨ Markdownレポート生成スクリプトの表示形式を改善**
+*by Maki*
+
+### ⏰ 16:28:44 - `738ad97`
+**🔧 ハブ同期スクリプトのメタデータ構造を拡張**
+*by Maki*
+
+### ⏰ 16:29:01 - `3dcfde5`
+**🔀 Merge: Markdownレポート表示形式とメタデータ構造の改善**
+*by Maki*
+
+### ⏰ 16:29:45 - `18c42d6`
+**Merge branch 'develop'**
+*by Maki*
+
+### ⏰ 19:24:55 - `89480ff`
+**📝 README.mdにプルリクエストフロー設定の説明を追加**
+*by Maki*
+
+### ⏰ 19:25:07 - `af7f781`
+**🔧 sync-to-hub.shにプルリクエストフローと自動マージ機能を実装**
+*by Maki*
+
+### ⏰ 19:25:26 - `608a103`
+**🔄 ワークフローをv2.0に更新し、PRフロー設定を追加**
+*by Maki*
+
+### ⏰ 19:25:49 - `a7398c1`
+**➕ GitHub CLI版スクリプトとワークフローを追加**
+*by Maki*
+
+### ⏰ 19:26:58 - `0269cc7`
+**🔀 Merge: PRフロー強化**
+*by Maki*
+
+### ⏰ 19:28:35 - `cb49c38`
+**Merge branch 'develop'**
+*by Maki*
+
+### ⏰ 19:33:28 - `a0d8665`
+**Update sync-to-report.yml**
+*by Maki*
+
+### ⏰ 19:40:16 - `0d5056f`
+**Delete .github/workflows/sync-to-report.yml**
+*by Maki*
+
+### ⏰ 19:42:21 - `53fba19`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 19:45:16 - `0414ce1`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 19:45:50 - `6ca463c`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 19:46:32 - `2279136`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 19:50:39 - `876a08e`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 19:58:03 - `001142c`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 20:02:24 - `12c7d00`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 20:02:41 - `8787dce`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### ⏰ 20:06:07 - `dfa5666`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### ⏰ 20:09:49 - `68ad213`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### ⏰ 20:11:37 - `a010d2d`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 20:14:28 - `329d521`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 20:14:43 - `4e4b677`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### ⏰ 20:18:52 - `837b68f`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 20:50:33 - `57bcc4a`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 20:59:26 - `2f8edfb`
+**Update sync-to-hub-gh.sh**
+*by Maki*
+
+### ⏰ 20:59:35 - `8ff3601`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 21:00:27 - `1c9e80a`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
+### ⏰ 21:01:34 - `687106a`
+**Update sync-to-report-gh.yml**
+*by Maki*
+
 ## 📈 File Changes Statistics
 
-     .env.example                                   |  15 ++
-     .github/scripts/README.md                      | 100 ++++++++
-     .github/scripts/analyze-git-activity.sh        |  59 +++++
-     .github/scripts/calculate-week-info.sh         |  44 ++++
-     .github/scripts/create-docusaurus-structure.sh | 111 +++++++++
-     .github/scripts/generate-markdown-reports.sh   | 187 +++++++++++++++
-     .github/scripts/sync-to-hub.sh                 |  70 ++++++
-     .github/workflows/sync-to-report.yml           | 314 +++----------------------
-     CHANGELOG.md                                   |  32 +++
-     CONTRIBUTING.md                                |  51 ++++
-     README.md                                      |  78 +++++-
-     index.html                                     |  26 +-
-     script.js                                      |  17 ++
-     style.css                                      |  83 ++++++-
-     14 files changed, 890 insertions(+), 297 deletions(-)
+```diff
+ .env.example                                   |  15 ++
+ .github/scripts/README.md                      | 141 ++++++++++++
+ .github/scripts/analyze-git-activity.sh        |  59 +++++
+ .github/scripts/calculate-week-info.sh         |  44 ++++
+ .github/scripts/create-docusaurus-structure.sh | 111 +++++++++
+ .github/scripts/generate-markdown-reports.sh   | 191 ++++++++++++++++
+ .github/scripts/sync-to-hub-gh.sh              | 182 +++++++++++++++
+ .github/scripts/sync-to-hub.sh                 | 184 +++++++++++++++
+ .github/workflows/sync-to-report-gh.yml        |  53 +++++
+ .github/workflows/sync-to-report.yml           | 300 -------------------------
+ CHANGELOG.md                                   |  32 +++
+ CONTRIBUTING.md                                |  51 +++++
+ README.md                                      |  78 ++++++-
+ index.html                                     |  26 ++-
+ script.js                                      |  17 ++
+ style.css                                      |  83 ++++++-
+ 16 files changed, 1251 insertions(+), 316 deletions(-)
+```
 
 ## 📋 Changed Files List
 
@@ -127,8 +259,10 @@
 - 🆕 **Added:** `.github/scripts/calculate-week-info.sh`
 - 🆕 **Added:** `.github/scripts/create-docusaurus-structure.sh`
 - 🆕 **Added:** `.github/scripts/generate-markdown-reports.sh`
+- 🆕 **Added:** `.github/scripts/sync-to-hub-gh.sh`
 - 🆕 **Added:** `.github/scripts/sync-to-hub.sh`
-- ✏️ **Modified:** `.github/workflows/sync-to-report.yml`
+- 🆕 **Added:** `.github/workflows/sync-to-report-gh.yml`
+- 🗑️ **Deleted:** `.github/workflows/sync-to-report.yml`
 - 🆕 **Added:** `CHANGELOG.md`
 - 🆕 **Added:** `CONTRIBUTING.md`
 - ✏️ **Modified:** `README.md`
@@ -137,4 +271,4 @@
 - ✏️ **Modified:** `style.css`
 
 ---
-*Generated by GitHub Actions at 2025-08-11 07:16:23*
+*Generated by GitHub Actions at 2025-08-11 12:06:39*

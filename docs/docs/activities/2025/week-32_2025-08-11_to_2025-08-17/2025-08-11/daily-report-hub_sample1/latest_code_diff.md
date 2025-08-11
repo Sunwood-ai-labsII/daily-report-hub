@@ -13,49 +13,57 @@ new mode 100755
 diff --git a/.github/scripts/generate-markdown-reports.sh b/.github/scripts/generate-markdown-reports.sh
 old mode 100644
 new mode 100755
-index 693725b..7d2251f
---- a/.github/scripts/generate-markdown-reports.sh
-+++ b/.github/scripts/generate-markdown-reports.sh
-@@ -89,7 +89,9 @@ get_status_icon() {
-   echo ""
-   echo "## Full Diff"
-   echo ""
--  add_indent daily_code_diff_raw.txt
-+  echo "\`\`\`diff"
-+  cat daily_code_diff_raw.txt
-+  echo "\`\`\`"
- } > daily_code_diff.md
- 
- # 最新差分をMarkdown形式で作成
-@@ -113,7 +115,9 @@ get_status_icon() {
- {
-   echo "# 🔄 Latest Code Changes"
-   echo ""
--  add_indent latest_code_diff_raw.txt
-+  echo "\`\`\`diff"
-+  cat latest_code_diff_raw.txt
-+  echo "\`\`\`"
- } > latest_code_diff.md
- 
- # 詳細なアクティビティサマリーをMarkdown形式で作成
+diff --git a/.github/scripts/sync-to-hub-gh.sh b/.github/scripts/sync-to-hub-gh.sh
+old mode 100644
+new mode 100755
+index 9f41d75..9ba5232
+--- a/.github/scripts/sync-to-hub-gh.sh
++++ b/.github/scripts/sync-to-hub-gh.sh
+@@ -137,25 +137,25 @@ if [ -n "$PR_URL" ]; then
+   
+   PR_NUMBER=$(gh pr view "$PR_URL" --repo "$REPORT_HUB_REPO" --json number --jq '.number')
+   
+-  # CI完了待機
+-  echo "⏳ CI完了を待機中..."
+-  max_wait=300
+-  wait_time=0
+-  while [ $wait_time -lt $max_wait ]; do
+-    CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
++  # # CI完了待機
++  # echo "⏳ CI完了を待機中..."
++  # max_wait=300
++  # wait_time=0
++  # while [ $wait_time -lt $max_wait ]; do
++  #   CHECK_STATUS=$(gh pr view "$PR_NUMBER" --repo "$REPORT_HUB_REPO" --json statusCheckRollup --jq '.statusCheckRollup[-1].state' 2>/dev/null || echo "PENDING")
+     
+-    if [ "$CHECK_STATUS" = "SUCCESS" ]; then
+-      echo "✅ CI完了！"
+-      break
+-    elif [ "$CHECK_STATUS" = "FAILURE" ]; then
+-      echo "❌ CI失敗"
+-      exit 1
+-    else
+-      echo "⏳ CI実行中... (${wait_time}秒)"
+-      sleep 10
+-      wait_time=$((wait_time + 10))
+-    fi
+-  done
++  #   if [ "$CHECK_STATUS" = "SUCCESS" ]; then
++  #     echo "✅ CI完了！"
++  #     break
++  #   elif [ "$CHECK_STATUS" = "FAILURE" ]; then
++  #     echo "❌ CI失敗"
++  #     exit 1
++  #   else
++  #     echo "⏳ CI実行中... (${wait_time}秒)"
++  #     sleep 10
++  #     wait_time=$((wait_time + 10))
++  #   fi
++  # done
+   
+   # 🔥 ここがポイント：元のトークンで承認
+   echo "👍 元のアカウントで承認実行中..."
 diff --git a/.github/scripts/sync-to-hub.sh b/.github/scripts/sync-to-hub.sh
 old mode 100644
 new mode 100755
-diff --git a/README.md b/README.md
-index 28c2ccc..e5baa3d 100644
---- a/README.md
-+++ b/README.md
-@@ -5,9 +5,9 @@
- # daily-report-hub_sample1
- 
- <p>
--  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
--  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
--  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
-+  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
-+  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
-+  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
- </p>
- 
- </div>
 ```

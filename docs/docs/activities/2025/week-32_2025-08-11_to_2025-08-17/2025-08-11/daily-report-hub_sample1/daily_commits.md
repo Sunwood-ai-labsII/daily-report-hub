@@ -1350,3 +1350,175 @@ Date:   Mon Aug 11 15:21:05 2025 +0900
 
 ---
 
+## ⏰ 15:28:58 - `f26c465`
+**Merge branch 'develop'**
+*by Maki*
+
+### 📋 Changed Files
+```
+Merge: 1b906db b3fd498
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 15:28:58 2025 +0900
+```
+
+### 📊 Statistics
+```
+Merge: 1b906db b3fd498
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 15:28:58 2025 +0900
+
+    Merge branch 'develop'
+
+ .github/scripts/README.md                      | 100 ++++++++
+ .github/scripts/analyze-git-activity.sh        |  59 +++++
+ .github/scripts/calculate-week-info.sh         |  44 ++++
+ .github/scripts/create-docusaurus-structure.sh | 111 +++++++++
+ .github/scripts/generate-markdown-reports.sh   | 183 ++++++++++++++
+ .github/scripts/sync-to-hub.sh                 |  70 ++++++
+ .github/workflows/sync-to-report.yml           | 318 ++-----------------------
+ 7 files changed, 590 insertions(+), 295 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 16:14:14 - `0e31de9`
+**🔧 Markdownレポート生成スクリプトのdiff出力形式を改善**
+*by Maki*
+
+### 📋 Changed Files
+```
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:14:14 2025 +0900
+M	.github/scripts/generate-markdown-reports.sh
+```
+
+### 📊 Statistics
+```
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:14:14 2025 +0900
+
+    🔧 Markdownレポート生成スクリプトのdiff出力形式を改善
+    
+    - daily_code_diff.mdとlatest_code_diff.mdでdiff出力を適切なコードブロックで囲むように修正
+    - add_indent関数の代わりに`diffブロックを使用してシンタックスハイライトを有効化
+    - 生成されるMarkdownファイルの可読性を向上
+
+ .github/scripts/generate-markdown-reports.sh | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/scripts/generate-markdown-reports.sh b/.github/scripts/generate-markdown-reports.sh
+index 693725b..7d2251f 100644
+--- a/.github/scripts/generate-markdown-reports.sh
++++ b/.github/scripts/generate-markdown-reports.sh
+@@ -89,7 +89,9 @@ get_status_icon() {
+   echo ""
+   echo "## Full Diff"
+   echo ""
+-  add_indent daily_code_diff_raw.txt
++  echo "\`\`\`diff"
++  cat daily_code_diff_raw.txt
++  echo "\`\`\`"
+ } > daily_code_diff.md
+ 
+ # 最新差分をMarkdown形式で作成
+@@ -113,7 +115,9 @@ get_status_icon() {
+ {
+   echo "# 🔄 Latest Code Changes"
+   echo ""
+-  add_indent latest_code_diff_raw.txt
++  echo "\`\`\`diff"
++  cat latest_code_diff_raw.txt
++  echo "\`\`\`"
+ } > latest_code_diff.md
+ 
+ # 詳細なアクティビティサマリーをMarkdown形式で作成
+```
+
+---
+
+## ⏰ 16:15:28 - `c14853c`
+**✨ README.mdのHTMLタグ形式を標準化**
+*by Maki*
+
+### 📋 Changed Files
+```
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:15:28 2025 +0900
+M	README.md
+```
+
+### 📊 Statistics
+```
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:15:28 2025 +0900
+
+    ✨ README.mdのHTMLタグ形式を標準化
+    
+    - HTML5バッジのimgタグを自己終了タグ形式（/>）に統一
+    - HTML5、CSS3、JavaScriptの各バッジタグの一貫性を向上
+    - マークアップの標準準拠を改善
+
+ README.md | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index 28c2ccc..e5baa3d 100644
+--- a/README.md
++++ b/README.md
+@@ -5,9 +5,9 @@
+ # daily-report-hub_sample1
+ 
+ <p>
+-  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5">
+-  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3">
+-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript">
++  <img src="https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white" alt="HTML5" />
++  <img src="https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white" alt="CSS3" />
++  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JavaScript" />
+ </p>
+ 
+ </div>
+```
+
+---
+
+## ⏰ 16:15:44 - `a51dc61`
+**🔀 Merge: Markdownフォーマット改善とHTMLタグ標準化**
+*by Maki*
+
+### 📋 Changed Files
+```
+Merge: b3fd498 c14853c
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:15:44 2025 +0900
+```
+
+### 📊 Statistics
+```
+Merge: b3fd498 c14853c
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Aug 11 16:15:44 2025 +0900
+
+    🔀 Merge: Markdownフォーマット改善とHTMLタグ標準化
+
+ .github/scripts/generate-markdown-reports.sh | 8 ++++++--
+ README.md                                    | 6 +++---
+ 2 files changed, 9 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

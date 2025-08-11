@@ -18,12 +18,12 @@ const config: Config = {
   url: 'https://sunwood-ai-labs.github.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
-  baseUrl: '/docusaurus-gh-pages-starter/',
+  baseUrl: '/daily-report-hub/',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'sunwood-ai-labs', // Usually your GitHub org/user name.
-  projectName: 'docusaurus-gh-pages-starter', // Usually your repo name.
+  projectName: 'daily-report-hub', // Usually your repo name.
   trailingSlash: false,
 
   onBrokenLinks: 'throw',
@@ -46,7 +46,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/sunwood-ai-labs/docusaurus-gh-pages-starter/tree/main/',
+            'https://github.com/sunwood-ai-labs/daily-report-hub/tree/main/',
         },
         blog: {
           showReadingTime: true,
@@ -57,7 +57,7 @@ const config: Config = {
           // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/sunwood-ai-labs/docusaurus-gh-pages-starter/tree/main/',
+            'https://github.com/sunwood-ai-labs/daily-report-hub/tree/main/',
           // Useful options to enforce blogging best practices
           onInlineTags: 'warn',
           onInlineAuthors: 'warn',
@@ -89,7 +89,7 @@ const config: Config = {
         },
         {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/sunwood-ai-labs/docusaurus-gh-pages-starter',
+          href: 'https://github.com/sunwood-ai-labs/daily-report-hub',
           label: 'GitHub',
           position: 'right',
         },
@@ -133,7 +133,7 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/sunwood-ai-labs/docusaurus-gh-pages-starter',
+              href: 'https://github.com/sunwood-ai-labs/daily-report-hub',
             },
           ],
         },

@@ -167,7 +167,10 @@ const config: Config = {
     mermaid: {
       theme: {light: 'neutral', dark: 'forest'},
       options: {
-        maxTextSize: 50,
+        maxTextSize: 90000, // テキストサイズ制限を大幅に増加
+        maxEdges: 2000,     // エッジ数制限も増加（必要に応じて）
+        maxWidth: 1000,     // 図の最大幅を設定
+        maxHeight: 1000,    // 図の最大高さを設定
       },
     },
   } satisfies Preset.ThemeConfig,

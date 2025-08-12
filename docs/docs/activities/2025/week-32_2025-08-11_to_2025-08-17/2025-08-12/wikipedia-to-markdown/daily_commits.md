@@ -631,3 +631,576 @@ Date:   Tue Aug 12 16:27:51 2025 +0900
 
 ---
 
+## ⏰ 16:30:14 - `fb02556`
+**Update sync-to-hf.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Tue Aug 12 16:30:14 2025 +0900
+M	.github/workflows/sync-to-hf.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Tue Aug 12 16:30:14 2025 +0900
+
+    Update sync-to-hf.yml
+
+ .github/workflows/sync-to-hf.yml | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-hf.yml b/.github/workflows/sync-to-hf.yml
+index a64c4cb..5879e47 100644
+--- a/.github/workflows/sync-to-hf.yml
++++ b/.github/workflows/sync-to-hf.yml
+@@ -21,15 +21,12 @@ jobs:
+         env:
+           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+         run: |
+-          # リポジトリ名を取得
+-          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+-          
+           # Git設定
+           git config --global user.email "action@github.com"
+           git config --global user.name "GitHub Action"
+           
+           # Hugging Face Hubにリモートを追加
+-          git remote add hf https://huggingface.co/spaces/${{ github.repository_owner }}/${REPO_NAME}
++          git remote add hf https://huggingface.co/spaces/MakiAi/wikipedia-to-markdown
+           
+           # 強制プッシュでHugging Faceに同期
+-          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/${{ github.repository_owner }}/${REPO_NAME} HEAD:main
+\ No newline at end of file
++          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/MakiAi/wikipedia-to-markdown HEAD:main
+```
+
+---
+
+## ⏰ 16:39:15 - `0742d0c`
+**📝 Hugging Face Spaces用のメタデータを追加**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:15 2025 +0900
+M	README.md
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:15 2025 +0900
+
+    📝 Hugging Face Spaces用のメタデータを追加
+    
+    - license: MIT
+    - sdk: gradio (v5.42.0)
+    - emoji: 📈
+    - colorFrom/To: green to indigo
+    - thumbnail画像を設定
+
+ README.md | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index 1a1aeff..d9adc40 100644
+--- a/README.md
++++ b/README.md
+@@ -1,3 +1,14 @@
++---
++license: mit
++title: wikipedia to markdown
++sdk: gradio
++emoji: 📈
++colorFrom: green
++colorTo: indigo
++thumbnail: >-
++  https://cdn-uploads.huggingface.co/production/uploads/64e0ef4a4c78e1eba5178d7a/vJQZ24fctExV3dax_BGU-.jpeg
++sdk_version: 5.42.0
++---
+ <div align="center">
+ 
+ # 📚 Wikipedia to Markdown Converter
+@@ -218,4 +229,4 @@ def create_zen_theme():
+ 
+ ---
+ 
+-© 2025 Wikipedia to Markdown Converter
++© 2025 Wikipedia to Markdown Converter
+\ No newline at end of file
+```
+
+---
+
+## ⏰ 16:39:25 - `c5c12c8`
+**🔧 GitHub Actions ワークフローを修正**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:25 2025 +0900
+M	.github/workflows/sync-to-hf.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:25 2025 +0900
+
+    🔧 GitHub Actions ワークフローを修正
+    
+    - 動的なリポジトリ名取得を削除
+    - MakiAi/wikipedia-to-markdownに固定
+    - コードの簡素化とメンテナンス性向上
+
+ .github/workflows/sync-to-hf.yml | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/sync-to-hf.yml b/.github/workflows/sync-to-hf.yml
+index a64c4cb..e0446a3 100644
+--- a/.github/workflows/sync-to-hf.yml
++++ b/.github/workflows/sync-to-hf.yml
+@@ -21,15 +21,12 @@ jobs:
+         env:
+           HF_TOKEN: ${{ secrets.HF_TOKEN }}
+         run: |
+-          # リポジトリ名を取得
+-          REPO_NAME="${GITHUB_REPOSITORY##*/}"
+-          
+           # Git設定
+           git config --global user.email "action@github.com"
+           git config --global user.name "GitHub Action"
+           
+           # Hugging Face Hubにリモートを追加
+-          git remote add hf https://huggingface.co/spaces/${{ github.repository_owner }}/${REPO_NAME}
++          git remote add hf https://huggingface.co/spaces/MakiAi/wikipedia-to-markdown
+           
+           # 強制プッシュでHugging Faceに同期
+-          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/${{ github.repository_owner }}/${REPO_NAME} HEAD:main
+\ No newline at end of file
++          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/MakiAi/wikipedia-to-markdown HEAD:main
+\ No newline at end of file
+```
+
+---
+
+## ⏰ 16:39:35 - `7fc65f6`
+**🔧 アプリケーションポート番号を修正**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:35 2025 +0900
+M	app.py
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:35 2025 +0900
+
+    🔧 アプリケーションポート番号を修正
+    
+    - server_port: 7861 → 7860
+    - Hugging Face Spacesの標準ポートに合わせて変更
+    - デプロイメント環境との整合性を確保
+
+ app.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/app.py b/app.py
+index ebcd4d9..81ea80c 100644
+--- a/app.py
++++ b/app.py
+@@ -240,7 +240,7 @@ if __name__ == "__main__":
+     # アプリケーションを実行
+     demo.launch(
+         server_name="0.0.0.0",
+-        server_port=7861,
++        server_port=7860,
+         share=False,
+         debug=True
+     )
+```
+
+---
+
+## ⏰ 16:39:44 - `e592f99`
+**🐳 Docker設定を最適化**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:44 2025 +0900
+M	docker-compose.dev.yml
+M	docker-compose.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:44 2025 +0900
+
+    🐳 Docker設定を最適化
+    
+    - ポートマッピング: 7861:7861 → 7861:7860
+    - container_nameを削除してDocker Composeの自動命名を使用
+    - 設定の簡素化とポータビリティ向上
+
+ docker-compose.dev.yml | 3 +--
+ docker-compose.yml     | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/docker-compose.dev.yml b/docker-compose.dev.yml
+index 19669ff..6e6047b 100644
+--- a/docker-compose.dev.yml
++++ b/docker-compose.dev.yml
+@@ -5,9 +5,8 @@ services:
+     build:
+       context: .
+       dockerfile: Dockerfile
+-    container_name: wikipedia-to-markdown-dev
+     ports:
+-      - "7861:7861"
++      - "7861:7860"
+     environment:
+       - PYTHONUNBUFFERED=1
+       - GRADIO_SERVER_NAME=0.0.0.0
+diff --git a/docker-compose.yml b/docker-compose.yml
+index 349a04c..212066c 100644
+--- a/docker-compose.yml
++++ b/docker-compose.yml
+@@ -5,9 +5,8 @@ services:
+     build:
+       context: .
+       dockerfile: Dockerfile
+-    container_name: wikipedia-to-markdown
+     ports:
+-      - "7861:7861"
++      - "7861:7860"
+     environment:
+       - PYTHONUNBUFFERED=1
+     # volumes:
+```
+
+---
+
+## ⏰ 16:39:53 - `cc0259d`
+**🎨 テーマのボーダースタイルを改善**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:53 2025 +0900
+M	theme.py
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:39:53 2025 +0900
+
+    🎨 テーマのボーダースタイルを改善
+    
+    - block_border_color: #f5f2ed → #e8e2d5
+    - panel_border_color: #f5f2ed → #e8e2d5
+    - block_border_width: 1pxを明示的に設定
+    - より洗練されたビジュアルデザインに調整
+
+ theme.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/theme.py b/theme.py
+index 64ecd56..168f3d2 100644
+--- a/theme.py
++++ b/theme.py
+@@ -36,8 +36,9 @@ def create_zen_theme():
+         input_border_color="#d4c4a8",
+         input_border_color_focus="#d4a574",
+         block_background_fill="#ffffff",
+-        block_border_color="#f5f2ed",
++        block_border_color="#e8e2d5",
++        block_border_width="1px",
+         panel_background_fill="#ffffff",
+-        panel_border_color="#f5f2ed",
++        panel_border_color="#e8e2d5",
+         slider_color="#d4a574",
+     )
+\ No newline at end of file
+```
+
+---
+
+## ⏰ 16:40:12 - `a45f672`
+**🔀 Merge: Hugging Face Spacesデプロイメント設定の最適化**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Merge: 33a2ff9 cc0259d
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:40:12 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 33a2ff9 cc0259d
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:40:12 2025 +0900
+
+    🔀 Merge: Hugging Face Spacesデプロイメント設定の最適化
+    
+    - Hugging Face Spacesメタデータの追加
+    - GitHub Actionsワークフローの修正
+    - ポート設定の統一化 (7860)
+    - Docker設定の簡素化
+    - テーマデザインの改善
+
+ .github/workflows/sync-to-hf.yml |  7 ++-----
+ README.md                        | 13 ++++++++++++-
+ app.py                           |  2 +-
+ docker-compose.dev.yml           |  3 +--
+ docker-compose.yml               |  3 +--
+ theme.py                         |  5 +++--
+ 6 files changed, 20 insertions(+), 13 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 16:57:20 - `ca43a39`
+**✨ Wikipediaマークダウン変換にファイルダウンロード機能を追加**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:57:20 2025 +0900
+M	app.py
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:57:20 2025 +0900
+
+    ✨ Wikipediaマークダウン変換にファイルダウンロード機能を追加
+    
+    - URLからファイル名を自動生成する機能を実装
+    - 単体処理でのマークダウンファイル直接ダウンロード機能
+    - 一括処理での個別ファイル + 全体まとめファイルダウンロード機能
+    - 一時ファイル作成とファイルパス管理機能を追加
+
+ app.py | 152 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 138 insertions(+), 14 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/app.py b/app.py
+index 81ea80c..47f32ac 100644
+--- a/app.py
++++ b/app.py
+@@ -4,6 +4,9 @@ import html2text
+ import re
+ import gradio as gr
+ from theme import create_zen_theme
++import tempfile
++import os
++from urllib.parse import urlparse, unquote
+ 
+ def scrape_wikipedia_to_markdown_final(url: str) -> str:
+     """
+@@ -71,36 +74,73 @@ def scrape_wikipedia_to_markdown_final(url: str) -> str:
+     except Exception as e:
+         return f"予期せぬエラーが発生しました: {e}"
+ 
++def get_filename_from_url(url):
++    """URLからファイル名を生成する関数"""
++    try:
++        # URLからページ名を抽出
++        parsed_url = urlparse(url)
++        page_name = parsed_url.path.split('/')[-1]
++        # URLデコード
++        page_name = unquote(page_name)
++        # ファイル名として使用できない文字を置換
++        safe_filename = re.sub(r'[<>:"/\\|?*]', '_', page_name)
++        return f"{safe_filename}.md"
++    except:
++        return "wikipedia_page.md"
++
++def create_download_file(content, filename):
++    """ダウンロード用の一時ファイルを作成する関数"""
++    try:
++        # 一時ディレクトリにファイルを作成
++        temp_dir = tempfile.gettempdir()
++        file_path = os.path.join(temp_dir, filename)
++        
++        with open(file_path, 'w', encoding='utf-8') as f:
++            f.write(content)
++        
++        return file_path
++    except Exception as e:
++        print(f"ファイル作成エラー: {e}")
++        return None
++
+ def process_wikipedia_url(url):
+     """Wikipedia URLを処理してMarkdownを生成するGradio用関数"""
+     if not url:
+-        return "URLを入力してください。"
++        return "URLを入力してください。", None
+     
+     # URLが有効かチェック
+     if not url.startswith('http'):
+-        return "有効なURLを入力してください（http://またはhttps://から始まるURL）。"
++        return "有効なURLを入力してください（http://またはhttps://から始まるURL）。", None
+     
+     # Wikipedia URLかチェック
+     if 'wikipedia.org' not in url:
+-        return "WikipediaのURLを入力してください。"
++        return "WikipediaのURLを入力してください。", None
+     
+     # スクレイピングを実行
+     markdown_content = scrape_wikipedia_to_markdown_final(url)
+     
+-    return markdown_content
++    # ダウンロード用ファイルを作成
++    if not markdown_content.startswith("エラー:") and not markdown_content.startswith("HTTP"):
++        filename = get_filename_from_url(url)
++        file_path = create_download_file(markdown_content, filename)
++        return markdown_content, file_path
++    else:
++        return markdown_content, None
+ 
+ def process_multiple_urls(urls_text, progress=gr.Progress()):
+     """複数のWikipedia URLを一括処理してMarkdownを生成する関数"""
+     if not urls_text.strip():
+-        return "URLリストを入力してください。"
++        return "URLリストを入力してください。", None, []
+     
+     # URLリストを行ごとに分割
+     urls = [url.strip() for url in urls_text.strip().split('\n') if url.strip()]
+     
+     if not urls:
+-        return "有効なURLが見つかりませんでした。"
++        return "有効なURLが見つかりませんでした。", None, []
+     
+     results = []
++    all_content = []
++    individual_files = []
+     total_urls = len(urls)
+     
+     for i, url in enumerate(urls):
+@@ -122,12 +162,26 @@ def process_multiple_urls(urls_text, progress=gr.Progress()):
+                 results.append(f"❌ 処理失敗: {url}\n{markdown_content}")
+             else:
+                 results.append(f"✅ 処理成功: {url}\n\n{markdown_content}")
++                all_content.append(markdown_content)
++                
+```
+
+---
+
+## ⏰ 16:57:29 - `61fa8f3`
+**🎨 UIテーマのブロック境界線を調整**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:57:29 2025 +0900
+M	theme.py
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:57:29 2025 +0900
+
+    🎨 UIテーマのブロック境界線を調整
+    
+    - ブロック境界線の幅を1pxから3pxに変更
+    - より明確な視覚的区切りを提供してユーザビリティを向上
+
+ theme.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/theme.py b/theme.py
+index 168f3d2..d0bc5f1 100644
+--- a/theme.py
++++ b/theme.py
+@@ -37,7 +37,7 @@ def create_zen_theme():
+         input_border_color_focus="#d4a574",
+         block_background_fill="#ffffff",
+         block_border_color="#e8e2d5",
+-        block_border_width="1px",
++        block_border_width="3px",
+         panel_background_fill="#ffffff",
+         panel_border_color="#e8e2d5",
+         slider_color="#d4a574",
+```
+
+---
+
+## ⏰ 16:57:42 - `164b49b`
+**🔀 Merge: Wikipediaマークダウン変換アプリにファイルダウンロード機能とUI改善を追加**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Merge: a45f672 61fa8f3
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:57:42 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: a45f672 61fa8f3
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:57:42 2025 +0900
+
+    🔀 Merge: Wikipediaマークダウン変換アプリにファイルダウンロード機能とUI改善を追加
+
+ app.py   | 152 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++------
+ theme.py |   2 +-
+ 2 files changed, 139 insertions(+), 15 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

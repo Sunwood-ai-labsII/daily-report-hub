@@ -1204,3 +1204,242 @@ Date:   Tue Aug 12 16:57:42 2025 +0900
 
 ---
 
+## ⏰ 16:59:02 - `49fb871`
+**Merge branch 'develop'**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Merge: fb02556 164b49b
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:59:02 2025 +0900
+MM	README.md
+```
+
+### 📊 Statistics
+```bash
+Merge: fb02556 164b49b
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 16:59:02 2025 +0900
+
+    Merge branch 'develop'
+
+ README.md              |  13 ++++-
+ app.py                 | 154 ++++++++++++++++++++++++++++++++++++++++++++-----
+ docker-compose.dev.yml |   3 +-
+ docker-compose.yml     |   3 +-
+ theme.py               |   5 +-
+ 5 files changed, 156 insertions(+), 22 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --cc README.md
+index ae3c9b7,d9adc40..64851e5
+--- a/README.md
++++ b/README.md
+@@@ -1,14 -1,22 +1,25 @@@
++ ---
++ license: mit
++ title: wikipedia to markdown
++ sdk: gradio
++ emoji: 📈
++ colorFrom: green
++ colorTo: indigo
++ thumbnail: >-
++   https://cdn-uploads.huggingface.co/production/uploads/64e0ef4a4c78e1eba5178d7a/vJQZ24fctExV3dax_BGU-.jpeg
++ sdk_version: 5.42.0
++ ---
+  <div align="center">
+  
+ +![](https://github.com/user-attachments/assets/201c0b39-6bf7-4599-a62a-dd3e6f61e5f8)
+ +
+  # 📚 Wikipedia to Markdown Converter
+  
+ -<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+ -<img src="https://img.shields.io/badge/Gradio-4.44.0?style=for-the-badge&logo=gradio&logoColor=white" alt="Gradio" />
+ -<img src="https://img.shields.io/badge/BeautifulSoup-4.12.2?style=for-the-badge&logo=beautifulsoup&logoColor=white" alt="BeautifulSoup" />
+ -<img src="https://img.shields.io/badge/html2text-2020.1.16?style=for-the-badge&logo=html&logoColor=white" alt="html2text" />
+ +![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+ +![Gradio](https://img.shields.io/badge/Gradio-FF6B6B?style=for-the-badge&logo=gradio&logoColor=white)
+ +![BeautifulSoup](https://img.shields.io/badge/BeautifulSoup-4CAF50?style=for-the-badge&logo=python&logoColor=white)
+ +![html2text](https://img.shields.io/badge/html2text-2196F3?style=for-the-badge&logo=html5&logoColor=white)
+ +
+  
+  </div>
+  
+```
+
+---
+
+## ⏰ 17:30:30 - `e3cc7cc`
+**📚 README.mdの大幅改善**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 17:30:30 2025 +0900
+M	README.md
+M	app.py
+```
+
+### 📊 Statistics
+```bash
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 17:30:30 2025 +0900
+
+    📚 README.mdの大幅改善
+    
+    - ヘッダー画像とバッジデザインを刷新
+    - 主要機能の詳細説明を追加
+    - 使い方セクションを3つの方法に分類（オンライン・ローカル・Docker）
+    - 操作方法を単体処理・一括処理に分けて詳細化
+    - 処理結果の表示例を追加してユーザビリティ向上
+
+ README.md | 258 ++++++++++++++++++++++++--------------------------------------
+ app.py    |  83 +++++++++++++++++---
+ 2 files changed, 172 insertions(+), 169 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index d9adc40..ef7c17b 100644
+--- a/README.md
++++ b/README.md
+@@ -2,231 +2,173 @@
+ license: mit
+ title: wikipedia to markdown
+ sdk: gradio
+-emoji: 📈
+-colorFrom: green
+-colorTo: indigo
++emoji: 📚
++colorFrom: amber
++colorTo: stone
+ thumbnail: >-
+   https://cdn-uploads.huggingface.co/production/uploads/64e0ef4a4c78e1eba5178d7a/vJQZ24fctExV3dax_BGU-.jpeg
+ sdk_version: 5.42.0
+ ---
++
+ <div align="center">
+ 
++![Wikipedia to Markdown Converter](https://github.com/user-attachments/assets/201c0b39-6bf7-4599-a62a-dd3e6f61e5f8)
++
+ # 📚 Wikipedia to Markdown Converter
+ 
+-<img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python" />
+-<img src="https://img.shields.io/badge/Gradio-4.44.0?style=for-the-badge&logo=gradio&logoColor=white" alt="Gradio" />
+-<img src="https://img.shields.io/badge/BeautifulSoup-4.12.2?style=for-the-badge&logo=beautifulsoup&logoColor=white" alt="BeautifulSoup" />
+-<img src="https://img.shields.io/badge/html2text-2020.1.16?style=for-the-badge&logo=html&logoColor=white" alt="html2text" />
++*WikipediaページをMarkdown形式に変換するWebアプリケーション*
++
++[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
++[![Gradio](https://img.shields.io/badge/Gradio-5.42+-FF6B6B?style=for-the-badge&logo=gradio&logoColor=white)](https://gradio.app)
++[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
++[![Demo](https://img.shields.io/badge/🚀%20デモサイト-Live-orange?style=for-the-badge)](https://huggingface.co/spaces/MakiAi/wikipedia-to-markdown)
+ 
+ </div>
+ 
+ ---
+ 
+-## 📖 概要
++## 🌟 概要
+ 
+-**Wikipedia to Markdown Converter** は、Wikipediaのページをスクレイピングして、整形されたMarkdown形式に変換するWebアプリケーションです。和モダンなZENテーマを採用し、直感的な操作で簡単にコンテンツを変換できます。
++**Wikipedia to Markdown Converter** は、Wikipediaの記事を整形されたMarkdownドキュメントに変換するWebアプリケーションです。単体処理と一括処理に対応し、複数のダウンロード形式を提供します。
+ 
+-### 🎯 主な用途
+-- Wikipedia記事のMarkdown化
+-- コンテンツの再利用と編集
+-- ドキュメント作成支援
+-- 学習資料の作成
++### ✨ **主要機能**
+ 
+-### 🌟 特徴
+-- **日本語対応**: 文字化けしない正しい文字コード処理
+-- **和モダンデザイン**: ZENテーマで美しいUI
+-- **自動整形**: 不要な部分（脚注、編集リンクなど）を自動削除
+-- **直感的操作**: ウェブベースで簡単に操作
++- 🔄 **単体・一括処理** - 1つまたは複数のWikipediaページを同時変換
++- 📊 **詳細分析** - 文字数、成功率、ファイル情報を表示
++- 🗜️ **複数形式** - 個別ファイル、結合文書、ZIPダウンロード
++- 🌐 **多言語対応** - 全てのWikipedia言語版に対応
++- � **要使いやすいUI** - 直感的で美しいインターフェース
+ 
+ ---
+ 
+-## 🎨 デザインの特徴
++## 🚀 使い方
+ 
+-### ZENテーマの哲学
+-- **空（くう）**: 余白を活かしたミニマルなデザイン
+-- **和（わ）**: 琥珀色を基調とした和風配色
+-- **簡（かん）**: 直感的でシンプルな操作
+-- **禅（ぜん）**: 視覚的な静けさを追求
++### �  **オンラインで試す（推奨）**
++**[🚀 デモサイトはこちら](https://huggingface.co/spaces/MakiAi/wikipedia-to-markdown)**
+ 
+-### カラースキーム
+-- **プライマリ色**: `#d4a574`（琥珀色）
+-- **セカンダリ色**: `#f5f2ed`（薄いベージュ）
+-- **背景色**: `#ffffff`（白）
+-- **テキスト色**: `#3d405b`（深い青紫）
++### 💻 **ローカルで実行**
+ 
+-### 日本語フォント
+-- Hiragino Sans
+-- Noto Sans JP
+-- Yu Gothic
+-- system-ui, sans-serif
++\```bash
++# リポジトリをクローン
++git clone https://github.com/your-username/wikipedia-to-markdown.git
++cd wikipedia-to-markdown
+ 
+----
++# 依存関係をインストール
++pip install -r requirements.txt
+ 
+-## 🚀 使い方（クイックスタート）
++# アプリケーションを起動
+```
+
+---
+
+## ⏰ 17:31:00 - `7f21baf`
+**🔀 Merge: README改善とZIPダウンロード機能追加**
+*by Sunwood-ai-labs*
+
+### 📋 Changed Files
+```bash
+Merge: 164b49b e3cc7cc
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 17:31:00 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 164b49b e3cc7cc
+Author: Sunwood-ai-labs <sunwood.ai.labs@gmail.com>
+Date:   Tue Aug 12 17:31:00 2025 +0900
+
+    🔀 Merge: README改善とZIPダウンロード機能追加
+    
+    - README.mdの大幅なデザイン・内容改善
+    - ZIPファイルダウンロード機能の実装
+    - 一括処理時の詳細な処理結果表示
+    - ユーザビリティとドキュメント品質の向上
+
+ README.md | 258 ++++++++++++++++++++++++--------------------------------------
+ app.py    |  83 +++++++++++++++++---
+ 2 files changed, 172 insertions(+), 169 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

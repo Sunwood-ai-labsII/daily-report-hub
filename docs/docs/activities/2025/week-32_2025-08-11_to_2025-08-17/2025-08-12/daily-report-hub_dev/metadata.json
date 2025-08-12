@@ -1,0 +1,27 @@
+{
+  "repository": "Sunwood-ai-labsII/daily-report-hub_dev",
+  "date": "2025-08-12",
+  "week_folder": "week-32_2025-08-11_to_2025-08-17",
+  "week_number": 32,
+  "week_start_date": "2025-08-11",
+  "week_end_date": "2025-08-17",
+  "branch": "main",
+  "latest_commit_sha": "78b4b9465d4bc9b2d543d69f65c569e52a184aae",
+  "sync_timestamp": "2025-08-12T06:44:46Z",
+  "workflow_run": "16901179370",
+  "daily_commit_count": 0,
+  "daily_files_changed": 1,
+  "has_activity": false,
+  "pr_creator": "yukihiko",
+  "auto_approved": true,
+  "files": {
+    "readme": "README.md",
+    "summary": "daily_summary.md",
+    "commits": "daily_commits.md",
+    "file_changes": "daily_cumulative_diff.md",
+    "stats": "daily_diff_stats.md",
+    "code_diff": "daily_code_diff.md",
+    "latest_diff": "latest_diff.md",
+    "latest_code_diff": "latest_code_diff.md"
+  }
+}

@@ -1,3 +1,7 @@
 # 🔄 Latest Changes (File List)
 
-- ✏️ **Modified:** `.github/workflows/sync-to-hf.yml`
+- ✏️ **Modified:** `README.md`
+- ✏️ **Modified:** `app.py`
+- ✏️ **Modified:** `docker-compose.dev.yml`
+- ✏️ **Modified:** `docker-compose.yml`
+- ✏️ **Modified:** `theme.py`

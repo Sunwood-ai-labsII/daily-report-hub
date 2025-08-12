@@ -2,7 +2,7 @@
 
 ```diff
  .dockerignore                    |  56 ++++++++++++
- .github/workflows/sync-to-hf.yml |  35 +++++++
+ .github/workflows/sync-to-hf.yml |  32 +++++++
  Dockerfile                       |  28 ++++++
  README.md                        |  11 ++-
  app.py                           | 191 +++++++++++++++++++++++----------------
@@ -10,5 +10,5 @@
  docker-compose.yml               |  28 ++++++
  requirements.txt                 |   2 +-
  theme.py                         |  43 +++++++++
- 9 files changed, 339 insertions(+), 81 deletions(-)
+ 9 files changed, 336 insertions(+), 81 deletions(-)
 ```

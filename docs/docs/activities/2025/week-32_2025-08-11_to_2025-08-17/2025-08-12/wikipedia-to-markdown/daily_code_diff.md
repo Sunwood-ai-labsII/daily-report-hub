@@ -68,10 +68,10 @@ index 0000000..c5ba6c0
 \ No newline at end of file
 diff --git a/.github/workflows/sync-to-hf.yml b/.github/workflows/sync-to-hf.yml
 new file mode 100644
-index 0000000..a64c4cb
+index 0000000..5879e47
 --- /dev/null
 +++ b/.github/workflows/sync-to-hf.yml
-@@ -0,0 +1,35 @@
+@@ -0,0 +1,32 @@
 +name: Sync to Hugging Face
 +
 +on:
@@ -95,19 +95,15 @@ index 0000000..a64c4cb
 +        env:
 +          HF_TOKEN: ${{ secrets.HF_TOKEN }}
 +        run: |
-+          # リポジトリ名を取得
-+          REPO_NAME="${GITHUB_REPOSITORY##*/}"
-+          
 +          # Git設定
 +          git config --global user.email "action@github.com"
 +          git config --global user.name "GitHub Action"
 +          
 +          # Hugging Face Hubにリモートを追加
-+          git remote add hf https://huggingface.co/spaces/${{ github.repository_owner }}/${REPO_NAME}
++          git remote add hf https://huggingface.co/spaces/MakiAi/wikipedia-to-markdown
 +          
 +          # 強制プッシュでHugging Faceに同期
-+          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/${{ github.repository_owner }}/${REPO_NAME} HEAD:main
-\ No newline at end of file
++          git push --force https://user:$HF_TOKEN@huggingface.co/spaces/MakiAi/wikipedia-to-markdown HEAD:main
 diff --git a/Dockerfile b/Dockerfile
 new file mode 100644
 index 0000000..9021fbf

@@ -2,12 +2,15 @@
 """
 AIにタグ付きで日報を生成させ、保存時にタグを削除して
 純粋なMarkdownコンテンツのみをファイルに書き込むスクリプト。
+レートリミット対応版。
 """
 
 import os
 import json
 import glob
 import re
+import time
+import random
 from pathlib import Path
 from datetime import datetime
 import litellm
@@ -66,6 +69,69 @@ def load_repo_data(repo_dir):
                 print(f"    ❌ {filename}: 読み込みエラー: {e}")
 
     return repo_data
+
+def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
+    """
+    レートリミット対応のLLM呼び出し関数
+    Exponential backoff + jitterを使用してリトライ
+    """
+    
+    for attempt in range(max_retries):
+        try:
+            print(f"🤖 API呼び出し開始... (試行 {attempt + 1}/{max_retries})")
+            
+            response = litellm.completion(
+                model="gemini/gemini-2.5-pro",
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.7,
+            )
+            
+            if response and response.choices and len(response.choices) > 0:
+                content = response.choices[0].message.content
+                if content and content.strip():
+                    print(f"✅ AI応答受信完了。")
+                    return content
+                else:
+                    print(f"⚠️ AI応答が空でした。")
+                    return None
+            else:
+                print(f"⚠️ 不正なAPI応答でした。")
+                return None
+                
+        except Exception as e:
+            error_str = str(e).lower()
+            
+            # レートリミット関連のエラーを検出
+            is_rate_limit = any(keyword in error_str for keyword in [
+                'rate limit', 'quota exceeded', 'too many requests', 
+                'rate_limit_exceeded', 'quota_exceeded', 'resource_exhausted',
+                '429', 'throttled', 'rate limiting'
+            ])
+            
+            if is_rate_limit:
+                if attempt < max_retries - 1:  # 最後の試行でなければリトライ
+                    # Exponential backoff with jitter
+                    delay = base_delay * (2 ** attempt) + random.uniform(0, 1)
+                    print(f"⏳ レートリミット検出。{delay:.1f}秒後にリトライします... ({attempt + 1}/{max_retries})")
+                    time.sleep(delay)
+                    continue
+                else:
+                    print(f"❌ レートリミット: 最大リトライ回数に達しました ({repo_name})")
+                    return None
+            else:
+                # レートリミット以外のエラー
+                print(f"❌ API呼び出しエラー ({repo_name}): {e}")
+                if attempt < max_retries - 1:
+                    # 軽いリトライ（短い待機時間）
+                    delay = base_delay + random.uniform(0, 0.5)
+                    print(f"⏳ {delay:.1f}秒後にリトライします...")
+                    time.sleep(delay)
+                    continue
+                else:
+                    return None
+    
+    print(f"❌ 最大リトライ回数に達しました ({repo_name})")
+    return None
 
 def generate_repo_daily_report(repo_data, date):
     """個別リポジトリの日報を生成（AIにタグ付けを指示）"""
@@ -138,28 +204,13 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
 
     prompt = "\n".join(prompt_parts)
     
-    try:
-        print("🤖 API呼び出し開始...")
-        response = litellm.completion(
-            model="gemini/gemini-2.5-pro",
-            messages=[{"role": "user", "content": prompt}],
-            temperature=0.7,
-        )
-        
-        if response and response.choices and len(response.choices) > 0:
-            content = response.choices[0].message.content
-            if content and content.strip():
-                print(f"✅ AI応答受信完了。")
-                return content
-            else:
-                print(f"⚠️ AI応答が空でした。フォールバックコンテンツを使用します。")
-                return fallback_content
-        else:
-            print(f"⚠️ 不正なAPI応答でした。フォールバックコンテンツを使用します。")
-            return fallback_content
-        
-    except Exception as e:
-        print(f"❌ AI生成エラー ({repo_name}): {e}")
+    # レートリミット対応のLLM呼び出し
+    content = call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0)
+    
+    if content:
+        return content
+    else:
+        print(f"⚠️ AI生成失敗。フォールバックコンテンツを使用します。")
         return fallback_content
 
 def save_repo_daily_report(repo_data, clean_report_content, date):
@@ -189,7 +240,7 @@ tags: ["daily-report", "ai-generated", "{repo_data['name']}", "{date}"]
         print(f"❌ ファイル保存エラー: {e}")
 
 def main():
-    print("🚀 Gemini 2.5 Pro 日報生成スクリプト開始")
+    print("🚀 Gemini 2.5 Pro 日報生成スクリプト開始（レートリミット対応版）")
     
     if not os.getenv('GOOGLE_API_KEY'):
         print("❌ GOOGLE_API_KEY が未設定です。処理を終了します。")
@@ -211,7 +262,7 @@ def main():
         
         repo_data = load_repo_data(repo_dir)
         
-        # AIにタグ付きで日報を生成させる
+        # AIにタグ付きで日報を生成させる（レートリミット対応）
         ai_response_with_tags = generate_repo_daily_report(repo_data, date)
         
         # この時点でai_response_with_tagsは必ず有効な文字列のはず（関数内で保証）
@@ -242,6 +293,11 @@ def main():
         
         # タグが削除されたクリーンなコンテンツをファイルに保存
         save_repo_daily_report(repo_data, clean_report, date)
+        
+        # 複数のリポジトリを処理する場合、連続呼び出しを避けるため軽い待機
+        if i < len(repo_dirs):
+            print(f"⏳ 次のリポジトリ処理まで少し待機...")
+            time.sleep(0.5)  # 500ms待機
     
     print("\n" + "="*50)
     print("✅ 全てのリポジトリの日報生成が完了しました。")

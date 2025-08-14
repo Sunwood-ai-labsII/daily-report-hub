@@ -2,25 +2,16 @@
 
 ```diff
 diff --git a/README.md b/README.md
-index a46db06..e3aa9ca 100644
+index e3aa9ca..9edb370 100644
 --- a/README.md
 +++ b/README.md
-@@ -1,12 +1,12 @@
- ---
- license: mit
--title: wikipedia to markdown
-+title: frame bridge
- sdk: gradio
--emoji: 📚
--colorFrom: yellow
--colorTo: gray
-+emoji: 🏆
-+colorFrom: red
-+colorTo: indigo
- thumbnail: >-
--  https://cdn-uploads.huggingface.co/production/uploads/64e0ef4a4c78e1eba5178d7a/vJQZ24fctExV3dax_BGU-.jpeg
-+  https://cdn-uploads.huggingface.co/production/uploads/64e0ef4a4c78e1eba5178d7a/BZfofcX1vEF7kwWQ0i-uB.png
- sdk_version: 5.42.0
- ---
+@@ -12,7 +12,7 @@ sdk_version: 5.42.0
+ 
+ <div align="center">
+ 
+-![Wikipedia to Markdown Converter](https://github.com/user-attachments/assets/201c0b39-6bf7-4599-a62a-dd3e6f61e5f8)
++![frame-bridge](https://github.com/user-attachments/assets/05977e5b-3e63-4ed2-a5f6-74ada8943994)
+ 
+ # 📚 Wikipedia to Markdown Converter
  
 ```

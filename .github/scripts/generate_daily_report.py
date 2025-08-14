@@ -70,19 +70,15 @@ def load_repo_data(repo_dir):
 
     return repo_data
 
-def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
+def call_llm_simple_retry(prompt, repo_name, max_retries=3, wait_seconds=30):
     """
-    レートリミット対応のLLM呼び出し関数
-    Exponential backoff + jitterを使用してリトライ
-    詳細なエラー情報を表示
+    シンプルなリトライ機能付きLLM呼び出し
+    エラーが出たら指定秒数待機して再実行
     """
     
     for attempt in range(max_retries):
         try:
             print(f"🤖 API呼び出し開始... (試行 {attempt + 1}/{max_retries})")
-            
-            # デバッグ: プロンプトの長さを表示
-            print(f"📏 プロンプト長: {len(prompt)} 文字")
             
             response = litellm.completion(
                 model="gemini/gemini-2.5-pro",
@@ -90,117 +86,36 @@ def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
                 temperature=0.7,
             )
             
-            # 詳細なレスポンス検証
-            print(f"🔍 レスポンス詳細検証開始...")
+            # シンプルなチェック
+            if response and response.choices and response.choices[0].message.content:
+                content = response.choices[0].message.content.strip()
+                if content:
+                    print(f"✅ AI応答受信成功！")
+                    return content
             
-            if not response:
-                print(f"❌ レスポンスオブジェクトがNullです")
-                return None
+            # 応答が空の場合
+            print(f"⚠️ AI応答が空でした")
             
-            print(f"✅ レスポンスオブジェクト受信: {type(response)}")
-            
-            # レスポンス構造の詳細ログ
-            if hasattr(response, '__dict__'):
-                print(f"🔍 レスポンス属性: {list(response.__dict__.keys())}")
-            
-            if not hasattr(response, 'choices'):
-                print(f"❌ レスポンスに'choices'属性がありません")
-                print(f"🔍 利用可能な属性: {dir(response)}")
-                return None
-            
-            if not response.choices:
-                print(f"❌ choices配列が空です")
-                return None
-            
-            print(f"✅ choices配列長: {len(response.choices)}")
-            
-            choice = response.choices[0]
-            if not hasattr(choice, 'message'):
-                print(f"❌ choice[0]に'message'属性がありません")
-                print(f"🔍 choice[0]の属性: {dir(choice)}")
-                return None
-            
-            message = choice.message
-            if not hasattr(message, 'content'):
-                print(f"❌ messageに'content'属性がありません")
-                print(f"🔍 messageの属性: {dir(message)}")
-                return None
-            
-            content = message.content
-            print(f"🔍 コンテンツタイプ: {type(content)}")
-            print(f"🔍 コンテンツがNone: {content is None}")
-            
-            if content is None:
-                print(f"❌ コンテンツがNoneです")
-                return None
-            
-            content_str = str(content).strip()
-            print(f"🔍 コンテンツ長（文字列化後）: {len(content_str)}")
-            
-            if not content_str:
-                print(f"❌ コンテンツが空文字列です")
-                # 空文字列の場合の詳細情報
-                print(f"🔍 元のcontent repr: {repr(content)}")
-                return None
-            
-            # 成功時の詳細ログ
-            print(f"✅ AI応答受信完了 - 長さ: {len(content_str)} 文字")
-            print(f"🔍 応答プレビュー（最初の200文字）: {content_str[:200]}...")
-            
-            return content_str
-                
         except Exception as e:
-            # より詳細なエラー情報を表示
-            error_str = str(e).lower()
-            print(f"❌ API呼び出し例外発生:")
-            print(f"   エラータイプ: {type(e).__name__}")
-            print(f"   エラーメッセージ: {str(e)}")
-            
-            # エラーの詳細情報があれば表示
-            if hasattr(e, '__dict__'):
-                print(f"   エラー属性: {e.__dict__}")
-            
-            # レートリミット関連のエラーを検出
-            is_rate_limit = any(keyword in error_str for keyword in [
-                'rate limit', 'quota exceeded', 'too many requests', 
-                'rate_limit_exceeded', 'quota_exceeded', 'resource_exhausted',
-                '429', 'throttled', 'rate limiting'
-            ])
-            
-            if is_rate_limit:
-                print(f"🚨 レートリミットエラーを検出")
-                if attempt < max_retries - 1:  # 最後の試行でなければリトライ
-                    # Exponential backoff with jitter
-                    delay = base_delay * (2 ** attempt) + random.uniform(0, 1)
-                    print(f"⏳ レートリミット対応: {delay:.1f}秒後にリトライします... ({attempt + 1}/{max_retries})")
-                    time.sleep(delay)
-                    continue
-                else:
-                    print(f"❌ レートリミット: 最大リトライ回数に達しました ({repo_name})")
-                    return None
-            else:
-                # レートリミット以外のエラー
-                print(f"❌ その他のAPI呼び出しエラー ({repo_name})")
-                if attempt < max_retries - 1:
-                    # 軽いリトライ（短い待機時間）
-                    delay = base_delay + random.uniform(0, 0.5)
-                    print(f"⏳ {delay:.1f}秒後にリトライします...")
-                    time.sleep(delay)
-                    continue
-                else:
-                    print(f"❌ その他エラー: 最大リトライ回数に達しました")
-                    return None
+            print(f"❌ API呼び出しでエラーが発生:")
+            print(f"   {type(e).__name__}: {str(e)[:200]}...")
+        
+        # 最後の試行でなければ待機してリトライ
+        if attempt < max_retries - 1:
+            print(f"⏳ {wait_seconds}秒待機してリトライします...")
+            time.sleep(wait_seconds)
+        else:
+            print(f"❌ {max_retries}回試行しましたが失敗しました ({repo_name})")
     
-    print(f"❌ 最大リトライ回数に達しました ({repo_name})")
     return None
 
 
 def generate_repo_daily_report(repo_data, date):
-    """個別リポジトリの日報を生成（AIにタグ付けを指示）- 改善版"""
+    """個別リポジトリの日報を生成（シンプル版）"""
     repo_name = repo_data['name']
     print(f"\n🤖 AI日報生成開始: {repo_name}")
     
-    # まず最初にフォールバック用のコンテンツを準備
+    # フォールバック用のコンテンツを準備
     fallback_content = f"""<output-report>
 # 📅 {repo_name} - 日報 ({date})
 
@@ -210,7 +125,6 @@ AI による日報生成に失敗しました。
 ## 📊 利用可能なデータ
 """
     
-    # 利用可能なデータを追加
     if 'summary' in repo_data:
         fallback_content += f"\n### サマリー\n{repo_data['summary'][:500]}...\n"
     if 'commits' in repo_data:
@@ -220,12 +134,17 @@ AI による日報生成に失敗しました。
     
     fallback_content += "\n</output-report>"
     
+    # プロンプト作成
     prompt_parts = [f"以下の{repo_name}リポジトリの{date}の活動データから、日報をMarkdown形式で作成してください:\n"]
     
-    if 'summary' in repo_data: prompt_parts.append(f"## サマリー:\n{repo_data['summary']}\n")
-    if 'commits' in repo_data: prompt_parts.append(f"## コミット詳細:\n{repo_data['commits']}\n")
-    if 'changes' in repo_data: prompt_parts.append(f"## ファイル変更:\n{repo_data['changes']}\n")
-    if 'stats' in repo_data: prompt_parts.append(f"## 統計:\n{repo_data['stats']}\n")
+    if 'summary' in repo_data: 
+        prompt_parts.append(f"## サマリー:\n{repo_data['summary']}\n")
+    if 'commits' in repo_data: 
+        prompt_parts.append(f"## コミット詳細:\n{repo_data['commits']}\n")
+    if 'changes' in repo_data: 
+        prompt_parts.append(f"## ファイル変更:\n{repo_data['changes']}\n")
+    if 'stats' in repo_data: 
+        prompt_parts.append(f"## 統計:\n{repo_data['stats']}\n")
     
     prompt_parts.append("""
 日報作成要求:
@@ -241,7 +160,7 @@ AI による日報生成に失敗しました。
 また、下記を活用してエージェントからのこの日報の一言レビューを記載して
 PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行います。
 キャット ギャル はギャル口調で本質を捉えつつ経営者的な観点からの評価をします
-```
+
 :::tip PANDA 先生
 
 一言レビュー
@@ -259,26 +178,20 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
 一言レビュー
 
 :::
-
-```
-
 """)
 
     prompt = "\n".join(prompt_parts)
+    print(f"📝 プロンプト作成完了 ({len(prompt)} 文字)")
     
-    # プロンプトの内容を一部確認
-    print(f"📝 プロンプト生成完了 - 総文字数: {len(prompt)}")
-    print(f"🔍 プロンプトプレビュー:\n{prompt[:300]}...")
-    
-    # レートリミット対応のLLM呼び出し（改善版）
-    content = call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0)
+    # シンプルリトライでLLM呼び出し
+    content = call_llm_simple_retry(prompt, repo_name, max_retries=3, wait_seconds=30)
     
     if content:
-        print(f"✅ AI日報生成成功 - {repo_name}")
         return content
     else:
-        print(f"⚠️ AI生成失敗 - フォールバックコンテンツを使用: {repo_name}")
+        print(f"⚠️ AI生成失敗。フォールバックコンテンツを使用します。")
         return fallback_content
+
 
 def save_repo_daily_report(repo_data, clean_report_content, date):
     """リポジトリフォルダに、タグなしのクリーンな日報を保存"""
@@ -372,4 +285,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 

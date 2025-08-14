@@ -74,11 +74,15 @@ def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
     """
     レートリミット対応のLLM呼び出し関数
     Exponential backoff + jitterを使用してリトライ
+    詳細なエラー情報を表示
     """
     
     for attempt in range(max_retries):
         try:
             print(f"🤖 API呼び出し開始... (試行 {attempt + 1}/{max_retries})")
+            
+            # デバッグ: プロンプトの長さを表示
+            print(f"📏 プロンプト長: {len(prompt)} 文字")
             
             response = litellm.completion(
                 model="gemini/gemini-2.5-pro",
@@ -86,20 +90,75 @@ def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
                 temperature=0.7,
             )
             
-            if response and response.choices and len(response.choices) > 0:
-                content = response.choices[0].message.content
-                if content and content.strip():
-                    print(f"✅ AI応答受信完了。")
-                    return content
-                else:
-                    print(f"⚠️ AI応答が空でした。")
-                    return None
-            else:
-                print(f"⚠️ 不正なAPI応答でした。")
+            # 詳細なレスポンス検証
+            print(f"🔍 レスポンス詳細検証開始...")
+            
+            if not response:
+                print(f"❌ レスポンスオブジェクトがNullです")
                 return None
+            
+            print(f"✅ レスポンスオブジェクト受信: {type(response)}")
+            
+            # レスポンス構造の詳細ログ
+            if hasattr(response, '__dict__'):
+                print(f"🔍 レスポンス属性: {list(response.__dict__.keys())}")
+            
+            if not hasattr(response, 'choices'):
+                print(f"❌ レスポンスに'choices'属性がありません")
+                print(f"🔍 利用可能な属性: {dir(response)}")
+                return None
+            
+            if not response.choices:
+                print(f"❌ choices配列が空です")
+                return None
+            
+            print(f"✅ choices配列長: {len(response.choices)}")
+            
+            choice = response.choices[0]
+            if not hasattr(choice, 'message'):
+                print(f"❌ choice[0]に'message'属性がありません")
+                print(f"🔍 choice[0]の属性: {dir(choice)}")
+                return None
+            
+            message = choice.message
+            if not hasattr(message, 'content'):
+                print(f"❌ messageに'content'属性がありません")
+                print(f"🔍 messageの属性: {dir(message)}")
+                return None
+            
+            content = message.content
+            print(f"🔍 コンテンツタイプ: {type(content)}")
+            print(f"🔍 コンテンツがNone: {content is None}")
+            
+            if content is None:
+                print(f"❌ コンテンツがNoneです")
+                return None
+            
+            content_str = str(content).strip()
+            print(f"🔍 コンテンツ長（文字列化後）: {len(content_str)}")
+            
+            if not content_str:
+                print(f"❌ コンテンツが空文字列です")
+                # 空文字列の場合の詳細情報
+                print(f"🔍 元のcontent repr: {repr(content)}")
+                return None
+            
+            # 成功時の詳細ログ
+            print(f"✅ AI応答受信完了 - 長さ: {len(content_str)} 文字")
+            print(f"🔍 応答プレビュー（最初の200文字）: {content_str[:200]}...")
+            
+            return content_str
                 
         except Exception as e:
+            # より詳細なエラー情報を表示
             error_str = str(e).lower()
+            print(f"❌ API呼び出し例外発生:")
+            print(f"   エラータイプ: {type(e).__name__}")
+            print(f"   エラーメッセージ: {str(e)}")
+            
+            # エラーの詳細情報があれば表示
+            if hasattr(e, '__dict__'):
+                print(f"   エラー属性: {e.__dict__}")
             
             # レートリミット関連のエラーを検出
             is_rate_limit = any(keyword in error_str for keyword in [
@@ -109,10 +168,11 @@ def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
             ])
             
             if is_rate_limit:
+                print(f"🚨 レートリミットエラーを検出")
                 if attempt < max_retries - 1:  # 最後の試行でなければリトライ
                     # Exponential backoff with jitter
                     delay = base_delay * (2 ** attempt) + random.uniform(0, 1)
-                    print(f"⏳ レートリミット検出。{delay:.1f}秒後にリトライします... ({attempt + 1}/{max_retries})")
+                    print(f"⏳ レートリミット対応: {delay:.1f}秒後にリトライします... ({attempt + 1}/{max_retries})")
                     time.sleep(delay)
                     continue
                 else:
@@ -120,7 +180,7 @@ def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
                     return None
             else:
                 # レートリミット以外のエラー
-                print(f"❌ API呼び出しエラー ({repo_name}): {e}")
+                print(f"❌ その他のAPI呼び出しエラー ({repo_name})")
                 if attempt < max_retries - 1:
                     # 軽いリトライ（短い待機時間）
                     delay = base_delay + random.uniform(0, 0.5)
@@ -128,13 +188,15 @@ def call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0):
                     time.sleep(delay)
                     continue
                 else:
+                    print(f"❌ その他エラー: 最大リトライ回数に達しました")
                     return None
     
     print(f"❌ 最大リトライ回数に達しました ({repo_name})")
     return None
 
+
 def generate_repo_daily_report(repo_data, date):
-    """個別リポジトリの日報を生成（AIにタグ付けを指示）"""
+    """個別リポジトリの日報を生成（AIにタグ付けを指示）- 改善版"""
     repo_name = repo_data['name']
     print(f"\n🤖 AI日報生成開始: {repo_name}")
     
@@ -204,13 +266,18 @@ PANDA 先生 は客観的な評価を、FOX 教官は厳しめの評価を行い
 
     prompt = "\n".join(prompt_parts)
     
-    # レートリミット対応のLLM呼び出し
+    # プロンプトの内容を一部確認
+    print(f"📝 プロンプト生成完了 - 総文字数: {len(prompt)}")
+    print(f"🔍 プロンプトプレビュー:\n{prompt[:300]}...")
+    
+    # レートリミット対応のLLM呼び出し（改善版）
     content = call_llm_with_retry(prompt, repo_name, max_retries=5, base_delay=1.0)
     
     if content:
+        print(f"✅ AI日報生成成功 - {repo_name}")
         return content
     else:
-        print(f"⚠️ AI生成失敗。フォールバックコンテンツを使用します。")
+        print(f"⚠️ AI生成失敗 - フォールバックコンテンツを使用: {repo_name}")
         return fallback_content
 
 def save_repo_daily_report(repo_data, clean_report_content, date):
@@ -305,3 +372,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

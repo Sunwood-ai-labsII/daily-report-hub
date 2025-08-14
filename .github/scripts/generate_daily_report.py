@@ -73,39 +73,56 @@ def load_repo_data(repo_dir):
 def call_llm_simple_retry(prompt, repo_name, max_retries=3, wait_seconds=30):
     """
     シンプルなリトライ機能付きLLM呼び出し
-    エラーが出たら指定秒数待機して再実行
+    エラーは隠さずに全部表示する
     """
     
     for attempt in range(max_retries):
+        print(f"🤖 API呼び出し開始... (試行 {attempt + 1}/{max_retries})")
+        
         try:
-            print(f"🤖 API呼び出し開始... (試行 {attempt + 1}/{max_retries})")
-            
             response = litellm.completion(
                 model="gemini/gemini-2.5-pro",
                 messages=[{"role": "user", "content": prompt}],
                 temperature=0.7,
             )
             
-            # シンプルなチェック
-            if response and response.choices and response.choices[0].message.content:
-                content = response.choices[0].message.content.strip()
-                if content:
-                    print(f"✅ AI応答受信成功！")
-                    return content
+            print(f"✅ APIレスポンス受信完了")
+            print(f"🔍 レスポンスタイプ: {type(response)}")
             
-            # 応答が空の場合
-            print(f"⚠️ AI応答が空でした")
+            # レスポンスの詳細をチェック
+            content = response.choices[0].message.content
+            print(f"🔍 content値: {repr(content)}")
+            print(f"🔍 contentタイプ: {type(content)}")
+            
+            if content and content.strip():
+                print(f"✅ AI応答受信成功！ ({len(content.strip())}文字)")
+                return content.strip()
+            else:
+                print(f"⚠️ contentが空またはNoneです")
+                # 最後の試行でなければリトライ
+                if attempt < max_retries - 1:
+                    print(f"⏳ {wait_seconds}秒待機してリトライします...")
+                    time.sleep(wait_seconds)
+                    continue
+                else:
+                    print(f"❌ 最終試行でもcontentが空でした")
+                    return None
             
         except Exception as e:
-            print(f"❌ API呼び出しでエラーが発生:")
-            print(f"   {type(e).__name__}: {str(e)[:200]}...")
-        
-        # 最後の試行でなければ待機してリトライ
-        if attempt < max_retries - 1:
-            print(f"⏳ {wait_seconds}秒待機してリトライします...")
-            time.sleep(wait_seconds)
-        else:
-            print(f"❌ {max_retries}回試行しましたが失敗しました ({repo_name})")
+            print(f"🚨 完全なエラー情報:")
+            print(f"   エラータイプ: {type(e).__name__}")
+            print(f"   エラーメッセージ: {str(e)}")
+            print(f"   エラー詳細: {repr(e)}")
+            
+            # 最後の試行でなければリトライ
+            if attempt < max_retries - 1:
+                print(f"⏳ エラーのため{wait_seconds}秒待機してリトライします...")
+                time.sleep(wait_seconds)
+                continue
+            else:
+                print(f"❌ 最終試行でもエラーが発生しました")
+                # エラーを再発生させて呼び出し元で確認できるようにする
+                raise e
     
     return None
 
@@ -285,5 +302,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 

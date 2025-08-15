@@ -1,3 +1,22 @@
 # 🔄 Latest Changes (File List)
 
 - ✏️ **Modified:** `README.md`
+- ✏️ **Modified:** `easy_dataset_cli/alpaca_converter.py`
+- ✏️ **Modified:** `easy_dataset_cli/core.py`
+- ✏️ **Modified:** `easy_dataset_cli/ga_parser.py`
+- ✏️ **Modified:** `easy_dataset_cli/main.py`
+- ✏️ **Modified:** `easy_dataset_cli/prompts.py`
+- ✏️ **Modified:** `easy_dataset_cli/prompts/ga_definition_generation.md`
+- 🆕 **Added:** `easy_dataset_cli/prompts/qa_generation_with_thinking.md`
+- ✏️ **Modified:** `easy_dataset_cli/qa_generator.py`
+- ✏️ **Modified:** `easy_dataset_cli/xml_utils.py`
+- 🆕 **Added:** `example/scripts/orin.bat`
+- 🆕 **Added:** `example/scripts/simple.bat`
+- 🆕 **Added:** `fix_xml_generation.py`
+- 🆕 **Added:** `tests/test_aggregate_logs.py`
+- 🆕 **Added:** `tests/test_answer_extraction.py`
+- 🆕 **Added:** `tests/test_fixed_parsing.py`
+- 🆕 **Added:** `tests/test_simple_xml.py`
+- 🆕 **Added:** `tests/test_subelement.py`
+- 🆕 **Added:** `tests/test_think_tag_preservation.py`
+- 🆕 **Added:** `tests/test_xml_parsing.py`

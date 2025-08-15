@@ -6,7 +6,7 @@
  .github/workflows/sync-to-report-gh.yml            |  52 +++
  .gitignore                                         | 211 ++++++++++++
  LICENSE                                            |  21 ++
- README.md                                          | 338 +++++++++++++++++++
+ README.md                                          | 340 +++++++++++++++++++
  easy_dataset_cli/__init__.py                       |   1 +
  easy_dataset_cli/alpaca_converter.py               | 238 +++++++++++++
  easy_dataset_cli/core.py                           |  53 +++
@@ -26,5 +26,5 @@
  example/input/documents/sample_ga_definition.md    |  21 ++
  example/input/documents/test_short.md              |  16 +
  pyproject.toml                                     |  23 ++
- 25 files changed, 2455 insertions(+)
+ 25 files changed, 2457 insertions(+)
 ```

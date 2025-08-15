@@ -2948,3 +2948,132 @@ Date:   Fri Aug 15 15:35:11 2025 +0900
 
 ---
 
+## ⏰ 15:35:51 - `33b27e1`
+**Merge branch 'develop'**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: dc2aa8f 13b8c4c
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:35:51 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: dc2aa8f 13b8c4c
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:35:51 2025 +0900
+
+    Merge branch 'develop'
+
+ .SourceSageignore                                  |   1 +
+ .env.example                                       |   2 +
+ .gitignore                                         |   1 +
+ README.md                                          | 324 +++++++++---
+ easy_dataset_cli/alpaca_converter.py               | 238 +++++++++
+ easy_dataset_cli/core.py                           | 570 ++-------------------
+ easy_dataset_cli/file_utils.py                     |  59 +++
+ easy_dataset_cli/ga_parser.py                      | 182 +++++++
+ easy_dataset_cli/main.py                           | 176 ++++++-
+ easy_dataset_cli/prompts.py                        |   5 +
+ .../prompts/qa_generation_with_fulltext.md         |  52 ++
+ easy_dataset_cli/qa_generator.py                   | 209 ++++++++
+ easy_dataset_cli/text_splitter.py                  |  17 +
+ easy_dataset_cli/xml_utils.py                      | 154 ++++++
+ pyproject.toml                                     |   9 +-
+ 15 files changed, 1394 insertions(+), 605 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 15:48:08 - `f38813f`
+**✨ README.mdのバッジ表記を改善**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:48:08 2025 +0900
+M	README.md
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:48:08 2025 +0900
+
+    ✨ README.mdのバッジ表記を改善
+    
+    - バッジの記述形式をimgタグからMarkdown形式に変更
+    - Hugging Faceバッジに絵文字を追加
+    - 可読性と保守性を向上
+
+ README.md | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index 49e8d17..0946c9a 100644
+--- a/README.md
++++ b/README.md
+@@ -5,12 +5,14 @@
+ # 🚀 Easy Dataset CLI
+ 
+ <p align="center">
+-  <img src="https://img.shields.io/badge/Python-3.9+-blue.svg" alt="Python Version">
+-  <img src="https://img.shields.io/badge/CLI-Typer-green.svg" alt="CLI Framework">
+-  <img src="https://img.shields.io/badge/LLM-OpenAI%20%7C%20OpenRouter-orange.svg" alt="LLM Support">
+-  <img src="https://img.shields.io/badge/Format-Alpaca%20%7C%20XML-purple.svg" alt="Output Format">
+-  <img src="https://img.shields.io/badge/🤗-Hugging%20Face-yellow.svg" alt="Hugging Face">
+-  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
++
++  ![Python Version](https://img.shields.io/badge/Python-3.9+-blue.svg)
++  ![CLI Framework](https://img.shields.io/badge/CLI-Typer-green.svg)
++  ![LLM Support](https://img.shields.io/badge/LLM-OpenAI%20%7C%20OpenRouter-orange.svg)
++  ![Output Format](https://img.shields.io/badge/Format-Alpaca%20%7C%20XML-purple.svg)
++  ![Hugging Face](https://img.shields.io/badge/🤗-Hugging%20Face-yellow.svg)
++  ![License](https://img.shields.io/badge/License-MIT-green.svg)
++  
+ </p>
+ 
+ <p align="center">
+```
+
+---
+
+## ⏰ 15:48:26 - `0a18942`
+**🔀 Merge: README.mdのバッジ表記改善**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 13b8c4c f38813f
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:48:26 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 13b8c4c f38813f
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:48:26 2025 +0900
+
+    🔀 Merge: README.mdのバッジ表記改善
+
+ README.md | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

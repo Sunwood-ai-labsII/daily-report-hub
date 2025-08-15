@@ -3077,3 +3077,1951 @@ Date:   Fri Aug 15 15:48:26 2025 +0900
 
 ---
 
+## ⏰ 15:49:59 - `4df9db7`
+**Merge branch 'develop'**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 33b27e1 0a18942
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:49:59 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 33b27e1 0a18942
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 15:49:59 2025 +0900
+
+    Merge branch 'develop'
+
+ README.md | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 17:41:49 - `6a6848a`
+**🔧 エラーハンドリングの強化**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:41:49 2025 +0900
+M	easy_dataset_cli/main.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:41:49 2025 +0900
+
+    🔧 エラーハンドリングの強化
+    
+    - エラー発生時にエラータイプ、メッセージ、トレースバックを詳細に表示
+    - 例外処理の改善でデバッグ情報を充実
+    - ユーザーへのエラー報告をより分かりやすく
+
+ easy_dataset_cli/main.py | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/main.py b/easy_dataset_cli/main.py
+index 6f62532..a799ac5 100644
+--- a/easy_dataset_cli/main.py
++++ b/easy_dataset_cli/main.py
+@@ -286,7 +286,12 @@ def generate(
+                 console.print(xml_content, overflow="fold")
+     
+     except Exception as e:
+-        console.print(f"[bold red]エラーが発生しました:[/bold red] {e}")
++        console.print(f"[bold red]エラーが発生しました:[/bold red]")
++        console.print(f"[bold red]エラータイプ:[/bold red] {type(e).__name__}")
++        console.print(f"[bold red]エラーメッセージ:[/bold red] {str(e)}")
++        console.print(f"[bold red]トレースバック:[/bold red]")
++        import traceback
++        console.print(traceback.format_exc())
+         raise typer.Exit(code=1)
+ 
+ 
+```
+
+---
+
+## ⏰ 17:42:00 - `d375a48`
+**📝 QA生成機能のログ記録機能追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:00 2025 +0900
+M	easy_dataset_cli/qa_generator.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:00 2025 +0900
+
+    📝 QA生成機能のログ記録機能追加
+    
+    - リクエスト、レスポンス、エラーの詳細ログをタイムスタンプ付きで保存
+    - 生成されたQAペアをXML形式で出力
+    - デバッグとトラブルシューティングを容易にするログ機能
+
+ easy_dataset_cli/qa_generator.py | 367 +++++++++++++++++++++++++++++++++++----
+ 1 file changed, 333 insertions(+), 34 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/qa_generator.py b/easy_dataset_cli/qa_generator.py
+index 0817065..2d026c8 100644
+--- a/easy_dataset_cli/qa_generator.py
++++ b/easy_dataset_cli/qa_generator.py
+@@ -3,11 +3,15 @@
+ 
+ import os
+ import xml.etree.ElementTree as ET
++from xml.dom import minidom
+ from pathlib import Path
+ from typing import List, Dict
+ from litellm import completion
+ from rich.console import Console
+ from dotenv import load_dotenv
++import traceback
++import json
++from datetime import datetime
+ 
+ from .prompts import (
+     get_qa_generation_prompt,
+@@ -50,29 +54,104 @@ def generate_qa_for_chunk_with_ga_and_fulltext(
+     # OpenRouter用の環境変数設定
+     os.environ["OPENROUTER_API_KEY"] = os.getenv("OPENROUTER_API_KEY", "")
+ 
++    # タイムスタンプ付きログファイル名を生成
++    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
++    genre_safe = "".join(c for c in ga_pair['genre']['title'] if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
++    audience_safe = "".join(c for c in ga_pair['audience']['title'] if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
++    
+     try:
++        # リクエストログを保存
++        if logs_dir:
++            request_log = {
++                "timestamp": timestamp,
++                "model": model,
++                "genre": ga_pair['genre']['title'],
++                "audience": ga_pair['audience']['title'],
++                "prompt_length": len(prompt),
++                "messages": messages
++            }
++            request_filename = f"request_{genre_safe}_{audience_safe}_{timestamp}.json"
++            request_file_path = logs_dir / request_filename
++            with open(request_file_path, 'w', encoding='utf-8') as f:
++                json.dump(request_log, f, ensure_ascii=False, indent=2)
++            console.print(f"[dim]リクエストログを保存: {request_filename}[/dim]")
++
+         response = completion(model=model, messages=messages)
+         xml_content = response.choices[0].message.content
+ 
++        # レスポンスログを保存
++        if logs_dir:
++            response_log = {
++                "timestamp": timestamp,
++                "model": model,
++                "genre": ga_pair['genre']['title'],
++                "audience": ga_pair['audience']['title'],
++                "response_length": len(xml_content),
++                "response_content": xml_content
++            }
++            response_filename = f"response_{genre_safe}_{audience_safe}_{timestamp}.json"
++            response_file_path = logs_dir / response_filename
++            with open(response_file_path, 'w', encoding='utf-8') as f:
++                json.dump(response_log, f, ensure_ascii=False, indent=2)
++            console.print(f"[dim]レスポンスログを保存: {response_filename}[/dim]")
++
+         # rawレスポンスを保存（オプション）
+         if logs_dir:
+-            genre_safe = "".join(c for c in ga_pair['genre']['title'] if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
+-            audience_safe = "".join(c for c in ga_pair['audience']['title'] if c.isalnum() or c in (' ', '-', '_')).strip().replace(' ', '_')
+-            raw_filename = f"qa_fulltext_raw_{genre_safe}_{audience_safe}.md"
++            raw_filename = f"qa_fulltext_raw_{genre_safe}_{audience_safe}_{timestamp}.md"
+             raw_file_path = logs_dir / raw_filename
+             raw_file_path.write_text(xml_content, encoding="utf-8")
+ 
+-        return _parse_qa_response(xml_content)
++        qa_pairs = _parse_qa_response(xml_content, logs_dir, genre_safe, audience_safe, timestamp)
++        
++        # 生成したQAを保存
++        if qa_pairs and logs_dir:
++            qa_filename = f"qa_pairs_{genre_safe}_{audience_safe}_{timestamp}.xml"
++            qa_file_path = logs_dir / qa_filename
++            
++            # XML形式で保存
++            root = ET.Element("QAPairs")
++            for qa in qa_pairs:
++                pair_elem = ET.SubElement(root, "Pair")
++                question_elem = ET.SubElement(pair_elem, "Question")
++                question_elem.text = qa["question"]
++                answer_elem = ET.SubElement(pair_elem, "Answer")
++                answer_elem.text = qa["answer"]
++            
++            # 整形して保存
++            rough_string = ET.tostring(root, 'utf-8')
++            reparsed = minidom.parseString(rough_string)
++            pretty_xml = reparsed.toprettyxml(indent="  ")
++            qa_file_path.write_text(pretty_xml, encoding='utf-8')
++            console.print(f"[green]✓[/green] QAペアを保存: {qa_filename} ({len(qa_pairs)}件)")
++
++        return qa_pairs
+ 
+```
+
+---
+
+## ⏰ 17:42:13 - `8270a6a`
+**🔧 XML解析機能の強化**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:13 2025 +0900
+M	easy_dataset_cli/ga_parser.py
+M	easy_dataset_cli/xml_utils.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:13 2025 +0900
+
+    🔧 XML解析機能の強化
+    
+    - LLMレスポンスの前処理機能を追加
+    - 複数のXMLタグ形式に対応（<QAPairs>、<Pair>）
+    - XMLエンティティデコード機能を実装
+    - フォールバック解析を自動化し、手動解析から自動解析へ変更
+    - エラー時のデバッグ情報を充実
+
+ easy_dataset_cli/ga_parser.py | 2 +-
+ easy_dataset_cli/xml_utils.py | 8 ++++----
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/ga_parser.py b/easy_dataset_cli/ga_parser.py
+index fb9aa16..cdeb17d 100644
+--- a/easy_dataset_cli/ga_parser.py
++++ b/easy_dataset_cli/ga_parser.py
+@@ -172,7 +172,7 @@ def parse_ga_definitions_from_xml(xml_content: str) -> List[Dict[str, Dict[str,
+         console.print(f"[dim]問題のあるXML: {xml_content[xml_start:xml_start+200] if xml_start != -1 else xml_content[:200]}...[/dim]")
+ 
+         # XMLエラーの場合、手動でテキスト解析を試行
+-        console.print("[yellow]手動解析を試行中...[/yellow]")
++        console.print("[yellow]自動解析を試行中...[/yellow]")
+         from .xml_utils import parse_ga_from_text_fallback
+         pairs = parse_ga_from_text_fallback(xml_content)
+ 
+diff --git a/easy_dataset_cli/xml_utils.py b/easy_dataset_cli/xml_utils.py
+index ec5a370..d8eed5a 100644
+--- a/easy_dataset_cli/xml_utils.py
++++ b/easy_dataset_cli/xml_utils.py
+@@ -41,10 +41,10 @@ def parse_ga_from_text_fallback(content: str) -> List[Dict[str, Dict[str, str]]]
+                         "description": audience_desc.strip()
+                     }
+                 })
+-                console.print(f"[green]✓[/green] (手動解析) {genre_title} x {audience_title}")
++                console.print(f"[green]✓[/green] (自動解析) {genre_title} x {audience_title}")
+ 
+     except Exception as e:
+-        console.print(f"[red]手動解析も失敗:[/red] {e}")
++        console.print(f"[red]自動解析も失敗:[/red] {e}")
+ 
+     return pairs
+ 
+@@ -97,10 +97,10 @@ def parse_qa_from_text_fallback(content: str) -> List[Dict[str, str]]:
+                     "question": question.strip(),
+                     "answer": answer.strip()
+                 })
+-                console.print("[green]✓[/green] (手動解析) Q&A追加")
++                console.print("[green]✓[/green] (自動解析) Q&A追加")
+ 
+     except Exception as e:
+-        console.print(f"[red]Q&A手動解析も失敗:[/red] {e}")
++        console.print(f"[red]Q&A自動解析も失敗:[/red] {e}")
+ 
+     return qa_pairs
+ 
+```
+
+---
+
+## ⏰ 17:42:24 - `4a8b518`
+**📝 プロンプトの改善**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:24 2025 +0900
+M	easy_dataset_cli/prompts/ga_definition_generation.md
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:24 2025 +0900
+
+    📝 プロンプトの改善
+    
+    - Genre-Audienceペア生成の指示を多様性・多角性を確保するように改善
+    - 生成されるペアの質とバリエーション向上
+
+ easy_dataset_cli/prompts/ga_definition_generation.md | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/prompts/ga_definition_generation.md b/easy_dataset_cli/prompts/ga_definition_generation.md
+index 757afcd..17c05a4 100644
+--- a/easy_dataset_cli/prompts/ga_definition_generation.md
++++ b/easy_dataset_cli/prompts/ga_definition_generation.md
+@@ -7,7 +7,7 @@
+ 2. この文章から質問と回答のペアを生成する際に最適となる{num_ga_pairs}個のGenre-Audienceペアを提案してください。
+ 3. 各Genreは異なる文体・形式（学術論文、技術ブログ、教科書、FAQ、対話形式など）を表現してください。
+ 4. 各Audienceは異なる知識レベル・立場（初心者、学生、専門家、実務者など）を表現してください。
+-5. 文章の内容に適したペアを選択し、多様性を確保してください。
++5. 文章の内容に適したペアを選択し、多様性・多角性を確保してください。
+ 
+ ## 文章:
+ ---
+```
+
+---
+
+## ⏰ 17:42:46 - `efb38b6`
+**🔀 Merge: QA生成機能の強化**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 0a18942 4a8b518
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:46 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 0a18942 4a8b518
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:42:46 2025 +0900
+
+    🔀 Merge: QA生成機能の強化
+    
+    - エラーハンドリングの強化
+    - ログ記録機能の追加
+    - XML解析機能の改善
+    - プロンプトの最適化
+
+ easy_dataset_cli/ga_parser.py                      |   2 +-
+ easy_dataset_cli/main.py                           |   7 +-
+ .../prompts/ga_definition_generation.md            |   2 +-
+ easy_dataset_cli/qa_generator.py                   | 367 +++++++++++++++++++--
+ easy_dataset_cli/xml_utils.py                      |   8 +-
+ 5 files changed, 345 insertions(+), 41 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 17:44:09 - `03519c3`
+**🧪 テスト: XMLパース機能の改善テストスクリプトを追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:44:09 2025 +0900
+A	tests/test_xml_parsing.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:44:09 2025 +0900
+
+    🧪 テスト: XMLパース機能の改善テストスクリプトを追加
+    
+    - XMLパースの正常動作を検証するテストケースを実装
+    - バッククォート付きXMLのパース改善をテスト
+    - クリーニング機能の動作確認を追加
+    - 複数のXML形式に対応するパーサーの安定性向上
+
+ tests/test_xml_parsing.py | 121 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 121 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/tests/test_xml_parsing.py b/tests/test_xml_parsing.py
+new file mode 100644
+index 0000000..7183a79
+--- /dev/null
++++ b/tests/test_xml_parsing.py
+@@ -0,0 +1,121 @@
++#!/usr/bin/env python3
++"""XMLパース改善のテストスクリプト"""
++
++import sys
++import os
++sys.path.append(os.path.join(os.path.dirname(__file__), 'easy_dataset_cli'))
++
++from easy_dataset_cli.qa_generator import _parse_qa_response, _clean_llm_response
++from pathlib import Path
++import json
++
++def test_xml_parsing():
++    """XMLパースのテスト"""
++    
++    # テストケース1: 正常なXML
++    test_xml_1 = '''<QAPairs>
++<Pair>
++<Question>テスト質問1</Question>
++<Answer>テスト回答1</Answer>
++</Pair>
++<Pair>
++<Question>テスト質問2</Question>
++<Answer>テスト回答2</Answer>
++</Pair>
++</QAPairs>'''
++    
++    # テストケース2: バッククォート付きのXML（エラーの原因）
++    test_xml_2 = '''\```xml
++<QAPairs>
++<Pair>
++<Question>東方地霊殿はどんなジャンルのゲームですか？</Question>
++<Answer>弾幕系シューティングゲームで、横スクロールの弾幕を回避しながら敵を倒すタイプです。</Answer>
++</Pair>
++<Pair>
++<Question>このゲームはどのOSでプレイできますか？</Question>
++<Answer>Windows 2000、XP、Vista以降のPCで動作し、2020年にはSteam版も配信されています。</Answer>
++</Pair>
++<Pair>
++<Question>最低動作環境は何ですか？</Question>
++<Answer>CPUは1GHz以上のPentium、DirectX 9.0以上、メモリ256 MB、HDD空き容量600 MBが必要です。</Answer>
++</Pair>
++<Pair>
++<Question>インストール手順は簡単ですか？</Question>
++<Answer>Steam版ならアカウントにログインして「購入」→「インストール」ボタンを押すだけで自動インストールされます。</Answer>
++</Pair>
++</QAPairs>
++\```'''
++    
++    # テストケース3: <Pair>タグのみのXML
++    test_xml_3 = '''<Pair>
++<Question>Pairタグのみの質問1</Question>
++<Answer>Pairタグのみの回答1</Answer>
++</Pair>
++<Pair>
++<Question>Pairタグのみの質問2</Question>
++<Answer>Pairタグのみの回答2</Answer>
++</Pair>'''
++    
++    # テストケース4: 不完全なXML
++    test_xml_4 = '''<QAPairs>
++<Pair>
++<Question>不完全なXMLの質問</Question>
++<Answer>不完全なXMLの回答</Answer>
++</Pair>
++<QAPairs>'''
++    
++    print("=== XMLパース改善テスト ===\n")
++    
++    # テストケース1
++    print("テストケース1: 正常なXML")
++    result1 = _parse_qa_response(test_xml_1, None, None, None, None)
++    print(f"結果: {len(result1)}件のQ&Aを抽出")
++    for i, qa in enumerate(result1, 1):
++        print(f"  {i}. Q: {qa['question']}")
++        print(f"     A: {qa['answer']}")
++    print()
++    
++    # テストケース2
++    print("テストケース2: バッククォート付きのXML（元のエラー）")
++    result2 = _parse_qa_response(test_xml_2, None, None, None, None)
++    print(f"結果: {len(result2)}件のQ&Aを抽出")
++    for i, qa in enumerate(result2, 1):
++        print(f"  {i}. Q: {qa['question']}")
++        print(f"     A: {qa['answer']}")
++    print()
++    
++    # テストケース3
++    print("テストケース3: <Pair>タグのみのXML")
++    result3 = _parse_qa_response(test_xml_3, None, None, None, None)
++    print(f"結果: {len(result3)}件のQ&Aを抽出")
++    for i, qa in enumerate(result3, 1):
++        print(f"  {i}. Q: {qa['question']}")
++        print(f"     A: {qa['answer']}")
++    print()
+```
+
+---
+
+## ⏰ 17:44:18 - `6ab902e`
+**📝 例: 東方地霊殿データセット生成バッチを追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:44:18 2025 +0900
+A	example/scripts/orin.bat
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:44:18 2025 +0900
+
+    📝 例: 東方地霊殿データセット生成バッチを追加
+    
+    - 東方地霊殿のGA定義生成を実行するバッチファイルを追加
+    - QAペア生成とAlpaca形式変換を一括実行するコマンドを設定
+    - Hugging Faceへのアップロードまで自動化したワークフローを提供
+
+ example/scripts/orin.bat | 5 +++++
+ 1 file changed, 5 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/scripts/orin.bat b/example/scripts/orin.bat
+new file mode 100644
+index 0000000..5505447
+--- /dev/null
++++ b/example/scripts/orin.bat
+@@ -0,0 +1,5 @@
++uv run easy-dataset create-ga .\example\input\documents\Touhou_Chireiden.md --output-dir .\example\output\Touhou_Chireiden --num-ga-pairs 10
++
++uv run easy-dataset generate .\example\input\documents\Touhou_Chireiden.md  --ga-file .\example\output\Touhou_Chireiden\ga\ga_definitions.xml --output-dir .\example\output\Touhou_Chireiden\ --chunk-size 500 --use-fulltext
++
++uv run easy-dataset convert-to-alpaca .\example\output\Touhou_Chireiden\qa --output-file example\output\Touhou_Chireiden\dataset.json --upload-hf --hf-repo-name MakiAi/Orin-Instruct-Alpaca-JP-v7
+```
+
+---
+
+## ⏰ 17:44:42 - `64fc70b`
+**🔀 Merge: XMLパース機能の改善とデータセット生成バッチ追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: efb38b6 6ab902e
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:44:42 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: efb38b6 6ab902e
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 17:44:42 2025 +0900
+
+    🔀 Merge: XMLパース機能の改善とデータセット生成バッチ追加
+
+ example/scripts/orin.bat  |   5 ++
+ tests/test_xml_parsing.py | 121 ++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 126 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 18:48:38 - `aaa1b2e`
+**✨ XMLユーティリティ関数の追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:48:38 2025 +0900
+M	easy_dataset_cli/xml_utils.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:48:38 2025 +0900
+
+    ✨ XMLユーティリティ関数の追加
+    
+    - 既存XMLファイルの読み込み機能を実装
+    - ファイル名からジャンル情報を抽出する機能を追加
+    - XMLファイルのパースとQ&Aペアの抽出処理を実装
+
+ easy_dataset_cli/xml_utils.py | 214 +++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 212 insertions(+), 2 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/xml_utils.py b/easy_dataset_cli/xml_utils.py
+index d8eed5a..0fb46ef 100644
+--- a/easy_dataset_cli/xml_utils.py
++++ b/easy_dataset_cli/xml_utils.py
+@@ -5,6 +5,7 @@ import xml.etree.ElementTree as ET
+ from xml.dom import minidom
+ from collections import defaultdict
+ from typing import List, Dict
++from pathlib import Path
+ from rich.console import Console
+ 
+ console = Console()
+@@ -123,15 +124,224 @@ def extract_simple_tag_content(content: str, tag: str) -> str:
+         return ""
+ 
+ 
+-def convert_to_xml_by_genre(all_qa_pairs: List[Dict[str, str]]) -> Dict[str, str]:
+-    """Q&AペアのリストをGenreごとにグループ化し、整形されたXML文字列の辞書に変換する"""
++def load_existing_xml_file(xml_file_path: Path) -> List[Dict[str, str]]:
++    """既存のXMLファイルからQ&Aペアを読み込む"""
++    qa_pairs = []
++    
++    try:
++        if not xml_file_path.exists():
++            return qa_pairs
++            
++        tree = ET.parse(xml_file_path)
++        root = tree.getroot()
++        
++        genre = root.get('genre', 'Unknown')
++        
++        for pair in root.findall('Pair'):
++            audience_elem = pair.find('Audience')
++            question_elem = pair.find('Question')
++            answer_elem = pair.find('Answer')
++            
++            if all([audience_elem is not None, question_elem is not None, answer_elem is not None]):
++                qa_pairs.append({
++                    "genre": genre,
++                    "audience": audience_elem.text or "",
++                    "question": question_elem.text or "",
++                    "answer": answer_elem.text or ""
++                })
++                
++    except Exception as e:
++        console.print(f"[yellow]既存XMLファイルの読み込みに失敗: {e}[/yellow]")
++    
++    return qa_pairs
++
++
++def load_existing_xml_file_with_fallback(xml_file_path: Path, genre_from_filename: str = None) -> List[Dict[str, str]]:
++    """既存のXMLファイルからQ&Aペアを読み込み、ファイル名からジャンル情報を取得するフォールバック関数"""
++    qa_pairs = []
++    
++    try:
++        if not xml_file_path.exists():
++            return qa_pairs
++            
++        tree = ET.parse(xml_file_path)
++        root = tree.getroot()
++        
++        # XML内のgenre属性を優先し、なければファイル名から取得した情報を使用
++        genre = root.get('genre', genre_from_filename or 'Unknown')
++        
++        for pair in root.findall('Pair'):
++            audience_elem = pair.find('Audience')
++            question_elem = pair.find('Question')
++            answer_elem = pair.find('Answer')
++            
++            # Audience要素がない場合は、ファイル名から取得したAudience情報を使用
++            if audience_elem is None:
++                # ファイル名からAudience情報を取得（この関数の呼び出し元で設定済み）
++                audience = genre_from_filename.split('_')[-1] if genre_from_filename and '_' in genre_from_filename else ""
++            else:
++                audience = audience_elem.text or ""
++            
++            if question_elem is not None and answer_elem is not None:
++                qa_pairs.append({
++                    "genre": genre,
++                    "audience": audience,
++                    "question": question_elem.text or "",
++                    "answer": answer_elem.text or ""
++                })
++                
++    except Exception as e:
++        console.print(f"[yellow]既存XMLファイルの読み込みに失敗: {e}[/yellow]")
++    
++    return qa_pairs
++
++
++def aggregate_logs_xml_to_qa(logs_dir: Path, qa_dir: Path) -> None:
++    """logsフォルダ内のXMLファイルを集約してqaフォルダの既存XMLファイルを更新・追加する"""
++    from rich.console import Console
++    
++    console = Console()
++    
++    console.print(f"[bold blue]logsフォルダからXMLファイルを集約して既存ファイルを更新しています...[/bold blue]")
++    
++    # qaディレクトリが存在しない場合は作成
++    qa_dir.mkdir(parents=True, exist_ok=True)
+```
+
+---
+
+## ⏰ 18:49:19 - `8bae4cc`
+**🔧 コアモジュールのXML機能統合**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:49:19 2025 +0900
+M	easy_dataset_cli/core.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:49:19 2025 +0900
+
+    🔧 コアモジュールのXML機能統合
+    
+    - XMLユーティリティ関数をコアモジュールに統合
+    - 新しい関数を__all__に追加して公開
+    - XML変換関数のシグネチャを更新して追加モードをサポート
+
+ easy_dataset_cli/core.py | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/core.py b/easy_dataset_cli/core.py
+index 056452b..3006305 100644
+--- a/easy_dataset_cli/core.py
++++ b/easy_dataset_cli/core.py
+@@ -12,7 +12,7 @@ from .qa_generator import (
+     generate_ga_definitions
+ )
+ from .text_splitter import split_text
+-from .xml_utils import convert_to_xml_by_genre
++from .xml_utils import convert_to_xml_by_genre, load_existing_xml_file, aggregate_logs_xml_to_qa
+ from .file_utils import (
+     create_output_directories,
+     save_ga_definitions_by_genre,
+@@ -40,6 +40,8 @@ __all__ = [
+     
+     # XML処理
+     'convert_to_xml_by_genre',
++    'load_existing_xml_file',
++    'aggregate_logs_xml_to_qa',
+     
+     # ファイル操作
+     'create_output_directories',
+```
+
+---
+
+## ⏰ 18:49:34 - `88e7d3d`
+**🔧 CLIコマンドの拡張**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:49:34 2025 +0900
+M	easy_dataset_cli/main.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:49:34 2025 +0900
+
+    🔧 CLIコマンドの拡張
+    
+    - generateコマンドに追加モードオプションを実装
+    - aggregate_logsコマンドを新規追加
+    - logsフォルダからXMLファイルを集約してqaフォルダに統合する機能を実装
+    - エラーハンドリングとユーザーフィードバックを強化
+
+ easy_dataset_cli/main.py | 37 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 36 insertions(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/main.py b/easy_dataset_cli/main.py
+index a799ac5..dccb06e 100644
+--- a/easy_dataset_cli/main.py
++++ b/easy_dataset_cli/main.py
+@@ -143,6 +143,10 @@ def generate(
+         "--use-fulltext", "-f",
+         help="全文をコンテキストとして含めてQA生成を行います。より文脈を理解したQAが生成されますが、処理時間とコストが増加します。"
+     )] = False,
++    append_mode: Annotated[bool, typer.Option(
++        "--append", "-A",
++        help="既存のXMLファイルに新しいQ&Aを追加します。指定しない場合は上書きします。"
++    )] = False,
+     export_alpaca: Annotated[bool, typer.Option(
+         "--export-alpaca", "-a",
+         help="生成されたQ&AペアをAlpaca形式のJSONファイルとして出力します。"
+@@ -239,7 +243,7 @@ def generate(
+             "個のQ&Aペアを生成しました。"
+         )
+ 
+-        xml_outputs_by_genre = convert_to_xml_by_genre(all_qa_pairs_with_ga)
++        xml_outputs_by_genre = convert_to_xml_by_genre(all_qa_pairs_with_ga, dirs["qa"] if dirs else None, append_mode)
+ 
+         if dirs:
+             console.print(f"XMLファイルを [cyan]{dirs['qa']}[/cyan] に保存しています...")
+@@ -370,5 +374,36 @@ def convert_to_alpaca(
+         raise typer.Exit(code=1)
+ 
+ 
++@app.command()
++def aggregate_logs(
++    output_dir: Annotated[Path, typer.Argument(
++        exists=True, dir_okay=True, readable=True,
++        help="logsフォルダが含まれる出力ディレクトリへのパス。"
++    )]
++):
++    """logsフォルダ内のタイムスタンプ付きXMLファイルを集約してqaフォルダのXMLを生成します。"""
++    
++    try:
++        logs_dir = output_dir / "logs"
++        qa_dir = output_dir / "qa"
++        
++        if not logs_dir.exists():
++            console.print(f"[bold red]logsフォルダが見つかりません: {logs_dir}[/bold red]")
++            raise typer.Exit(code=1)
++        
++        console.print(f"logsフォルダ: [cyan]{logs_dir}[/cyan]")
++        console.print(f"出力先qaフォルダ: [cyan]{qa_dir}[/cyan]")
++        
++        # XMLファイルを集約してqaフォルダに生成
++        from easy_dataset_cli.core import aggregate_logs_xml_to_qa
++        aggregate_logs_xml_to_qa(logs_dir, qa_dir)
++        
++        console.print(f"\n[bold green]✓[/bold green] 集約が完了しました！")
++        
++    except Exception as e:
++        console.print(f"[bold red]エラーが発生しました:[/bold red] {e}")
++        raise typer.Exit(code=1)
++
++
+ if __name__ == "__main__":
+     app()
+```
+
+---
+
+## ⏰ 18:51:19 - `1b6a50c`
+**🧪 XML集約機能のテスト追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:51:19 2025 +0900
+A	test_aggregate_logs.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:51:19 2025 +0900
+
+    🧪 XML集約機能のテスト追加
+    
+    - XML集約機能の動作確認用テストスクリプトを追加
+    - ログファイルのパースとQ&Aペアの集約処理を検証
+    - ファイル名解析とジャンル情報抽出のテストを実装
+
+ test_aggregate_logs.py | 145 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 145 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/test_aggregate_logs.py b/test_aggregate_logs.py
+new file mode 100644
+index 0000000..6f1c10f
+--- /dev/null
++++ b/test_aggregate_logs.py
+@@ -0,0 +1,145 @@
++#!/usr/bin/env python3
++"""logsフォルダのXML集約機能のテストスクリプト"""
++
++import sys
++import os
++import tempfile
++import shutil
++from pathlib import Path
++sys.path.append(os.path.join(os.path.dirname(__file__), 'easy_dataset_cli'))
++
++from easy_dataset_cli.xml_utils import aggregate_logs_xml_to_qa, load_existing_xml_file
++from easy_dataset_cli.core import aggregate_logs_xml_to_qa as core_aggregate_logs_xml_to_qa
++from rich.console import Console
++
++console = Console()
++
++def create_test_xml_files(logs_dir: Path):
++    """テスト用のXMLファイルを作成"""
++    
++    # logsディレクトリを作成
++    logs_dir.mkdir(parents=True, exist_ok=True)
++    
++    # テスト用XMLファイル1: FAQ_初心者ゲーマー
++    faq_xml_content = '''<?xml version="1.0" ?>
++<QAPairs genre="FAQ">
++  <Pair>
++    <Audience>初心者ゲーマー</Audience>
++    <Question>東方Projectとは何ですか？</Question>
++    <Answer>東方Projectは、上海アリス幻樂団によって制作された弾幕系シューティングゲームシリーズです。</Answer>
++  </Pair>
++  <Pair>
++    <Audience>初心者ゲーマー</Audience>
++    <Question>最初にどのゲームをプレイすればいいですか？</Question>
++    <Answer>初心者には「東方紅魔郷」や「東方妖々夢」がおすすめです。</Answer>
++  </Pair>
++</QAPairs>'''
++    
++    faq_file = logs_dir / "qa_pairs_FAQ_初心者ゲーマー_20250815_171008.xml"
++    faq_file.write_text(faq_xml_content, encoding='utf-8')
++    
++    # テスト用XMLファイル2: テクニカルガイド_PCゲーミング愛好者
++    tech_xml_content = '''<?xml version="1.0" ?>
++<QAPairs genre="テクニカルガイド">
++  <Pair>
++    <Audience>PCゲーミング愛好者</Audience>
++    <Question>東方Projectのシステム要件は？</Question>
++    <Answer>東方Projectのゲームは比較的古いPCでも動作するように設計されています。</Answer>
++  </Pair>
++  <Pair>
++    <Audience>PCゲーミング愛好者</Audience>
++    <Question>Steam版とダウンロード版の違いは？</Question>
++    <Answer>Steam版は自動アップデート機能があり、クラウドセーブに対応しています。</Answer>
++  </Pair>
++</QAPairs>'''
++    
++    tech_file = logs_dir / "qa_pairs_テクニカルガイド_PCゲーミング愛好者_20250815_171009.xml"
++    tech_file.write_text(tech_xml_content, encoding='utf-8')
++    
++    # テスト用XMLファイル3: FAQ_上級者
++    faq_advanced_xml_content = '''<?xml version="1.0" ?>
++<QAPairs genre="FAQ">
++  <Pair>
++    <Audience>上級者</Audience>
++    <Question>東方Projectのキャラクター設定はどこで確認できますか？</Question>
++    <Answer>公式サイトや各ゲームのマニュアル、二次創作情報サイトで詳細な設定を確認できます。</Answer>
++  </Pair>
++  <Pair>
++    <Audience>上級者</Audience>
++    <Question>弾幕の難易度設定について教えてください。</Question>
++    <Answer>各ゲームには複数の難易度設定があり、特に「Extra」や'Phantasm'は非常に高い難易度です。</Answer>
++  </Pair>
++</QAPairs>'''
++    
++    faq_advanced_file = logs_dir / "qa_pairs_FAQ_上級者_20250815_171010.xml"
++    faq_advanced_file.write_text(faq_advanced_xml_content, encoding='utf-8')
++
++def test_aggregate_logs():
++    """logsフォルダのXML集約機能のテスト"""
++    
++    print("=== logsフォルダのXML集約機能テスト ===\n")
++    
++    # 一時ディレクトリを作成
++    with tempfile.TemporaryDirectory() as temp_dir:
++        temp_path = Path(temp_dir)
++        logs_dir = temp_path / "logs"
++        qa_dir = temp_path / "qa"
++        
++        # テスト用XMLファイルを作成
++        create_test_xml_files(logs_dir)
++        
++        console.print(f"テスト用logsディレクトリ: {logs_dir}")
++        console.print(f"テスト用qaディレクトリ: {qa_dir}")
++        
++        # XMLファイルを集約
+```
+
+---
+
+## ⏰ 18:51:40 - `91132f4`
+**🔀 Merge: XML集約機能の実装**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 64fc70b 1b6a50c
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:51:40 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 64fc70b 1b6a50c
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 18:51:40 2025 +0900
+
+    🔀 Merge: XML集約機能の実装
+
+ easy_dataset_cli/core.py      |   4 +-
+ easy_dataset_cli/main.py      |  37 +++++++-
+ easy_dataset_cli/xml_utils.py | 214 +++++++++++++++++++++++++++++++++++++++++-
+ test_aggregate_logs.py        | 145 ++++++++++++++++++++++++++++
+ 4 files changed, 396 insertions(+), 4 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 21:01:44 - `c912cfe`
+**📚 README: 思考フロー付きQ&A生成機能の追加とオプション説明を更新**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:01:44 2025 +0900
+M	README.md
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:01:44 2025 +0900
+
+    📚 README: 思考フロー付きQ&A生成機能の追加とオプション説明を更新
+    
+    - 思考フロー付きQ&A生成の使用方法を追加
+    - --use-thinkingオプションの説明を追加
+    - --use-fulltextオプションの説明を整理
+
+ README.md | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index 0946c9a..17cd67d 100644
+--- a/README.md
++++ b/README.md
+@@ -77,6 +77,22 @@ uv run easy-dataset generate .\example\input\documents\sample_document.txt \
+   --export-alpaca
+ \```
+ 
++#### 思考フロー付きQ&Aの生成
++\```bash
++# 思考フローを含むQ&Aペアを生成
++uv run easy-dataset generate .\example\input\documents\sample_document.txt \
++  --ga-file .\example\output\sample_document\ga\ga_definitions.xml \
++  --output-dir .\example\output\sample_document\ \
++  --use-thinking
++
++# 思考フローと全文コンテキストを併用して生成
++uv run easy-dataset generate .\example\input\documents\sample_document.txt \
++  --ga-file .\example\output\sample_document\ga\ga_definitions.xml \
++  --output-dir .\example\output\sample_document\ \
++  --use-thinking \
++  --use-fulltext
++\```
++
+ #### Hugging Face Hubへの直接アップロード
+ \```bash
+ # 環境変数でトークンを設定
+@@ -130,6 +146,8 @@ Options:
+   -m, --model TEXT         Q&Aペアの生成に使用するLLMモデル [default: openrouter/openai/gpt-4o]
+   --chunk-size INTEGER     テキストチャンクの最大サイズ [default: 2000]
+   --chunk-overlap INTEGER  チャンク間のオーバーラップサイズ [default: 200]
++  -f, --use-fulltext       全文をコンテキストとして含めてQA生成を行います。より文脈を理解したQAが生成されますが、処理時間とコストが増加します。
++  -T, --use-thinking       各Q&Aペアに思考プロセスを追加して生成します。より深い理解と説明が可能になりますが、処理時間とコストが増加します。
+   -h, --help               Show this message and exit
+ \```
+ 
+```
+
+---
+
+## ⏰ 21:02:47 - `891db99`
+**✨ 機能: 思考フロー付きQ&A生成機能を追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:02:47 2025 +0900
+M	easy_dataset_cli/core.py
+M	easy_dataset_cli/main.py
+A	easy_dataset_cli/prompts/qa_generation_with_thinking.md
+M	easy_dataset_cli/qa_generator.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:02:47 2025 +0900
+
+    ✨ 機能: 思考フロー付きQ&A生成機能を追加
+    
+    - 思考フロー付きQ&A生成用のプロンプトテンプレートを追加
+    - generate_qa_for_chunk_with_ga_and_thinking関数を実装
+    - メインコマンドに--use-thinkingオプションを追加
+    - コアモジュールに新しい関数をエクスポート
+
+ easy_dataset_cli/core.py                           |   2 +
+ easy_dataset_cli/main.py                           |  27 ++-
+ .../prompts/qa_generation_with_thinking.md         |  53 +++++
+ easy_dataset_cli/qa_generator.py                   | 241 ++++++++++++++++++---
+ 4 files changed, 285 insertions(+), 38 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/core.py b/easy_dataset_cli/core.py
+index 3006305..b308563 100644
+--- a/easy_dataset_cli/core.py
++++ b/easy_dataset_cli/core.py
+@@ -9,6 +9,7 @@ from .ga_parser import (
+ from .qa_generator import (
+     generate_qa_for_chunk_with_ga,
+     generate_qa_for_chunk_with_ga_and_fulltext,
++    generate_qa_for_chunk_with_ga_and_thinking,
+     generate_ga_definitions
+ )
+ from .text_splitter import split_text
+@@ -33,6 +34,7 @@ __all__ = [
+     # Q&A生成関連
+     'generate_qa_for_chunk_with_ga',
+     'generate_qa_for_chunk_with_ga_and_fulltext',
++    'generate_qa_for_chunk_with_ga_and_thinking',
+     'generate_ga_definitions',
+     
+     # テキスト分割
+diff --git a/easy_dataset_cli/main.py b/easy_dataset_cli/main.py
+index dccb06e..9285adf 100644
+--- a/easy_dataset_cli/main.py
++++ b/easy_dataset_cli/main.py
+@@ -13,6 +13,7 @@ from .core import (
+     parse_ga_file,
+     generate_qa_for_chunk_with_ga,
+     generate_qa_for_chunk_with_ga_and_fulltext,
++    generate_qa_for_chunk_with_ga_and_thinking,
+     convert_to_xml_by_genre,
+     generate_ga_definitions,
+     parse_ga_definitions_from_xml,
+@@ -143,6 +144,10 @@ def generate(
+         "--use-fulltext", "-f",
+         help="全文をコンテキストとして含めてQA生成を行います。より文脈を理解したQAが生成されますが、処理時間とコストが増加します。"
+     )] = False,
++    use_thinking: Annotated[bool, typer.Option(
++        "--use-thinking", "-T",
++        help="各Q&Aペアに思考プロセスを追加して生成します。より深い理解と説明が可能になりますが、処理時間とコストが増加します。"
++    )] = False,
+     append_mode: Annotated[bool, typer.Option(
+         "--append", "-A",
+         help="既存のXMLファイルに新しいQ&Aを追加します。指定しない場合は上書きします。"
+@@ -204,12 +209,25 @@ def generate(
+             console.print("[yellow]⚠ 全文コンテキストモードが有効です。処理時間とコストが増加する可能性があります。[/yellow]")
+             console.print(f"[dim]全文長: {len(text)} 文字[/dim]")
+ 
++        # 思考フロー使用の場合は警告を表示
++        if use_thinking:
++            console.print("[yellow]⚠ 思考フローモードが有効です。各Q&Aに思考プロセスが追加されます。[/yellow]")
++
+         with Progress(console=console) as progress:
+             task = progress.add_task("[green]Q&Aペアを生成中...", total=total_tasks)
+ 
+             for chunk in chunks:
+                 for ga_pair in ga_pairs:
+-                    if use_fulltext:
++                    if use_thinking:
++                        qa_pairs = generate_qa_for_chunk_with_ga_and_thinking(
++                            chunk=chunk,
++                            full_text=text if use_fulltext else "",
++                            model=model,
++                            ga_pair=ga_pair,
++                            logs_dir=dirs["logs"] if dirs else None,
++                            num_qa_pairs=num_qa_pairs
++                        )
++                    elif use_fulltext:
+                         qa_pairs = generate_qa_for_chunk_with_ga_and_fulltext(
+                             chunk=chunk,
+                             full_text=text,
+@@ -226,12 +244,13 @@ def generate(
+                         )
+ 
+                     for pair in qa_pairs:
+-                        all_qa_pairs_with_ga.append({
++                        qa_entry = {
+                             "genre": ga_pair['genre']['title'],
+                             "audience": ga_pair['audience']['title'],
+                             "question": pair['question'],
+-                            "answer": pair['answer'],
+-                        })
++                            "answer": pair['answer'],  # <think>...</think>回答...形式がそのまま入る
++                        }
++                        all_qa_pairs_with_ga.append(qa_entry)
+ 
+                     progress.update(
+                         task, advance=1,
+diff --git a/easy_dataset_cli/prompts/qa_generation_with_thinking.md b/easy_dataset_cli/prompts/qa_generation_with_thinking.md
+new file mode 100644
+index 0000000..2bb04fe
+--- /dev/null
++++ b/easy_dataset_cli/prompts/qa_generation_with_thinking.md
+@@ -0,0 +1,53 @@
++# 役割: Q&Aペア生成の専門家（思考フロー対応版）
++
++あなたは、与えられた文章から高品質な質問と回答のペアを作成する専門家です。特に、指定された「体裁」と「読者」に合わせてスタイルを調整する能力に長けています。また、思考プロセスを明示的に記述する能力にも優れています。
++
++## 指示:
++1. 与えられた「全文」と「チャンク」を注意深く読んでください。
++2. 指定された「目標とする体裁」と「目標とする読者」の役割になりきってください。
+```
+
+---
+
+## ⏰ 21:03:05 - `dc7c4cd`
+**🔧 修正: XML生成機能を改善**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:05 2025 +0900
+M	easy_dataset_cli/alpaca_converter.py
+M	easy_dataset_cli/xml_utils.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:05 2025 +0900
+
+    🔧 修正: XML生成機能を改善
+
+ easy_dataset_cli/alpaca_converter.py |  3 +--
+ easy_dataset_cli/xml_utils.py        | 41 ++++++++++++++++++++++++++++++++++--
+ 2 files changed, 40 insertions(+), 4 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/alpaca_converter.py b/easy_dataset_cli/alpaca_converter.py
+index 0a148ea..3e31713 100644
+--- a/easy_dataset_cli/alpaca_converter.py
++++ b/easy_dataset_cli/alpaca_converter.py
+@@ -31,8 +31,7 @@ def xml_to_alpaca_format(xml_file_path: Path) -> List[Dict[str, str]]:
+                 audience = audience_elem.text or ""
+                 question = question_elem.text or ""
+                 answer = answer_elem.text or ""
+-                
+-                # アルパカ形式に変換
++                # Answerタグの内容をそのままoutputに入れる（<think>...</think>含む）
+                 alpaca_entry = {
+                     "instruction": question,
+                     "input": "",  # アルパカ形式では通常空文字
+diff --git a/easy_dataset_cli/xml_utils.py b/easy_dataset_cli/xml_utils.py
+index 0fb46ef..4337616 100644
+--- a/easy_dataset_cli/xml_utils.py
++++ b/easy_dataset_cli/xml_utils.py
+@@ -124,6 +124,30 @@ def extract_simple_tag_content(content: str, tag: str) -> str:
+         return ""
+ 
+ 
++def _parse_answer_with_think(answer_text: str) -> Dict[str, str]:
++    """<think>タグを含む回答をパースして分離"""
++    import re
++    
++    # <think>...</think>タグを検索
++    think_match = re.search(r'<think>(.*?)</think>', answer_text, re.DOTALL)
++    
++    if think_match:
++        think_content = think_match.group(1).strip()
++        # <think>タグ以降の回答テキストを取得
++        answer_content = answer_text[think_match.end():].strip()
++        return {
++            "has_think": True,
++            "think_content": think_content,
++            "answer_content": answer_content
++        }
++    else:
++        return {
++            "has_think": False,
++            "think_content": "",
++            "answer_content": answer_text
++        }
++
++
+ def load_existing_xml_file(xml_file_path: Path) -> List[Dict[str, str]]:
+     """既存のXMLファイルからQ&Aペアを読み込む"""
+     qa_pairs = []
+@@ -355,10 +379,23 @@ def convert_to_xml_by_genre(all_qa_pairs: List[Dict[str, str]], qa_dir: Path = N
+             question_elem.text = item["question"]
+ 
+             answer_elem = ET.SubElement(pair_elem, "Answer")
+-            answer_elem.text = item["answer"]
++            
++            # 回答内容を解析
++            parsed_answer = _parse_answer_with_think(item["answer"])
++            
++            if parsed_answer["has_think"]:
++                # <think>をサブエレメントとして追加
++                think_elem = ET.SubElement(answer_elem, "think")
++                think_elem.text = parsed_answer["think_content"]
++                think_elem.tail = parsed_answer["answer_content"]
++            else:
++                # 通常の回答
++                answer_elem.text = parsed_answer["answer_content"]
+ 
+         rough_string = ET.tostring(root, 'utf-8')
+         reparsed = minidom.parseString(rough_string)
+-        xml_outputs[genre] = reparsed.toprettyxml(indent="  ")
++        xml_output = reparsed.toprettyxml(indent="  ")
++        
++        xml_outputs[genre] = xml_output
+ 
+     return xml_outputs
+```
+
+---
+
+## ⏰ 21:03:17 - `7a7a944`
+**📁 ファイル: 新しいスクリプトとツールを追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:17 2025 +0900
+A	example/scripts/simple.bat
+A	fix_xml_generation.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:17 2025 +0900
+
+    📁 ファイル: 新しいスクリプトとツールを追加
+    
+    - XML生成修正用のスクリプトを追加
+    - シンプルな実行用バッチファイルを追加
+
+ example/scripts/simple.bat |  1 +
+ fix_xml_generation.py      | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 35 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/scripts/simple.bat b/example/scripts/simple.bat
+new file mode 100644
+index 0000000..15240c4
+--- /dev/null
++++ b/example/scripts/simple.bat
+@@ -0,0 +1 @@
++uv run easy-dataset generate .\example\input\documents\sample_document.txt  --ga-file .\example\output\sample_document\ga\ga_definitions.xml  --output-dir .\example\output\sample_document\ --use-thinking --append
+diff --git a/fix_xml_generation.py b/fix_xml_generation.py
+new file mode 100644
+index 0000000..ebe1b4b
+--- /dev/null
++++ b/fix_xml_generation.py
+@@ -0,0 +1,34 @@
++#!/usr/bin/env python3
++"""Q&Aジェネレーターのシステムメッセージを修正するスクリプト"""
++
++import sys
++import os
++
++def fix_system_messages():
++    """qa_generator.pyのシステムメッセージを修正"""
++    file_path = "c:/Prj/easy-dataset-cli/easy_dataset_cli/qa_generator.py"
++    
++    with open(file_path, 'r', encoding='utf-8') as f:
++        content = f.read()
++    
++    # 古いシステムメッセージを新しいものに置換
++    old_message = '"あなたは、XML形式で厳密に出力する優秀なアシスタントです。XMLの特殊文字（&, <, >, \\", \'）は適切にエスケープし、改行は含めずに出力してください。"'
++    new_message = '"あなたは、XML形式で厳密に出力する優秀なアシスタントです。通常のXMLの特殊文字（&, \\", \'）は適切にエスケープしてください。ただし、<Question>、<Answer>、<think>タグはそのまま使用してください。改行は含めずに出力してください。"'
++    
++    # 置換実行
++    new_content = content.replace(old_message, new_message)
++    
++    # 思考フロー用のメッセージも統一
++    thinking_old = '"あなたは、XML形式で出力する優秀なアシスタントです。<think>タグは特別なタグなのでエスケープしないでください。それ以外のXMLの特殊文字（&, <, >, \\", \'）は適切にエスケープし、改行は含めずに出力してください。"'
++    new_content = new_content.replace(thinking_old, new_message)
++    
++    # ファイルに書き戻し
++    with open(file_path, 'w', encoding='utf-8') as f:
++        f.write(new_content)
++    
++    print(f"修正完了: {file_path}")
++    print(f"置換回数 (通常): {content.count(old_message)}")
++    print(f"置換回数 (思考): {content.count(thinking_old)}")
++
++if __name__ == "__main__":
++    fix_system_messages()
+```
+
+---
+
+## ⏰ 21:03:27 - `8093d7d`
+**🔧 修正: 既存スクリプトを更新**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:27 2025 +0900
+M	example/scripts/orin.bat
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:27 2025 +0900
+
+    🔧 修正: 既存スクリプトを更新
+    
+    - orin.batのチャンクサイズを調整
+    - appendオプションを追加して実行を改善
+
+ example/scripts/orin.bat | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/scripts/orin.bat b/example/scripts/orin.bat
+index 5505447..cb3391b 100644
+--- a/example/scripts/orin.bat
++++ b/example/scripts/orin.bat
+@@ -1,5 +1,5 @@
+ uv run easy-dataset create-ga .\example\input\documents\Touhou_Chireiden.md --output-dir .\example\output\Touhou_Chireiden --num-ga-pairs 10
+ 
+-uv run easy-dataset generate .\example\input\documents\Touhou_Chireiden.md  --ga-file .\example\output\Touhou_Chireiden\ga\ga_definitions.xml --output-dir .\example\output\Touhou_Chireiden\ --chunk-size 500 --use-fulltext
++uv run easy-dataset generate .\example\input\documents\Touhou_Chireiden.md  --ga-file .\example\output\Touhou_Chireiden\ga\ga_definitions.xml --output-dir .\example\output\Touhou_Chireiden\ --chunk-size 3000 --use-fulltext --append
+ 
+ uv run easy-dataset convert-to-alpaca .\example\output\Touhou_Chireiden\qa --output-file example\output\Touhou_Chireiden\dataset.json --upload-hf --hf-repo-name MakiAi/Orin-Instruct-Alpaca-JP-v7
+```
+
+---
+
+## ⏰ 21:03:37 - `b7112cf`
+**🧪 テスト: 新しいテストファイルを追加**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:37 2025 +0900
+A	tests/test_answer_extraction.py
+A	tests/test_fixed_parsing.py
+A	tests/test_simple_xml.py
+A	tests/test_subelement.py
+A	tests/test_think_tag_preservation.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:37 2025 +0900
+
+    🧪 テスト: 新しいテストファイルを追加
+    
+    - 回答抽出のテストを追加
+    - 固定パーシングのテストを追加
+    - シンプルXML生成のテストを追加
+    - サブエレメント生成のテストを追加
+    - 思考タグ保持のテストを追加
+
+ tests/test_answer_extraction.py      | 56 +++++++++++++++++++++++++++++
+ tests/test_fixed_parsing.py          | 68 ++++++++++++++++++++++++++++++++++++
+ tests/test_simple_xml.py             | 68 ++++++++++++++++++++++++++++++++++++
+ tests/test_subelement.py             | 59 +++++++++++++++++++++++++++++++
+ tests/test_think_tag_preservation.py | 57 ++++++++++++++++++++++++++++++
+ 5 files changed, 308 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/tests/test_answer_extraction.py b/tests/test_answer_extraction.py
+new file mode 100644
+index 0000000..8d96d67
+--- /dev/null
++++ b/tests/test_answer_extraction.py
+@@ -0,0 +1,56 @@
++#!/usr/bin/env python3
++"""Answer要素の内容取得テスト"""
++
++import xml.etree.ElementTree as ET
++
++def test_answer_content_extraction():
++    """Answer要素の内容取得をテスト"""
++    
++    # テストXML
++    xml_content = """<QAPairs>
++    <Pair>
++        <Question>テスト質問1</Question>
++        <Answer><think>思考プロセス</think>回答内容</Answer>
++    </Pair>
++    <Pair>
++        <Question>テスト質問2</Question>
++        <Answer>普通の回答</Answer>
++    </Pair>
++</QAPairs>"""
++    
++    root = ET.fromstring(xml_content)
++    
++    for pair_node in root.findall('Pair'):
++        question_node = pair_node.find('Question')
++        answer_node = pair_node.find('Answer')
++        
++        if question_node is not None and answer_node is not None:
++            question_text = question_node.text or ""
++            
++            print(f"質問: {question_text}")
++            print(f"Answer要素の子要素数: {len(answer_node)}")
++            print(f"Answer.text: '{answer_node.text}'")
++            print(f"Answer.tail: '{answer_node.tail}'")
++            
++            # サブエレメントがある場合の詳細確認
++            if len(answer_node) > 0:
++                for i, child in enumerate(answer_node):
++                    print(f"  子要素{i}: tag='{child.tag}', text='{child.text}', tail='{child.tail}'")
++            
++            # <Answer>要素内の全ての内容を取得（サブエレメント含む）
++            if len(answer_node) > 0:
++                # サブエレメントがある場合、XML文字列として再構築
++                answer_content = ET.tostring(answer_node, encoding='unicode', method='xml')
++                print(f"Answer XML: {answer_content}")
++                # <Answer>タグを除去して内容のみ取得
++                answer_text = answer_content[answer_content.find('>')+1:answer_content.rfind('<')]
++                print(f"抽出された内容: '{answer_text}'")
++            else:
++                # サブエレメントがない場合は通常のテキスト
++                answer_text = answer_node.text or ""
++                print(f"通常テキスト: '{answer_text}'")
++            
++            print("---")
++
++if __name__ == "__main__":
++    test_answer_content_extraction()
+diff --git a/tests/test_fixed_parsing.py b/tests/test_fixed_parsing.py
+new file mode 100644
+index 0000000..f0104f2
+--- /dev/null
++++ b/tests/test_fixed_parsing.py
+@@ -0,0 +1,68 @@
++#!/usr/bin/env python3
++"""修正されたAnswer解析のテスト"""
++
++import xml.etree.ElementTree as ET
++
++def test_fixed_answer_parsing():
++    """修正されたAnswer解析をテスト"""
++    
++    # テストXML（実際のファイルと同じ構造）
++    xml_content = """<QAPairs>
++    <Pair>
++        <Question>テスト質問1</Question>
++        <Answer>
++            <think>これは思考プロセスです</think>
++            これは回答内容です。
++        </Answer>
++    </Pair>
++    <Pair>
++        <Question>テスト質問2</Question>
++        <Answer>普通の回答です。</Answer>
++    </Pair>
++</QAPairs>"""
++    
++    root = ET.fromstring(xml_content)
++    
++    for i, pair_node in enumerate(root.findall('Pair'), 1):
++        question_node = pair_node.find('Question')
++        answer_node = pair_node.find('Answer')
++        
++        if question_node is not None and answer_node is not None:
++            question_text = question_node.text or ""
++            
+```
+
+---
+
+## ⏰ 21:03:48 - `9dbddb0`
+**🧪 テスト: 既存のテストファイルを修正**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:48 2025 +0900
+A	tests/test_aggregate_logs.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:03:48 2025 +0900
+
+    🧪 テスト: 既存のテストファイルを修正
+    
+    - test_aggregate_logs.pyをtestsディレクトリに移動
+    - インポートパスを修正
+
+ tests/test_aggregate_logs.py | 145 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 145 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/tests/test_aggregate_logs.py b/tests/test_aggregate_logs.py
+new file mode 100644
+index 0000000..6f1c10f
+--- /dev/null
++++ b/tests/test_aggregate_logs.py
+@@ -0,0 +1,145 @@
++#!/usr/bin/env python3
++"""logsフォルダのXML集約機能のテストスクリプト"""
++
++import sys
++import os
++import tempfile
++import shutil
++from pathlib import Path
++sys.path.append(os.path.join(os.path.dirname(__file__), 'easy_dataset_cli'))
++
++from easy_dataset_cli.xml_utils import aggregate_logs_xml_to_qa, load_existing_xml_file
++from easy_dataset_cli.core import aggregate_logs_xml_to_qa as core_aggregate_logs_xml_to_qa
++from rich.console import Console
++
++console = Console()
++
++def create_test_xml_files(logs_dir: Path):
++    """テスト用のXMLファイルを作成"""
++    
++    # logsディレクトリを作成
++    logs_dir.mkdir(parents=True, exist_ok=True)
++    
++    # テスト用XMLファイル1: FAQ_初心者ゲーマー
++    faq_xml_content = '''<?xml version="1.0" ?>
++<QAPairs genre="FAQ">
++  <Pair>
++    <Audience>初心者ゲーマー</Audience>
++    <Question>東方Projectとは何ですか？</Question>
++    <Answer>東方Projectは、上海アリス幻樂団によって制作された弾幕系シューティングゲームシリーズです。</Answer>
++  </Pair>
++  <Pair>
++    <Audience>初心者ゲーマー</Audience>
++    <Question>最初にどのゲームをプレイすればいいですか？</Question>
++    <Answer>初心者には「東方紅魔郷」や「東方妖々夢」がおすすめです。</Answer>
++  </Pair>
++</QAPairs>'''
++    
++    faq_file = logs_dir / "qa_pairs_FAQ_初心者ゲーマー_20250815_171008.xml"
++    faq_file.write_text(faq_xml_content, encoding='utf-8')
++    
++    # テスト用XMLファイル2: テクニカルガイド_PCゲーミング愛好者
++    tech_xml_content = '''<?xml version="1.0" ?>
++<QAPairs genre="テクニカルガイド">
++  <Pair>
++    <Audience>PCゲーミング愛好者</Audience>
++    <Question>東方Projectのシステム要件は？</Question>
++    <Answer>東方Projectのゲームは比較的古いPCでも動作するように設計されています。</Answer>
++  </Pair>
++  <Pair>
++    <Audience>PCゲーミング愛好者</Audience>
++    <Question>Steam版とダウンロード版の違いは？</Question>
++    <Answer>Steam版は自動アップデート機能があり、クラウドセーブに対応しています。</Answer>
++  </Pair>
++</QAPairs>'''
++    
++    tech_file = logs_dir / "qa_pairs_テクニカルガイド_PCゲーミング愛好者_20250815_171009.xml"
++    tech_file.write_text(tech_xml_content, encoding='utf-8')
++    
++    # テスト用XMLファイル3: FAQ_上級者
++    faq_advanced_xml_content = '''<?xml version="1.0" ?>
++<QAPairs genre="FAQ">
++  <Pair>
++    <Audience>上級者</Audience>
++    <Question>東方Projectのキャラクター設定はどこで確認できますか？</Question>
++    <Answer>公式サイトや各ゲームのマニュアル、二次創作情報サイトで詳細な設定を確認できます。</Answer>
++  </Pair>
++  <Pair>
++    <Audience>上級者</Audience>
++    <Question>弾幕の難易度設定について教えてください。</Question>
++    <Answer>各ゲームには複数の難易度設定があり、特に「Extra」や'Phantasm'は非常に高い難易度です。</Answer>
++  </Pair>
++</QAPairs>'''
++    
++    faq_advanced_file = logs_dir / "qa_pairs_FAQ_上級者_20250815_171010.xml"
++    faq_advanced_file.write_text(faq_advanced_xml_content, encoding='utf-8')
++
++def test_aggregate_logs():
++    """logsフォルダのXML集約機能のテスト"""
++    
++    print("=== logsフォルダのXML集約機能テスト ===\n")
++    
++    # 一時ディレクトリを作成
++    with tempfile.TemporaryDirectory() as temp_dir:
++        temp_path = Path(temp_dir)
++        logs_dir = temp_path / "logs"
++        qa_dir = temp_path / "qa"
++        
++        # テスト用XMLファイルを作成
++        create_test_xml_files(logs_dir)
++        
++        console.print(f"テスト用logsディレクトリ: {logs_dir}")
++        console.print(f"テスト用qaディレクトリ: {qa_dir}")
++        
++        # XMLファイルを集約
+```
+
+---
+
+## ⏰ 21:04:03 - `a2816bc`
+**🗑️ クリーンアップ: 古いテストファイルを削除**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:04:03 2025 +0900
+D	test_aggregate_logs.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:04:03 2025 +0900
+
+    🗑️ クリーンアップ: 古いテストファイルを削除
+    
+    - ルートディレクトリのtest_aggregate_logs.pyを削除
+    - testsディレクトリに移動済み
+
+ test_aggregate_logs.py | 145 -------------------------------------------------
+ 1 file changed, 145 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/test_aggregate_logs.py b/test_aggregate_logs.py
+deleted file mode 100644
+index 6f1c10f..0000000
+--- a/test_aggregate_logs.py
++++ /dev/null
+@@ -1,145 +0,0 @@
+-#!/usr/bin/env python3
+-"""logsフォルダのXML集約機能のテストスクリプト"""
+-
+-import sys
+-import os
+-import tempfile
+-import shutil
+-from pathlib import Path
+-sys.path.append(os.path.join(os.path.dirname(__file__), 'easy_dataset_cli'))
+-
+-from easy_dataset_cli.xml_utils import aggregate_logs_xml_to_qa, load_existing_xml_file
+-from easy_dataset_cli.core import aggregate_logs_xml_to_qa as core_aggregate_logs_xml_to_qa
+-from rich.console import Console
+-
+-console = Console()
+-
+-def create_test_xml_files(logs_dir: Path):
+-    """テスト用のXMLファイルを作成"""
+-    
+-    # logsディレクトリを作成
+-    logs_dir.mkdir(parents=True, exist_ok=True)
+-    
+-    # テスト用XMLファイル1: FAQ_初心者ゲーマー
+-    faq_xml_content = '''<?xml version="1.0" ?>
+-<QAPairs genre="FAQ">
+-  <Pair>
+-    <Audience>初心者ゲーマー</Audience>
+-    <Question>東方Projectとは何ですか？</Question>
+-    <Answer>東方Projectは、上海アリス幻樂団によって制作された弾幕系シューティングゲームシリーズです。</Answer>
+-  </Pair>
+-  <Pair>
+-    <Audience>初心者ゲーマー</Audience>
+-    <Question>最初にどのゲームをプレイすればいいですか？</Question>
+-    <Answer>初心者には「東方紅魔郷」や「東方妖々夢」がおすすめです。</Answer>
+-  </Pair>
+-</QAPairs>'''
+-    
+-    faq_file = logs_dir / "qa_pairs_FAQ_初心者ゲーマー_20250815_171008.xml"
+-    faq_file.write_text(faq_xml_content, encoding='utf-8')
+-    
+-    # テスト用XMLファイル2: テクニカルガイド_PCゲーミング愛好者
+-    tech_xml_content = '''<?xml version="1.0" ?>
+-<QAPairs genre="テクニカルガイド">
+-  <Pair>
+-    <Audience>PCゲーミング愛好者</Audience>
+-    <Question>東方Projectのシステム要件は？</Question>
+-    <Answer>東方Projectのゲームは比較的古いPCでも動作するように設計されています。</Answer>
+-  </Pair>
+-  <Pair>
+-    <Audience>PCゲーミング愛好者</Audience>
+-    <Question>Steam版とダウンロード版の違いは？</Question>
+-    <Answer>Steam版は自動アップデート機能があり、クラウドセーブに対応しています。</Answer>
+-  </Pair>
+-</QAPairs>'''
+-    
+-    tech_file = logs_dir / "qa_pairs_テクニカルガイド_PCゲーミング愛好者_20250815_171009.xml"
+-    tech_file.write_text(tech_xml_content, encoding='utf-8')
+-    
+-    # テスト用XMLファイル3: FAQ_上級者
+-    faq_advanced_xml_content = '''<?xml version="1.0" ?>
+-<QAPairs genre="FAQ">
+-  <Pair>
+-    <Audience>上級者</Audience>
+-    <Question>東方Projectのキャラクター設定はどこで確認できますか？</Question>
+-    <Answer>公式サイトや各ゲームのマニュアル、二次創作情報サイトで詳細な設定を確認できます。</Answer>
+-  </Pair>
+-  <Pair>
+-    <Audience>上級者</Audience>
+-    <Question>弾幕の難易度設定について教えてください。</Question>
+-    <Answer>各ゲームには複数の難易度設定があり、特に「Extra」や'Phantasm'は非常に高い難易度です。</Answer>
+-  </Pair>
+-</QAPairs>'''
+-    
+-    faq_advanced_file = logs_dir / "qa_pairs_FAQ_上級者_20250815_171010.xml"
+-    faq_advanced_file.write_text(faq_advanced_xml_content, encoding='utf-8')
+-
+-def test_aggregate_logs():
+-    """logsフォルダのXML集約機能のテスト"""
+-    
+-    print("=== logsフォルダのXML集約機能テスト ===\n")
+-    
+-    # 一時ディレクトリを作成
+-    with tempfile.TemporaryDirectory() as temp_dir:
+-        temp_path = Path(temp_dir)
+-        logs_dir = temp_path / "logs"
+-        qa_dir = temp_path / "qa"
+-        
+-        # テスト用XMLファイルを作成
+-        create_test_xml_files(logs_dir)
+-        
+-        console.print(f"テスト用logsディレクトリ: {logs_dir}")
+-        console.print(f"テスト用qaディレクトリ: {qa_dir}")
+-        
+-        # XMLファイルを集約
+```
+
+---
+
+## ⏰ 21:04:21 - `d692b8d`
+**🔧 修正: prompts.pyを更新**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:04:21 2025 +0900
+M	easy_dataset_cli/prompts.py
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:04:21 2025 +0900
+
+    🔧 修正: prompts.pyを更新
+    
+    - 思考フロー付きQ&A生成用のプロンプト関数を追加
+
+ easy_dataset_cli/prompts.py | 5 +++++
+ 1 file changed, 5 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/easy_dataset_cli/prompts.py b/easy_dataset_cli/prompts.py
+index 24ba9f9..c2b00b8 100644
+--- a/easy_dataset_cli/prompts.py
++++ b/easy_dataset_cli/prompts.py
+@@ -28,3 +28,8 @@ def get_qa_generation_with_fulltext_prompt() -> str:
+ def get_ga_definition_generation_prompt() -> str:
+     """GA定義生成プロンプトを取得"""
+     return load_prompt_template("ga_definition_generation")
++
++
++def get_qa_generation_with_thinking_prompt() -> str:
++    """思考フロー対応Q&A生成プロンプトを取得"""
++    return load_prompt_template("qa_generation_with_thinking")
+```
+
+---
+
+## ⏰ 21:04:39 - `3a88e90`
+**🔀 Merge: 思考フロー付きQ&A生成機能の追加とXML生成の修正**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 91132f4 d692b8d
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:04:39 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 91132f4 d692b8d
+Author: Maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Aug 15 21:04:39 2025 +0900
+
+    🔀 Merge: 思考フロー付きQ&A生成機能の追加とXML生成の修正
+
+ README.md                                          |  18 ++
+ easy_dataset_cli/alpaca_converter.py               |   3 +-
+ easy_dataset_cli/core.py                           |   2 +
+ easy_dataset_cli/main.py                           |  27 ++-
+ easy_dataset_cli/prompts.py                        |   5 +
+ .../prompts/qa_generation_with_thinking.md         |  53 +++++
+ easy_dataset_cli/qa_generator.py                   | 241 ++++++++++++++++++---
+ easy_dataset_cli/xml_utils.py                      |  41 +++-
+ example/scripts/orin.bat                           |   2 +-
+ example/scripts/simple.bat                         |   1 +
+ fix_xml_generation.py                              |  34 +++
+ .../test_aggregate_logs.py                         |   0
+ tests/test_answer_extraction.py                    |  56 +++++
+ tests/test_fixed_parsing.py                        |  68 ++++++
+ tests/test_simple_xml.py                           |  68 ++++++
+ tests/test_subelement.py                           |  59 +++++
+ tests/test_think_tag_preservation.py               |  57 +++++
+ 17 files changed, 692 insertions(+), 43 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

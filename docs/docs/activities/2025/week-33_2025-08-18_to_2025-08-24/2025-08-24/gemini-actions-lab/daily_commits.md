@@ -1854,3 +1854,48 @@ index dee8545..858f00e 100644
 
 ---
 
+## ⏰ 15:18:40 - `eef87b9`
+**Update and rename gemini-cli-jp.yml to gemini-jp-cli.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 15:18:40 2025 +0900
+R099	.github/workflows/gemini-cli-jp.yml	.github/workflows/gemini-jp-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 15:18:40 2025 +0900
+
+    Update and rename gemini-cli-jp.yml to gemini-jp-cli.yml
+
+ .github/workflows/{gemini-cli-jp.yml => gemini-jp-cli.yml} | 3 +++
+ 1 file changed, 3 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli-jp.yml b/.github/workflows/gemini-jp-cli.yml
+similarity index 99%
+rename from .github/workflows/gemini-cli-jp.yml
+rename to .github/workflows/gemini-jp-cli.yml
+index 858f00e..f9a7772 100644
+--- a/.github/workflows/gemini-cli-jp.yml
++++ b/.github/workflows/gemini-jp-cli.yml
+@@ -1,6 +1,9 @@
+ name: '💬 Gemini CLI (日本語版)'
+ 
+ on:
++  issues:
++    types:
++      - 'opened'
+   pull_request_review_comment:
+     types:
+       - 'created'
+```
+
+---
+

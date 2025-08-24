@@ -1,3 +1,3 @@
 # 🔄 Latest Changes (File List)
 
-- ✏️ **Modified:** `.github/workflows/gemini-cli-jp.yml`
+- 🔄 **Renamed:** `.github/workflows/gemini-cli-jp.yml`

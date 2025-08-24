@@ -1,4 +1,3 @@
 # 🔄 Latest Changes (File List)
 
-- ✏️ **Modified:** `.gitignore`
-- ✏️ **Modified:** `README.md`
+- 🆕 **Added:** `.github/workflows/gemini-cli-jp.yml`

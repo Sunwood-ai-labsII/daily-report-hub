@@ -1,323 +1,327 @@
 # 🔄 Latest Code Changes
 
 ```diff
-diff --git a/.gitignore b/.gitignore
-index 16c3c78..c45c6ef 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -206,3 +206,4 @@ marimo/_static/
- marimo/_lsp/
- __marimo__/
- .SourceSageAssets/
-+.gemini/
-diff --git a/README.md b/README.md
-index 2b43334..3fff9ff 100644
---- a/README.md
-+++ b/README.md
-@@ -1,267 +1,77 @@
--
--![](https://github.com/user-attachments/assets/e8fe7c3c-a8d8-4165-86a1-86b9f433f9b3)
-+# Gemini Actions Lab
- 
- <div align="center">
--
--# Daily Report Hub Template
--
--<img src="https://img.shields.io/badge/GitHub%20Actions-CICD-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
--<img src="https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white" alt="Bash" />
--<a href="https://github.com/Sunwood-ai-labsII/daily-report-hub">
--  <img src="https://img.shields.io/badge/daily--report--hub-PANDA-00D4AA?style=for-the-badge&logo=github&logoColor=white" alt="daily-report-hub PANDA" />
--</a>
--
-+  <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
-+  <img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
- </div>
- 
--
- ---
- 
--## 📖 概要
--
--このリポジトリは、**Daily Report Hubのテンプレートリポジトリ**です。このテンプレートからリポジトリを作成すると、自動で日報生成・同期機能が有効になります。
-+## 📖 Overview
- 
--### 🎯 主な用途
--- 日報自動生成機能を必要とするプロジェクトのテンプレート
--- 集約用リポジトリ（daily-report-hub）への自動同期
--- GitHub Actionsによる完全自動化されたレポート生成
-+This repository serves as a laboratory and showcase for integrating Google's Gemini AI with GitHub Actions. It demonstrates how to automate various repository management tasks using the power of generative AI.
- 
--### 🔄 運用方式
--このテンプレートから作成されたリポジトリは、daily-report-hub本体のワークフローから**リモート実行**されるスクリプトを使用して日報を生成・同期します。
-+### 🎯 Key Features
-+- **AI-Powered Automation**: Leverage Gemini to handle tasks like issue triage, pull request reviews, and more.
-+- **CLI-like Interaction**: Interact with the AI assistant directly from issue comments.
-+- **Extensible Workflows**: Easily adapt and customize the workflows for your own projects.
- 
- ---
- 
--## 🚩 このテンプレートの役割
-+## 🤖 Workflows
- 
--### 🛠️ テンプレートとしての機能
--- **自動セットアップ**: 日報生成機能の自動有効化
--- **ワークフロー提供**: GitHub Actionsワークフローの自動適用
--- **同期機能**: 集約用リポジトリへの自動同期機能
--- **カスタマイズ**: 必要に応じた設定変更の容易性
-+This repository contains the following GitHub Actions workflows:
- 
--### 📦 提供される機能
--- Gitのコミット履歴・差分から日報（Markdown形式）を自動生成
--- 週単位・日単位でレポートを整理
--- 別リポジトリ（daily-report-hub）へPRベースで自動同期
--- プルリクエストの自動承認・自動マージ（設定可）
--- Docusaurus用のディレクトリ・ナビゲーション構造も自動生成
-+### 📄 `gemini-cli.yml`
-+- **Trigger**: Issue comments.
-+- **Function**: Allows users to interact with a Gemini-powered CLI assistant by creating comments on issues (e.g., `@gemini-cli /do-something`). The assistant can perform actions on the repository based on the user's request.
- 
-----
-+###  triage `gemini-issue-automated-triage.yml`
-+- **Trigger**: Issue creation or edits.
-+- **Function**: Automatically triages new or updated issues. It can add labels, assignees, or post comments based on the issue's content, as determined by Gemini.
- 
--## ⚙️ ワークフロー概要
-+### 🕒 `gemini-issue-scheduled-triage.yml`
-+- **Trigger**: Scheduled cron job.
-+- **Function**: Periodically scans through open issues and performs triage tasks, such as identifying stale issues or suggesting priorities.
- 
--### 🔄 自動化フロー図
-+### 🔍 `gemini-pr-review.yml`
-+- **Trigger**: Pull request creation or updates.
-+- **Function**: Automatically reviews pull requests. Gemini can provide feedback on code quality, suggest improvements, or identify potential issues.
- 
--\```mermaid
--graph TB
--    A[開発者のコード<br/>commit/push] --> B[GitHub Actions<br/>ワークフロー]
--    B --> C[レポート生成<br/>Markdown]
--    C --> D[ファイル同期<br/>クローン]
--    D --> E[PR作成・承認<br/>自動化可]
--    E --> F[集約リポジトリ<br/>daily-report-hub]
--\```
--
--### 📋 処理ステップ
--
--1. **トリガー**: **GitHub Actions**がmainブランチへのpushやPRをトリガー
--2. **データ収集**: リモートスクリプトで
--   - 週情報の計算
--   - Git活動の分析
--   - Markdownレポートの生成
--   - Docusaurus用ディレクトリ構造の作成
--3. **同期処理**: 集約用リポジトリ（daily-report-hub）をクローンし、レポートをコピー
--4. **PR処理**: PR作成・自動承認・自動マージ（設定に応じて自動化）
--
--### ⚙️ 設定可能なオプション
--
--| 設定 | 説明 | デフォルト値 |
--|------|------|-------------|
--| `WEEK_START_DAY` | 週の開始曜日（0=日曜日, 1=月曜日, ...） | `1`（月曜日） |
--| `AUTO_APPROVE` | PR自動承認 | `true` |
--| `AUTO_MERGE` | PR自動マージ | `true` |
--| `CREATE_PR` | PR作成/直接プッシュ切り替え | `true` |
-+### 🔄 `sync-to-report-gh.yml`
-+- **Trigger**: Pushes to the main branch.
-+- **Function**: This is a legacy workflow from a previous template and is not actively used in this lab. It was designed to sync daily reports to a central repository.
- 
- ---
- 
--## 📝 主な機能
--
--> [!NOTE]
--> このテンプレートから作成されたリポジトリでは、以下の機能が自動で有効になります。
--
--### 🔄 自動実行されるスクリプト（リモート）
--
--- **週情報計算**
--  週情報（週番号・開始日・終了日など）を計算し環境変数に出力
-+## 🚀 Usage
- 
--- **Git活動分析**
--  Gitのコミット履歴・差分を分析し、生データファイルを生成
--
--- **Markdownレポート生成**
--  生データから日報・統計・差分などのMarkdownレポートを自動生成
--
--- **Docusaurus構造作成**
--  Docusaurus用のディレクトリ・_category_.jsonを自動生成
--
--- **同期処理**
--  集約リポジトリへPR作成・自動承認・自動マージ
-+To use these workflows in your own repository, you can copy the workflow files from the `.github/workflows` directory and adapt them to your needs. You will need to configure the necessary secrets, such as your Gemini API key.
- 
- ---
- 
--## 🚀 使い方（クイックスタート）
--
--### 📝 テンプレートからリポジトリを作成する方法
--
--> [!TIP]
--> このテンプレートから新しいリポジトリを作成すると、日報生成機能が自動で有効になります。
--
--1. **このリポジトリをテンプレートとして使用**
--   - リポジトリトップページの「Use this template」ボタンをクリック
--   - リポジトリ名を入力して「Create repository from template」をクリック
--
--2. **必要なシークレットを設定**
--   - 作成したリポジトリの「Settings」→「Secrets and variables」→「Actions」に移動
--   - 必要なシークレットを設定（下記参照）
--
--3. **自動で日報生成が開始**
--   - mainブランチにpushすると自動で日報生成＆集約リポジトリへ同期
--
--### 🌐 ワークフローの実際の動作
--
--> [!IMPORTANT]
--> 作成されたリポジトリでは、以下のワークフローが自動で実行されます：
--
--\```yaml
--name: 📊 デイリーレポートハブ同期 v2.3 (YUKIHIKO PR版 - 完全リモート実行)
--on:
--  push:
--    branches: [main, master]
--  pull_request:
--    types: [opened, synchronize, closed]
--
--env:
--  WEEK_START_DAY: 1
--  AUTO_APPROVE: true
--  AUTO_MERGE: true
--  CREATE_PR: true
--  # リモートスクリプトの設定
--  SCRIPTS_BASE_URL: https://raw.githubusercontent.com/Sunwood-ai-labsII/daily-report-hub_dev/main/.github/scripts
--
--jobs:
--  sync-data:
--    runs-on: ubuntu-latest
--    steps:
--      - name: 📥 現在のリポジトリをチェックアウト
--        uses: actions/checkout@v4
--        with:
--          fetch-depth: 0
--
--      - name: 📅 週情報を計算
--        run: curl -LsSf ${SCRIPTS_BASE_URL}/calculate-week-info.sh | sh -s -- ${{ env.WEEK_START_DAY }}
--
--      - name: 🔍 Git活動を分析
--        run: curl -LsSf ${SCRIPTS_BASE_URL}/analyze-git-activity.sh | sh
--
--      - name: 📝 Markdownレポートを生成
--        run: curl -LsSf ${SCRIPTS_BASE_URL}/generate-markdown-reports.sh | sh
--
--      - name: 📂 レポートハブをクローン
--        env:
--          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
--          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
--        run: |
--          git config --global user.name "GitHub Actions Bot"
--          git config --global user.email "actions@github.com"
--          git clone https://x-access-token:${GITHUB_TOKEN}@github.com/${REPORT_HUB_REPO}.git daily-report-hub
--
--      - name: 🏗️ Docusaurus構造を作成
--        run: curl -LsSf ${SCRIPTS_BASE_URL}/create-docusaurus-structure.sh | sh
--
--      - name: 🚀 YUKIHIKO権限でPR作成＆自動承認
--        env:
--          GITHUB_TOKEN_ORIGINAL: ${{ secrets.GH_PAT }}      # 承認用
--          YUKIHIKO_TOKEN: ${{ secrets.GH_PAT_YUKIHIKO }}     # PR作成用
--          GITHUB_TOKEN: ${{ secrets.GH_PAT }}              # デフォルト
--          REPORT_HUB_REPO: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labsII/daily-report-hub' }}
--        run: curl -LsSf ${SCRIPTS_BASE_URL}/sync-to-hub-gh.sh | sh
--\```
--
--### 🔑 環境変数・シークレット設定
--
--> [!WARNING]
--> 以下のシークレットを設定しないと、日報同期機能が正常に動作しません。
--
--#### 必須シークレット
--- `GH_PAT`: GitHub Personal Access Token（リポジトリアクセス用）
--- `GH_PAT_YUKIHIKO`: YUKIHIKO権限用のToken（PR作成・承認用）
--
--#### オプション環境変数（ワークフロー内で設定）
--- `REPORT_HUB_REPO`: レポートハブリポジトリ（デフォルト: `Sunwood-ai-labsII/daily-report-hub`）
--- `WEEK_START_DAY`: 週の開始曜日（0=日曜日, 1=月曜日, ..., 6=土曜日、デフォルト: 1）
--- `AUTO_APPROVE`: PR自動承認（true/false、デフォルト: true）
--- `AUTO_MERGE`: PR自動マージ（true/false、デフォルト: true）
--- `CREATE_PR`: PR作成フラグ（true=PR作成, false=直接プッシュ、デフォルト: true）
--
--#### 環境変数設定例
--各環境変数の詳細な設定は、ワークフローファイル内のコメントを参照してください。
--
--### 📋 シークレット設定手順
--
--> [!CAUTION]
--> シークレットの漏洩には注意してください。GitHubリポジトリ内に直接記述しないでください。
--
--1. リポジトリの「Settings」→「Secrets and variables」→「Actions」に移動
--2. 「New repository secret」をクリックして各シークレットを追加
--3. 以下のシークレットを設定：
--   - `GH_PAT`: `repo`スコープを持つPersonal Access Token
--   - `GH_PAT_YUKIHIKO`: `repo`スコープを持つPersonal Access Token（YUKIHIKO権限用）
--
-----
--
--## 📁 ディレクトリ構成例
--
--> [!NOTE]
--> このテンプレートから作成されたリポジトリの基本的な構成です。
-+## 📁 Directory Structure
- 
- \```
- .
- ├── .github/
- │   └── workflows/
-+│       ├── gemini-cli.yml
-+│       ├── gemini-issue-automated-triage.yml
-+│       ├── gemini-issue-scheduled-triage.yml
-+│       ├── gemini-pr-review.yml
- │       └── sync-to-report-gh.yml
- ├── .gitignore
- ├── LICENSE
--├── README.md
--└── [プロジェクト固有のファイル]
-+└── README.md
- \```
- 
- ---
- 
--## 🛠️ 設定・カスタマイズ
--
--> [!TIP]
--> 必要に応じてワークフローファイルをカスタマイズできます。
--
--- `.github/workflows/sync-to-report-gh.yml`
--  - `WEEK_START_DAY`：週の開始曜日（0=日, 1=月, ...）
--  - `AUTO_APPROVE`：PR自動承認
--  - `AUTO_MERGE`：PR自動マージ
--  - `CREATE_PR`：PR作成/直接push切替
--
--- リモートスクリプトの詳細は開発リポジトリを参照
--
-----
--
--## 🔗 参考リンク
--
--- [集約用日報ハブリポジトリ](https://github.com/Sunwood-ai-labsII/daily-report-hub)
--- [開発リポジトリ（スクリプトソース）](https://github.com/Sunwood-ai-labsII/daily-report-hub_dev)
--- [GitHub Actions公式ドキュメント](https://docs.github.com/ja/actions)
--- [Docusaurus公式サイト](https://docusaurus.io/ja/)
--
-----
--
--## 📝 ライセンス
-+## 📝 License
- 
--このテンプレートは [LICENSE](LICENSE) に基づいて提供されています。
-+This project is licensed under the terms of the [LICENSE](LICENSE) file.
- 
- ---
- 
--© 2025 Sunwood-ai-labsII
-+© 2025 Sunwood-ai-labsII
-\ No newline at end of file
+diff --git a/.github/workflows/gemini-cli-jp.yml b/.github/workflows/gemini-cli-jp.yml
+new file mode 100644
+index 0000000..dee8545
+--- /dev/null
++++ b/.github/workflows/gemini-cli-jp.yml
+@@ -0,0 +1,317 @@
++name: '💬 Gemini CLI (日本語版)'
++
++on:
++  pull_request_review_comment:
++    types:
++      - 'created'
++  pull_request_review:
++    types:
++      - 'submitted'
++  issue_comment:
++    types:
++      - 'created'
++
++concurrency:
++  group: '${{ github.workflow }}-${{ github.event.issue.number }}'
++  cancel-in-progress: |-
++    ${{ github.event.sender.type == 'User' && ( github.event.issue.author_association == 'OWNER' || github.event.issue.author_association == 'MEMBER' || github.event.issue.author_association == 'COLLABORATOR') }}
++
++defaults:
++  run:
++    shell: 'bash'
++
++permissions:
++  contents: 'write'
++  id-token: 'write'
++  pull-requests: 'write'
++  issues: 'write'
++
++jobs:
++  gemini-cli-jp:
++    # この条件は信頼できるユーザーによってアクションがトリガーされた場合のみ実行されるようにします。
++    # プライベートリポジトリの場合、リポジトリにアクセスできるユーザーは信頼できるとみなされます。
++    # パブリックリポジトリの場合、メンバー、オーナー、またはコラボレーターが信頼できるとみなされます。
++    if: |-
++      github.event_name == 'workflow_dispatch' ||
++      (
++        github.event_name == 'issues' && github.event.action == 'opened' &&
++        contains(github.event.issue.body, '@gemini-cli-jp') &&
++        !contains(github.event.issue.body, '@gemini-cli-jp /review') &&
++        !contains(github.event.issue.body, '@gemini-cli-jp /triage') &&
++        (
++          github.event.repository.private == true ||
++          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
++        )
++      ) ||
++      (
++        (
++          github.event_name == 'issue_comment' ||
++          github.event_name == 'pull_request_review_comment'
++        ) &&
++        contains(github.event.comment.body, '@gemini-cli-jp') &&
++        !contains(github.event.comment.body, '@gemini-cli-jp /review') &&
++        !contains(github.event.comment.body, '@gemini-cli-jp /triage') &&
++        (
++          github.event.repository.private == true ||
++          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
++        )
++      ) ||
++      (
++        github.event_name == 'pull_request_review' &&
++        contains(github.event.review.body, '@gemini-cli-jp') &&
++        !contains(github.event.review.body, '@gemini-cli-jp /review') &&
++        !contains(github.event.review.body, '@gemini-cli-jp /triage') &&
++        (
++          github.event.repository.private == true ||
++          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
++        )
++      )
++    timeout-minutes: 10
++    runs-on: 'ubuntu-latest'
++    steps:
++      - name: 'GitHub App トークンを生成'
++        id: 'generate_token'
++        if: |-
++          ${{ vars.APP_ID }}
++        uses: 'actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e' # ratchet:actions/create-github-app-token@v2
++        with:
++          app-id: '${{ vars.APP_ID }}'
++          private-key: '${{ secrets.APP_PRIVATE_KEY }}'
++
++      - name: 'イベントからコンテキストを取得'
++        id: 'get_context'
++        env:
++          EVENT_NAME: '${{ github.event_name }}'
++          EVENT_PAYLOAD: '${{ toJSON(github.event) }}'
++        run: |-
++          set -euo pipefail
++
++          USER_REQUEST=""
++          ISSUE_NUMBER=""
++          IS_PR="false"
++
++          if [[ "${EVENT_NAME}" == "issues" ]]; then
++            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.body)
++            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.number)
++          elif [[ "${EVENT_NAME}" == "issue_comment" ]]; then
++            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .comment.body)
++            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.number)
++            if [[ $(echo "${EVENT_PAYLOAD}" | jq -r .issue.pull_request) != "null" ]]; then
++              IS_PR="true"
++            fi
++          elif [[ "${EVENT_NAME}" == "pull_request_review" ]]; then
++            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .review.body)
++            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .pull_request.number)
++            IS_PR="true"
++          elif [[ "${EVENT_NAME}" == "pull_request_review_comment" ]]; then
++            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .comment.body)
++            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .pull_request.number)
++            IS_PR="true"
++          fi
++
++          # ユーザーリクエストをクリーンアップ
++          USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-cli-jp//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
++
++          {
++            echo "user_request=${USER_REQUEST}"
++            echo "issue_number=${ISSUE_NUMBER}"
++            echo "is_pr=${IS_PR}"
++          } >> "${GITHUB_OUTPUT}"
++
++      - name: 'コミット用のgitユーザーを設定'
++        run: |-
++          git config --global user.name 'gemini-cli-jp[bot]'
++          git config --global user.email 'gemini-cli-jp[bot]@users.noreply.github.com'
++
++      - name: 'PRブランチをチェックアウト'
++        if: |-
++          ${{  steps.get_context.outputs.is_pr == 'true' }}
++        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # ratchet:actions/checkout@v4
++        with:
++          token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          repository: '${{ github.repository }}'
++          ref: 'refs/pull/${{ steps.get_context.outputs.issue_number }}/head'
++          fetch-depth: 0
++
++      - name: 'メインブランチをチェックアウト'
++        if: |-
++          ${{  steps.get_context.outputs.is_pr == 'false' }}
++        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # ratchet:actions/checkout@v4
++        with:
++          token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          repository: '${{ github.repository }}'
++          fetch-depth: 0
++
++      - name: 'リクエストを確認'
++        env:
++          GITHUB_ACTOR: '${{ github.actor }}'
++          GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
++          REPOSITORY: '${{ github.repository }}'
++          REQUEST_TYPE: '${{ steps.get_context.outputs.request_type }}'
++        run: |-
++          set -euo pipefail
++          MESSAGE="@${GITHUB_ACTOR} リクエストを受け取りました。今から作業を開始します！ 🤖"
++          if [[ -n "${MESSAGE}" ]]; then
++            gh issue comment "${ISSUE_NUMBER}" \
++              --body "${MESSAGE}" \
++              --repo "${REPOSITORY}"
++          fi
++
++      - name: '説明を取得'
++        id: 'get_description'
++        env:
++          GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          IS_PR: '${{ steps.get_context.outputs.is_pr }}'
++          ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
++        run: |-
++          set -euo pipefail
++          if [[ "${IS_PR}" == "true" ]]; then
++            DESCRIPTION=$(gh pr view "${ISSUE_NUMBER}" --json body --template '{{.body}}')
++          else
++            DESCRIPTION=$(gh issue view "${ISSUE_NUMBER}" --json body --template '{{.body}}')
++          fi
++          {
++            echo "description<<EOF"
++            echo "${DESCRIPTION}"
++            echo "EOF"
++          } >> "${GITHUB_OUTPUT}"
++
++      - name: 'コメントを取得'
++        id: 'get_comments'
++        env:
++          GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          IS_PR: '${{ steps.get_context.outputs.is_pr }}'
++          ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
++        run: |-
++          set -euo pipefail
++          if [[ "${IS_PR}" == "true" ]]; then
++            COMMENTS=$(gh pr view "${ISSUE_NUMBER}" --json comments --template '{{range .comments}}{{.author.login}}: {{.body}}{{"\n"}}{{end}}')
++          else
++            COMMENTS=$(gh issue view "${ISSUE_NUMBER}" --json comments --template '{{range .comments}}{{.author.login}}: {{.body}}{{"\n"}}{{end}}')
++          fi
++          {
++            echo "comments<<EOF"
++            echo "${COMMENTS}"
++            echo "EOF"
++          } >> "${GITHUB_OUTPUT}"
++
++      - name: 'Geminiを実行'
++        id: 'run_gemini'
++        uses: 'google-github-actions/run-gemini-cli@v0'
++        env:
++          GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          REPOSITORY: '${{ github.repository }}'
++          USER_REQUEST: '${{ steps.get_context.outputs.user_request }}'
++          ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
++          IS_PR: '${{ steps.get_context.outputs.is_pr }}'
++        with:
++          gemini_api_key: '${{ secrets.GEMINI_API_KEY }}'
++          gcp_workload_identity_provider: '${{ vars.GCP_WIF_PROVIDER }}'
++          gcp_project_id: '${{ vars.GOOGLE_CLOUD_PROJECT }}'
++          gcp_location: '${{ vars.GOOGLE_CLOUD_LOCATION }}'
++          gcp_service_account: '${{ vars.SERVICE_ACCOUNT_EMAIL }}'
++          use_vertex_ai: '${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}'
++          use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
++          settings: |-
++            {
++              "debug": ${{ fromJSON(env.DEBUG || env.ACTIONS_STEP_DEBUG || false) }},
++              "maxSessionTurns": 50,
++              "telemetry": {
++                "enabled": false,
++                "target": "gcp"
++              }
++            }
++          prompt: |-
++            ## 役割
++
++            あなたはGitHubワークフローのCLIインターフェース経由で呼び出される親切なAIアシスタントです。リポジトリとやり取りし、ユーザーに応答するためのツールを使用できます。
++
++            ## コンテキスト
++
++            - **リポジトリ**: `${{ github.repository }}`
++            - **トリガーイベント**: `${{ github.event_name }}`
++            - **Issue/PR番号**: `${{ steps.get_context.outputs.issue_number }}`
++            - **これはPRですか？**: `${{ steps.get_context.outputs.is_pr }}`
++            - **Issue/PRの説明**:
++            `${{ steps.get_description.outputs.description }}`
++            - **コメント**:
++            `${{ steps.get_comments.outputs.comments }}`
++
++            ## ユーザーリクエスト
++
++            ユーザーから以下のリクエストが送信されました：
++            `${{ steps.get_context.outputs.user_request }}`
++
++            ## Issue、PRコメント、質問への応答方法
++
++            このワークフローは3つの主要なシナリオをサポートしています：
++
++            1. **Issueの修正を作成**
++               - ユーザーリクエストと関連するIssueまたはPRの説明を注意深く読んでください。
++               - 利用可能なツールを使用してすべての関連コンテキストを収集してください（例：`gh issue view`、`gh pr view`、`gh pr diff`、`cat`、`head`、`tail`）。
++               - 先に進む前に問題の根本原因を特定してください。
++               - **チェックリストとして計画を表示し維持してください**：
++                 - 最初に、Issueまたはリクエストを解決するために必要なステップを概説し、IssueまたはPRにチェックリストコメントとして投稿してください（GitHubマークダウンのチェックボックスを使用：`- [ ] タスク`）。
++                 - 例：
++                   \```
++                   ### 計画
++                   - [ ] 根本原因の調査
++                   - [ ] `file.py`での修正の実装
++                   - [ ] テストの追加/修正
++                   - [ ] ドキュメントの更新
++                   - [ ] 修正の確認とIssueのクローズ
++                   \```
++                 - 使用：`gh pr comment "${ISSUE_NUMBER}" --body "<plan>"`または`gh issue comment "${ISSUE_NUMBER}" --body "<plan>"`で初期計画を投稿。
++                 - 進捗に応じて、同じコメントを編集してチェックリストを最新かつ見やすく保ってください（完了したタスクに`- [x]`をチェック）。
++                   - チェックリストを更新するには：
++                     1. チェックリストのコメントIDを見つけます（`gh pr comment list "${ISSUE_NUMBER}"`または`gh issue comment list "${ISSUE_NUMBER}"`を使用）。
++                     2. 更新されたチェックリストでコメントを編集します：
++                        - PRの場合：`gh pr comment --edit <comment-id> --body "<updated plan>"`
++                        - Issueの場合：`gh issue comment --edit <comment-id> --body "<updated plan>"`
++                     3. チェックリストはIssueまたはPRのコメントとしてのみ維持されるべきです。コードファイルでチェックリストを追跡または更新しないでください。
++               - 修正にコードの変更が必要な場合は、影響を受けるファイルと行を特定してください。明確化が必要な場合は、ユーザーへの質問をメモしてください。
++               - 利用可能なツール（例：`write_file`）を使用して必要なコードまたはドキュメントの変更を行ってください。すべての変更がプロジェクトの規約とベストプラクティスに従っていることを確認してください。エラーを防ぐため、すべてのシェル変数を`"${VAR}"`（引用符と波括弧付き）として参照してください。
++               - 修正が意図通りに動作することを確認するために、関連するテストまたはチェックを実行してください。可能であれば、Issueが解決されたという証拠（テスト出力、スクリーンショットなど）を提供してください。
++               - **ブランチ作成とコミット**：
++                 - **決して`main`ブランチに直接コミットしないでください。**
++                 - **プルリクエスト**（`IS_PR`が`true`）で作業している場合、正しいブランチは既にチェックアウトされています。単純にコミットしてプッシュしてください。
++                   - `git add .`
++                   - `git commit -m "feat: <変更の説明>"`
++                   - `git push`
++                 - **Issue**（`IS_PR`が`false`）で作業している場合、変更のための新しいブランチを作成してください。適切なブランチ名は`issue/${ISSUE_NUMBER}/<短い説明>`です。
++                   - `git checkout -b issue/${ISSUE_NUMBER}/my-fix`
++                   - `git add .`
++                   - `git commit -m "feat: <修正の説明>"`
++                   - `git push origin issue/${ISSUE_NUMBER}/my-fix`
++                   - プッシュ後、プルリクエストを作成できます：`gh pr create --title "Fixes #${ISSUE_NUMBER}: <短いタイトル>" --body "このPRはIssue #${ISSUE_NUMBER}に対処します。"`
++               - マークダウンファイルで何が変更され、その理由を要約してください：`write_file("response.md", "<ここにあなたの応答>")`
++               - 応答をコメントとして投稿：
++                 - PRの場合：`gh pr comment "${ISSUE_NUMBER}" --body-file response.md`
++                 - Issueの場合：`gh issue comment "${ISSUE_NUMBER}" --body-file response.md`
++
++            2. **プルリクエストのコメントに対処**
++               - 特定のコメントとPRのコンテキストを読んでください。
++               - `gh pr view`、`gh pr diff`、`cat`などのツールを使用してコードと議論を理解してください。
++               - コメントが変更や明確化を求めている場合、Issueの修正と同じプロセスに従ってください：チェックリスト計画を作成し、実装し、テストし、必要な変更をコミットし、進行に応じてチェックリストを更新してください。
++               - **変更のコミット**：正しいPRブランチは既にチェックアウトされています。単純に変更を追加、コミット、プッシュしてください。
++                 - `git add .`
++                 - `git commit -m "fix: レビューコメントに対処"`
++                 - `git push`
++               - コメントが質問の場合、必要に応じてコードまたはドキュメントを参照して、直接的かつ明確に答えてください。
++               - `response.md`で応答を文書化し、PRコメントとして投稿：`gh pr comment "${ISSUE_NUMBER}" --body-file response.md`
++
++            3. **Issueの任意の質問に答える**
++               - `gh issue view`および関連ツールを使用して、質問と完全なIssueコンテキストを読んでください。
++               - 正確な回答を提供するために、必要に応じてコードベースを研究または分析してください。
++               - 質問にコードまたはドキュメントの変更が必要な場合、上記の修正プロセスに従い、チェックリスト計画の作成と更新、および**セクション1で説明されている変更のための新しいブランチの作成**を含めてください。
++               - `response.md`で明確で簡潔な回答を書き、Issueコメントとして投稿：`gh issue comment "${ISSUE_NUMBER}" --body-file response.md`
++
++            ## ガイドライン
++
++            - **簡潔で実行可能であること。** ユーザーの問題を効率的に解決することに焦点を当ててください。
++            - **コードまたはドキュメントを修正した場合は、常に変更をコミットしてプッシュしてください。**
++            - **修正や回答について不明な場合は、あなたの推論を説明し、明確化の質問をしてください。**
++            - **プロジェクトの規約とベストプラクティスに従ってください。**
++
++            すべての応答とコメントは日本語で行ってください。
 ```

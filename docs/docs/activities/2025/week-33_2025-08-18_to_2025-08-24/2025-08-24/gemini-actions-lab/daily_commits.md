@@ -1265,3 +1265,210 @@ index 14899a7..6914b92 100644
 
 ---
 
+## ⏰ 13:54:03 - `1209c07`
+**Update gemini-issue-automated-triage.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 13:54:03 2025 +0900
+M	.github/workflows/gemini-issue-automated-triage.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 13:54:03 2025 +0900
+
+    Update gemini-issue-automated-triage.yml
+
+ .github/workflows/gemini-issue-automated-triage.yml | 3 ---
+ 1 file changed, 3 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
+index 6914b92..4c85ade 100644
+--- a/.github/workflows/gemini-issue-automated-triage.yml
++++ b/.github/workflows/gemini-issue-automated-triage.yml
+@@ -5,9 +5,6 @@ on:
+     types:
+       - 'opened'
+       - 'reopened'
+-  issue_comment:
+-    types:
+-      - 'created'
+   workflow_dispatch:
+     inputs:
+       issue_number:
+```
+
+---
+
+## ⏰ 05:05:06 - `c011fbf`
+**docs: update README to reflect repository purpose**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Aug 24 05:05:06 2025 +0000
+M	README.md
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Aug 24 05:05:06 2025 +0000
+
+    docs: update README to reflect repository purpose
+
+ README.md | 264 +++++++++-----------------------------------------------------
+ 1 file changed, 37 insertions(+), 227 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index 2b43334..3fff9ff 100644
+--- a/README.md
++++ b/README.md
+@@ -1,267 +1,77 @@
+-
+-![](https://github.com/user-attachments/assets/e8fe7c3c-a8d8-4165-86a1-86b9f433f9b3)
++# Gemini Actions Lab
+ 
+ <div align="center">
+-
+-# Daily Report Hub Template
+-
+-<img src="https://img.shields.io/badge/GitHub%20Actions-CICD-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+-<img src="https://img.shields.io/badge/Bash-4EAA25?style=for-the-badge&logo=gnubash&logoColor=white" alt="Bash" />
+-<a href="https://github.com/Sunwood-ai-labsII/daily-report-hub">
+-  <img src="https://img.shields.io/badge/daily--report--hub-PANDA-00D4AA?style=for-the-badge&logo=github&logoColor=white" alt="daily-report-hub PANDA" />
+-</a>
+-
++  <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
++  <img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
+ </div>
+ 
+-
+ ---
+ 
+-## 📖 概要
+-
+-このリポジトリは、**Daily Report Hubのテンプレートリポジトリ**です。このテンプレートからリポジトリを作成すると、自動で日報生成・同期機能が有効になります。
++## 📖 Overview
+ 
+-### 🎯 主な用途
+-- 日報自動生成機能を必要とするプロジェクトのテンプレート
+-- 集約用リポジトリ（daily-report-hub）への自動同期
+-- GitHub Actionsによる完全自動化されたレポート生成
++This repository serves as a laboratory and showcase for integrating Google's Gemini AI with GitHub Actions. It demonstrates how to automate various repository management tasks using the power of generative AI.
+ 
+-### 🔄 運用方式
+-このテンプレートから作成されたリポジトリは、daily-report-hub本体のワークフローから**リモート実行**されるスクリプトを使用して日報を生成・同期します。
++### 🎯 Key Features
++- **AI-Powered Automation**: Leverage Gemini to handle tasks like issue triage, pull request reviews, and more.
++- **CLI-like Interaction**: Interact with the AI assistant directly from issue comments.
++- **Extensible Workflows**: Easily adapt and customize the workflows for your own projects.
+ 
+ ---
+ 
+-## 🚩 このテンプレートの役割
++## 🤖 Workflows
+ 
+-### 🛠️ テンプレートとしての機能
+-- **自動セットアップ**: 日報生成機能の自動有効化
+-- **ワークフロー提供**: GitHub Actionsワークフローの自動適用
+-- **同期機能**: 集約用リポジトリへの自動同期機能
+-- **カスタマイズ**: 必要に応じた設定変更の容易性
++This repository contains the following GitHub Actions workflows:
+ 
+-### 📦 提供される機能
+-- Gitのコミット履歴・差分から日報（Markdown形式）を自動生成
+-- 週単位・日単位でレポートを整理
+-- 別リポジトリ（daily-report-hub）へPRベースで自動同期
+-- プルリクエストの自動承認・自動マージ（設定可）
+-- Docusaurus用のディレクトリ・ナビゲーション構造も自動生成
++### 📄 `gemini-cli.yml`
++- **Trigger**: Issue comments.
++- **Function**: Allows users to interact with a Gemini-powered CLI assistant by creating comments on issues (e.g., `@gemini-cli /do-something`). The assistant can perform actions on the repository based on the user's request.
+ 
+----
++###  triage `gemini-issue-automated-triage.yml`
++- **Trigger**: Issue creation or edits.
++- **Function**: Automatically triages new or updated issues. It can add labels, assignees, or post comments based on the issue's content, as determined by Gemini.
+ 
+-## ⚙️ ワークフロー概要
++### 🕒 `gemini-issue-scheduled-triage.yml`
++- **Trigger**: Scheduled cron job.
++- **Function**: Periodically scans through open issues and performs triage tasks, such as identifying stale issues or suggesting priorities.
+ 
+-### 🔄 自動化フロー図
++### 🔍 `gemini-pr-review.yml`
++- **Trigger**: Pull request creation or updates.
++- **Function**: Automatically reviews pull requests. Gemini can provide feedback on code quality, suggest improvements, or identify potential issues.
+ 
+-\```mermaid
+-graph TB
+-    A[開発者のコード<br/>commit/push] --> B[GitHub Actions<br/>ワークフロー]
+-    B --> C[レポート生成<br/>Markdown]
+-    C --> D[ファイル同期<br/>クローン]
+-    D --> E[PR作成・承認<br/>自動化可]
+-    E --> F[集約リポジトリ<br/>daily-report-hub]
+-\```
+-
+-### 📋 処理ステップ
+-
+-1. **トリガー**: **GitHub Actions**がmainブランチへのpushやPRをトリガー
+-2. **データ収集**: リモートスクリプトで
+-   - 週情報の計算
+-   - Git活動の分析
+-   - Markdownレポートの生成
+-   - Docusaurus用ディレクトリ構造の作成
+-3. **同期処理**: 集約用リポジトリ（daily-report-hub）をクローンし、レポートをコピー
+-4. **PR処理**: PR作成・自動承認・自動マージ（設定に応じて自動化）
+```
+
+---
+
+## ⏰ 05:05:58 - `0a7a603`
+**chore: ignore .gemini directory**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Aug 24 05:05:58 2025 +0000
+M	.gitignore
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Aug 24 05:05:58 2025 +0000
+
+    chore: ignore .gemini directory
+
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.gitignore b/.gitignore
+index 16c3c78..c45c6ef 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -206,3 +206,4 @@ marimo/_static/
+ marimo/_lsp/
+ __marimo__/
+ .SourceSageAssets/
++.gemini/
+```
+
+---
+

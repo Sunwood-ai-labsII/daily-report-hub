@@ -7,8 +7,8 @@
  .../workflows/gemini-issue-scheduled-triage.yml    | 193 +++++++++
  .github/workflows/gemini-pr-review.yml             | 468 +++++++++++++++++++++
  .github/workflows/sync-to-report-gh.yml            |  52 +++
- .gitignore                                         | 208 +++++++++
+ .gitignore                                         | 209 +++++++++
  LICENSE                                            |  21 +
- README.md                                          | 267 ++++++++++++
- 9 files changed, 1849 insertions(+)
+ README.md                                          |  77 ++++
+ 9 files changed, 1660 insertions(+)
 ```

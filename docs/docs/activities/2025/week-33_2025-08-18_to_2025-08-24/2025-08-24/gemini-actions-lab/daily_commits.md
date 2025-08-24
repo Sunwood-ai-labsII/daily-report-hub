@@ -1743,3 +1743,34 @@ index 0000000..8b25a6e
 
 ---
 
+## ⏰ 14:58:10 - `44e352a`
+**Merge pull request #6 from Sunwood-ai-labsII/issue/5/translate-readme**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 81a973a 710fa8b
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 14:58:10 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 81a973a 710fa8b
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 14:58:10 2025 +0900
+
+    Merge pull request #6 from Sunwood-ai-labsII/issue/5/translate-readme
+    
+    Fixes #5: Translate README to Japanese
+
+ README.ja.md | 77 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

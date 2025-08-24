@@ -3,13 +3,62 @@
 ## Full Diff
 
 ```diff
-commit 44e352a80b5cfe34c3550e3c061382dd8e600e15
-Merge: 81a973a 710fa8b
+commit 57ee92b757ea7d8da1a16a49a73a714feb32a149
 Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
-Date:   Sun Aug 24 14:58:10 2025 +0900
+Date:   Sun Aug 24 15:14:30 2025 +0900
 
-    Merge pull request #6 from Sunwood-ai-labsII/issue/5/translate-readme
-    
-    Fixes #5: Translate README to Japanese
+    Update gemini-cli-jp.yml
 
+diff --git a/.github/workflows/gemini-cli-jp.yml b/.github/workflows/gemini-cli-jp.yml
+index dee8545..858f00e 100644
+--- a/.github/workflows/gemini-cli-jp.yml
++++ b/.github/workflows/gemini-cli-jp.yml
+@@ -35,9 +35,9 @@ jobs:
+       github.event_name == 'workflow_dispatch' ||
+       (
+         github.event_name == 'issues' && github.event.action == 'opened' &&
+-        contains(github.event.issue.body, '@gemini-cli-jp') &&
+-        !contains(github.event.issue.body, '@gemini-cli-jp /review') &&
+-        !contains(github.event.issue.body, '@gemini-cli-jp /triage') &&
++        contains(github.event.issue.body, '@gemini-jp-cli') &&
++        !contains(github.event.issue.body, '@gemini-jp-cli /review') &&
++        !contains(github.event.issue.body, '@gemini-jp-cli /triage') &&
+         (
+           github.event.repository.private == true ||
+           contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+@@ -48,9 +48,9 @@ jobs:
+           github.event_name == 'issue_comment' ||
+           github.event_name == 'pull_request_review_comment'
+         ) &&
+-        contains(github.event.comment.body, '@gemini-cli-jp') &&
+-        !contains(github.event.comment.body, '@gemini-cli-jp /review') &&
+-        !contains(github.event.comment.body, '@gemini-cli-jp /triage') &&
++        contains(github.event.comment.body, '@gemini-jp-cli') &&
++        !contains(github.event.comment.body, '@gemini-jp-cli /review') &&
++        !contains(github.event.comment.body, '@gemini-jp-cli /triage') &&
+         (
+           github.event.repository.private == true ||
+           contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+@@ -58,9 +58,9 @@ jobs:
+       ) ||
+       (
+         github.event_name == 'pull_request_review' &&
+-        contains(github.event.review.body, '@gemini-cli-jp') &&
+-        !contains(github.event.review.body, '@gemini-cli-jp /review') &&
+-        !contains(github.event.review.body, '@gemini-cli-jp /triage') &&
++        contains(github.event.review.body, '@gemini-jp-cli') &&
++        !contains(github.event.review.body, '@gemini-jp-cli /review') &&
++        !contains(github.event.review.body, '@gemini-jp-cli /triage') &&
+         (
+           github.event.repository.private == true ||
+           contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
+@@ -110,7 +110,7 @@ jobs:
+           fi
+ 
+           # ユーザーリクエストをクリーンアップ
+-          USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-cli-jp//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
++          USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-jp-cli//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+ 
+           {
+             echo "user_request=${USER_REQUEST}"
 ```

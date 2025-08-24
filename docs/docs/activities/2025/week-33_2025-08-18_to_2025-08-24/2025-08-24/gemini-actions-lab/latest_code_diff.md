@@ -2,63 +2,106 @@
 
 ```diff
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
-index 49d20e3..baae78b 100644
+index baae78b..12e2f11 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml
 +++ b/.github/workflows/gemini-issue-automated-triage.yml
-@@ -54,6 +54,14 @@ jobs:
-           app-id: '${{ vars.APP_ID }}'
-           private-key: '${{ secrets.APP_PRIVATE_KEY }}'
+@@ -118,6 +118,8 @@ jobs:
+             Available Labels: ${AVAILABLE_LABELS}
  
-+      - name: 'Debug Issue Information'
-+        run: |
-+          echo "Event name: ${{ github.event_name }}"
-+          echo "Issue number: ${{ github.event.issue.number }}"
-+          echo "Issue title: '${{ github.event.issue.title }}'"
-+          echo "Issue body length: ${{ github.event.issue.body && length(github.event.issue.body) || 0 }}"
-+          echo "Issue body preview: '${{ github.event.issue.body }}'"
-+
-       - name: 'Get Repository Labels'
-         id: 'get_labels'
-         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
-@@ -90,7 +98,7 @@ jobs:
-           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
-           settings: |-
-             {
--              "debug": ${{ fromJSON(env.DEBUG || env.ACTIONS_STEP_DEBUG || false) }},
-+              "debug": true,
-               "maxSessionTurns": 25,
-               "coreTools": [
-                 "run_shell_command(echo)"
-@@ -101,21 +109,20 @@ jobs:
+             Please analyze this issue carefully and suggest appropriate labels from the available labels list.
++            
++            Important: Respond with ONLY the JSON object, no additional text or explanations before or after.
+ 
+             Output format (JSON only):
+             {"labels_to_set": ["label1", "label2"], "explanation": "reasoning for these labels"}
+@@ -141,30 +143,64 @@ jobs:
+             
+             let parsedLabels;
+             try {
+-              // JSONブロックを抽出するための正規表現
+-              const jsonMatch = rawLabels.match(/\```json\s*([\s\S]*?)\s*\```/);
++              // 改良されたJSON抽出ロジック
++              let jsonString = rawLabels;
+               
+-              let jsonString;
+-              if (jsonMatch) {
+-                // \```json \``` ブロックが見つかった場合
+-                jsonString = jsonMatch[1].trim();
+-                core.info(`Extracted JSON from code block: ${jsonString}`);
++              // 1. \```json \``` ブロックを抽出
++              const jsonBlockMatch = jsonString.match(/\```json\s*([\s\S]*?)\s*\```/);
++              if (jsonBlockMatch) {
++                jsonString = jsonBlockMatch[1].trim();
++                core.info(`Extracted JSON from json code block: ${jsonString}`);
+               } else {
+-                // JSONブロックがない場合、{ で始まる最初の行を探す
+-                const lines = rawLabels.split('\n');
+-                const jsonLine = lines.find(line => line.trim().startsWith('{'));
+-                if (jsonLine) {
+-                  jsonString = jsonLine.trim();
+-                  core.info(`Extracted JSON from line: ${jsonString}`);
++                // 2. \``` \``` ブロックを抽出（json指定なし）
++                const codeBlockMatch = jsonString.match(/\```\s*([\s\S]*?)\s*\```/);
++                if (codeBlockMatch) {
++                  jsonString = codeBlockMatch[1].trim();
++                  core.info(`Extracted JSON from code block: ${jsonString}`);
+                 } else {
+-                  // フォールバック: 元の方法
+-                  jsonString = rawLabels.replace(/^\```(?:json)?\s*/, '').replace(/\s*\```$/, '').trim();
+-                  core.info(`Using fallback extraction: ${jsonString}`);
++                  // 3. { で始まって } で終わる部分を抽出
++                  const jsonObjectMatch = jsonString.match(/(\{[\s\S]*\})/);
++                  if (jsonObjectMatch) {
++                    jsonString = jsonObjectMatch[1].trim();
++                    core.info(`Extracted JSON object: ${jsonString}`);
++                  } else {
++                    // 4. [ で始まって ] で終わる部分を抽出（配列の場合）
++                    const jsonArrayMatch = jsonString.match /(\[[\s\S]*\])/);
++                    if (jsonArrayMatch) {
++                      // 配列が返された場合は、最初の要素を使用（単一issue用）
++                      const arrayData = JSON.parse(jsonArrayMatch[1].trim());
++                      if (Array.isArray(arrayData) && arrayData.length > 0) {
++                        // 現在のissue番号に一致するものを探す
++                        const currentIssueNumber = parseInt(process.env.ISSUE_NUMBER);
++                        const matchingIssue = arrayData.find(item => item.issue_number === currentIssueNumber);
++                        if (matchingIssue) {
++                          parsedLabels = {
++                            labels_to_set: matchingIssue.labels_to_set,
++                            explanation: matchingIssue.explanation
++                          };
++                        } else {
++                          // 一致するissue番号がない場合は最初の要素を使用
++                          const firstItem = arrayData[0];
++                          parsedLabels = {
++                            labels_to_set: firstItem.labels_to_set,
++                            explanation: firstItem.explanation
++                          };
++                        }
++                        core.info(`Successfully parsed from array: ${JSON.stringify(parsedLabels)}`);
++                      }
++                    } else {
++                      // 5. フォールバック: そのままパース
++                      core.info(`Using fallback - trying to parse as-is`);
++                    }
++                  }
+                 }
                }
-             }
-           prompt: |-
--            You are an issue triage assistant. Analyze the GitHub issue and output ONLY valid JSON.
--
--            Available labels: ${AVAILABLE_LABELS}
--            Issue title: ${ISSUE_TITLE}
--            Issue body: ${ISSUE_BODY}
-+            You are an issue triage assistant. Analyze the GitHub issue and suggest appropriate labels.
- 
--            IMPORTANT: Output ONLY the JSON response, no explanations or additional text.
-+            Repository: ${REPOSITORY}
-+            Issue Number: ${ISSUE_NUMBER}
-+            Issue Title: "${ISSUE_TITLE}"
-+            Issue Body: "${ISSUE_BODY}"
-+            Available Labels: ${AVAILABLE_LABELS}
- 
--            Required JSON format:
--            {"labels_to_set": ["label1", "label2"], "explanation": "brief explanation"}
-+            Please analyze this issue carefully and suggest appropriate labels from the available labels list.
- 
--            If no appropriate labels exist, output:
--            {"labels_to_set": [], "explanation": "No suitable labels found"}
-+            Output format (JSON only):
-+            {"labels_to_set": ["label1", "label2"], "explanation": "reasoning for these labels"}
- 
--            JSON response:
-+            If the issue content appears to be empty or placeholder text, still try to categorize it based on any available information.
- 
-       - name: 'Apply Labels to Issue'
-         if: |-
+               
+-              parsedLabels = JSON.parse(jsonString);
+-              core.info(`Successfully parsed labels JSON: ${JSON.stringify(parsedLabels)}`);
++              // まだparsedLabelsが設定されていない場合、通常のJSONパースを試行
++              if (!parsedLabels) {
++                parsedLabels = JSON.parse(jsonString);
++                core.info(`Successfully parsed labels JSON: ${JSON.stringify(parsedLabels)}`);
++              }
+             } catch (err) {
+               core.setFailed(`Failed to parse labels JSON from Gemini output: ${err.message}\nRaw output: ${rawLabels}`);
+               return;
+@@ -202,5 +238,5 @@ jobs:
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               issue_number: parseInt(process.env.ISSUE_NUMBER),
+-              body: `There is a problem with the Gemini CLI issue triaging. Please check the [action logs](${process.env.RUN_URL}) for details.`
++              issue: `There is a problem with the Gemini CLI issue triaging. Please check the [action logs](${process.env.RUN_URL}) for details.`
+             })
 ```

@@ -1899,3 +1899,131 @@ index 858f00e..f9a7772 100644
 
 ---
 
+## ⏰ 15:50:04 - `3665236`
+**Update gemini-jp-cli.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 15:50:04 2025 +0900
+M	.github/workflows/gemini-jp-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 15:50:04 2025 +0900
+
+    Update gemini-jp-cli.yml
+
+ .github/workflows/gemini-jp-cli.yml | 351 +++++++++++++++++++++++++++++-------
+ 1 file changed, 281 insertions(+), 70 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-jp-cli.yml b/.github/workflows/gemini-jp-cli.yml
+index f9a7772..5188cfe 100644
+--- a/.github/workflows/gemini-jp-cli.yml
++++ b/.github/workflows/gemini-jp-cli.yml
+@@ -72,6 +72,33 @@ jobs:
+     timeout-minutes: 10
+     runs-on: 'ubuntu-latest'
+     steps:
++      - name: '🐛 デバッグ: イベント情報を出力'
++        run: |-
++          echo "=== イベント詳細 ==="
++          echo "Event Name: ${{ github.event_name }}"
++          echo "Event Action: ${{ github.event.action }}"
++          echo "Repository: ${{ github.repository }}"
++          echo "Actor: ${{ github.actor }}"
++          echo ""
++          echo "=== Issue情報 ==="
++          echo "Issue Number: ${{ github.event.issue.number || 'N/A' }}"
++          echo "Issue Title: ${{ github.event.issue.title || 'N/A' }}"
++          echo "Issue Body Length: ${{ length(github.event.issue.body || '') }}"
++          echo "Issue Author: ${{ github.event.issue.user.login || 'N/A' }}"
++          echo "Issue Association: ${{ github.event.issue.author_association || 'N/A' }}"
++          echo ""
++          echo "=== Comment情報 ==="
++          echo "Comment Body Length: ${{ length(github.event.comment.body || '') }}"
++          echo "Comment Author: ${{ github.event.comment.user.login || 'N/A' }}"
++          echo "Comment Association: ${{ github.event.comment.author_association || 'N/A' }}"
++          echo ""
++          echo "=== PR Review情報 ==="
++          echo "Review Body Length: ${{ length(github.event.review.body || '') }}"
++          echo "PR Number: ${{ github.event.pull_request.number || 'N/A' }}"
++          echo ""
++          echo "=== 完全なイベントペイロード ==="
++          echo '${{ toJSON(github.event) }}'
++
+       - name: 'GitHub App トークンを生成'
+         id: 'generate_token'
+         if: |-
+@@ -83,43 +110,137 @@ jobs:
+ 
+       - name: 'イベントからコンテキストを取得'
+         id: 'get_context'
+-        env:
+-          EVENT_NAME: '${{ github.event_name }}'
+-          EVENT_PAYLOAD: '${{ toJSON(github.event) }}'
+-        run: |-
+-          set -euo pipefail
++        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
++        with:
++          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
++          script: |-
++            console.log('=== コンテキスト取得開始 ===');
++            console.log(`Event Name: ${context.eventName}`);
++            console.log(`Event Action: ${context.payload.action || 'N/A'}`);
++            console.log(`Repository: ${context.repo.owner}/${context.repo.repo}`);
++            console.log(`Actor: ${context.actor}`);
+ 
+-          USER_REQUEST=""
+-          ISSUE_NUMBER=""
+-          IS_PR="false"
+-
+-          if [[ "${EVENT_NAME}" == "issues" ]]; then
+-            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.body)
+-            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.number)
+-          elif [[ "${EVENT_NAME}" == "issue_comment" ]]; then
+-            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .comment.body)
+-            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.number)
+-            if [[ $(echo "${EVENT_PAYLOAD}" | jq -r .issue.pull_request) != "null" ]]; then
+-              IS_PR="true"
+-            fi
+-          elif [[ "${EVENT_NAME}" == "pull_request_review" ]]; then
+-            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .review.body)
+-            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .pull_request.number)
+-            IS_PR="true"
+-          elif [[ "${EVENT_NAME}" == "pull_request_review_comment" ]]; then
+-            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .comment.body)
+-            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .pull_request.number)
+-            IS_PR="true"
+-          fi
++            let userRequest = '';
++            let issueNumber = '';
++            let isPR = false;
++            let rawBody = '';
++            let issueTitle = '';
++
++            try {
++              if (context.eventName === 'issues') {
++                console.log('処理中: Issues イベント');
++                rawBody = context.payload.issue.body || '';
++                userRequest = rawBody;
++                issueNumber = context.payload.issue.number.toString();
++                issueTitle = context.payload.issue.title || '';
++                console.log(`Issue #${issueNumber}: "${issueTitle}"`);
++                console.log(`Issue Body 長さ: ${rawBody.length}`);
++                console.log(`Issue Body (最初の200文字): "${rawBody.substring(0, 200)}${rawBody.length > 200 ? '...' : ''}"`);
++                
++              } else if (context.eventName === 'issue_comment') {
++                console.log('処理中: Issue Comment イベント');
++                rawBody = context.payload.comment.body || '';
++                userRequest = rawBody;
+```
+
+---
+

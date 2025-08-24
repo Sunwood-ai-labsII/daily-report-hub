@@ -9,4 +9,5 @@
 - 🆕 **Added:** `.github/workflows/sync-to-report-gh.yml`
 - 🆕 **Added:** `.gitignore`
 - 🆕 **Added:** `LICENSE`
+- 🆕 **Added:** `README.ja.md`
 - 🆕 **Added:** `README.md`

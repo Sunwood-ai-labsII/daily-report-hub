@@ -2102,3 +2102,131 @@ index 5188cfe..fc52afb 100644
 
 ---
 
+## ⏰ 15:59:55 - `88d8e85`
+**Update gemini-jp-cli.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 15:59:55 2025 +0900
+M	.github/workflows/gemini-jp-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 15:59:55 2025 +0900
+
+    Update gemini-jp-cli.yml
+
+ .github/workflows/gemini-jp-cli.yml | 328 +++++++++---------------------------
+ 1 file changed, 78 insertions(+), 250 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-jp-cli.yml b/.github/workflows/gemini-jp-cli.yml
+index fc52afb..aa80b79 100644
+--- a/.github/workflows/gemini-jp-cli.yml
++++ b/.github/workflows/gemini-jp-cli.yml
+@@ -31,14 +31,11 @@ permissions:
+ 
+ jobs:
+   gemini-cli-jp:
+-    # この条件は信頼できるユーザーによってアクションがトリガーされた場合のみ実行されるようにします。
+-    # プライベートリポジトリの場合、リポジトリにアクセスできるユーザーは信頼できるとみなされます。
+-    # パブリックリポジトリの場合、メンバー、オーナー、またはコラボレーターが信頼できるとみなされます。
+     if: |-
+       github.event_name == 'workflow_dispatch' ||
+       (
+         github.event_name == 'issues' && github.event.action == 'opened' &&
+-        contains(github.event.issue.body, '@gemini-jp-cli') &&
++        (contains(github.event.issue.body, '@gemini-jp-cli') || contains(github.event.issue.body, '@gemini-cli-jp')) &&
+         !contains(github.event.issue.body, '@gemini-jp-cli /review') &&
+         !contains(github.event.issue.body, '@gemini-jp-cli /triage') &&
+         (
+@@ -51,7 +48,7 @@ jobs:
+           github.event_name == 'issue_comment' ||
+           github.event_name == 'pull_request_review_comment'
+         ) &&
+-        contains(github.event.comment.body, '@gemini-jp-cli') &&
++        (contains(github.event.comment.body, '@gemini-jp-cli') || contains(github.event.comment.body, '@gemini-cli-jp')) &&
+         !contains(github.event.comment.body, '@gemini-jp-cli /review') &&
+         !contains(github.event.comment.body, '@gemini-jp-cli /triage') &&
+         (
+@@ -61,7 +58,7 @@ jobs:
+       ) ||
+       (
+         github.event_name == 'pull_request_review' &&
+-        contains(github.event.review.body, '@gemini-jp-cli') &&
++        (contains(github.event.review.body, '@gemini-jp-cli') || contains(github.event.review.body, '@gemini-cli-jp')) &&
+         !contains(github.event.review.body, '@gemini-jp-cli /review') &&
+         !contains(github.event.review.body, '@gemini-jp-cli /triage') &&
+         (
+@@ -128,91 +125,43 @@ jobs:
+ 
+             try {
+               if (context.eventName === 'issues') {
+-                console.log('処理中: Issues イベント');
+                 rawBody = context.payload.issue.body || '';
+-                userRequest = rawBody;
+-                issueNumber = context.payload.issue.number.toString();
+-                issueTitle = context.payload.issue.title || '';
+-                console.log(`Issue #${issueNumber}: "${issueTitle}"`);
+-                console.log(`Issue Body 長さ: ${rawBody.length}`);
+-                console.log(`Issue Body (最初の200文字): "${rawBody.substring(0, 200)}${rawBody.length > 200 ? '...' : ''}"`);
+-                
+               } else if (context.eventName === 'issue_comment') {
+-                console.log('処理中: Issue Comment イベント');
+                 rawBody = context.payload.comment.body || '';
+-                userRequest = rawBody;
++              } else if (context.eventName === 'pull_request_review') {
++                rawBody = context.payload.review.body || '';
++              } else if (context.eventName === 'pull_request_review_comment') {
++                rawBody = context.payload.comment.body || '';
++              }
++
++              if (context.eventName === 'issues' || context.eventName === 'issue_comment') {
+                 issueNumber = context.payload.issue.number.toString();
+                 issueTitle = context.payload.issue.title || '';
+-                console.log(`Comment on Issue #${issueNumber}: "${issueTitle}"`);
+-                console.log(`Comment Body 長さ: ${rawBody.length}`);
+-                console.log(`Comment Body (最初の200文字): "${rawBody.substring(0, 200)}${rawBody.length > 200 ? '...' : ''}"`);
+-                
+                 if (context.payload.issue.pull_request) {
+                   isPR = true;
+-                  console.log('これはPRのコメントです');
+                 }
+-                
+-              } else if (context.eventName === 'pull_request_review') {
+-                console.log('処理中: PR Review イベント');
+-                rawBody = context.payload.review.body || '';
+-                userRequest = rawBody;
+-                issueNumber = context.payload.pull_request.number.toString();
+-                issueTitle = context.payload.pull_request.title || '';
+-                isPR = true;
+-                console.log(`Review on PR #${issueNumber}: "${issueTitle}"`);
+-                console.log(`Review Body 長さ: ${rawBody.length}`);
+-                console.log(`Review Body (最初の200文字): "${rawBody.substring(0, 200)}${rawBody.length > 200 ? '...' : ''}"`);
+-                
+-              } else if (context.eventName === 'pull_request_review_comment') {
+-                console.log('処理中: PR Review Comment イベント');
+-                rawBody = context.payload.comment.body || '';
+-                userRequest = rawBody;
++              } else if (context.eventName === 'pull_request_review' || context.eventName === 'pull_request_review_comment') {
+                 issueNumber = context.payload.pull_request.number.toString();
+                 issueTitle = context.payload.pull_request.title || '';
+                 isPR = true;
+-                console.log(`PR Comment on PR #${issueNumber}: "${issueTitle}"`);
+-                console.log(`PR Comment Body 長さ: ${rawBody.length}`);
+-                console.log(`PR Comment Body (最初の200文字): "${rawBody.substring(0, 200)}${rawBody.length > 200 ? '...' : ''}"`);
+               }
+ 
+-              console.log('=== 処理前の値 ===');
+-              console.log(`Raw Body: "${rawBody}"`);
+-              console.log(`User Request (処理前): "${userRequest}"`);
+```
+
+---
+

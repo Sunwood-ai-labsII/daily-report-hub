@@ -2,6 +2,7 @@
 
 ```diff
  .SourceSageignore                                  |  54 +++
+ .github/workflows/gemini-cli-jp.yml                | 317 ++++++++++++++
  .github/workflows/gemini-cli.yml                   | 315 ++++++++++++++
  .../workflows/gemini-issue-automated-triage.yml    | 271 ++++++++++++
  .../workflows/gemini-issue-scheduled-triage.yml    | 193 +++++++++
@@ -10,5 +11,5 @@
  .gitignore                                         | 209 +++++++++
  LICENSE                                            |  21 +
  README.md                                          |  77 ++++
- 9 files changed, 1660 insertions(+)
+ 10 files changed, 1977 insertions(+)
 ```

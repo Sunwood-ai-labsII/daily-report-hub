@@ -10,6 +10,7 @@
  .github/workflows/sync-to-report-gh.yml            |  52 +++
  .gitignore                                         | 209 +++++++++
  LICENSE                                            |  21 +
+ README.ja.md                                       |  77 ++++
  README.md                                          |  77 ++++
- 10 files changed, 1977 insertions(+)
+ 11 files changed, 2054 insertions(+)
 ```

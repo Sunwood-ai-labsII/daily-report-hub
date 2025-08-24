@@ -1,473 +1,347 @@
 # 🔄 Latest Code Changes
 
 ```diff
-diff --git a/.github/workflows/gemini-jp-cli.yml b/.github/workflows/gemini-jp-cli.yml
-index aa80b79..858f00e 100644
---- a/.github/workflows/gemini-jp-cli.yml
-+++ b/.github/workflows/gemini-jp-cli.yml
-@@ -1,9 +1,6 @@
- name: '💬 Gemini CLI (日本語版)'
- 
- on:
--  issues:
--    types:
--      - 'opened'
-   pull_request_review_comment:
-     types:
-       - 'created'
-@@ -31,11 +28,14 @@ permissions:
- 
- jobs:
-   gemini-cli-jp:
-+    # この条件は信頼できるユーザーによってアクションがトリガーされた場合のみ実行されるようにします。
-+    # プライベートリポジトリの場合、リポジトリにアクセスできるユーザーは信頼できるとみなされます。
-+    # パブリックリポジトリの場合、メンバー、オーナー、またはコラボレーターが信頼できるとみなされます。
-     if: |-
-       github.event_name == 'workflow_dispatch' ||
-       (
-         github.event_name == 'issues' && github.event.action == 'opened' &&
--        (contains(github.event.issue.body, '@gemini-jp-cli') || contains(github.event.issue.body, '@gemini-cli-jp')) &&
-+        contains(github.event.issue.body, '@gemini-jp-cli') &&
-         !contains(github.event.issue.body, '@gemini-jp-cli /review') &&
-         !contains(github.event.issue.body, '@gemini-jp-cli /triage') &&
-         (
-@@ -48,7 +48,7 @@ jobs:
-           github.event_name == 'issue_comment' ||
-           github.event_name == 'pull_request_review_comment'
-         ) &&
--        (contains(github.event.comment.body, '@gemini-jp-cli') || contains(github.event.comment.body, '@gemini-cli-jp')) &&
-+        contains(github.event.comment.body, '@gemini-jp-cli') &&
-         !contains(github.event.comment.body, '@gemini-jp-cli /review') &&
-         !contains(github.event.comment.body, '@gemini-jp-cli /triage') &&
-         (
-@@ -58,7 +58,7 @@ jobs:
-       ) ||
-       (
-         github.event_name == 'pull_request_review' &&
--        (contains(github.event.review.body, '@gemini-jp-cli') || contains(github.event.review.body, '@gemini-cli-jp')) &&
-+        contains(github.event.review.body, '@gemini-jp-cli') &&
-         !contains(github.event.review.body, '@gemini-jp-cli /review') &&
-         !contains(github.event.review.body, '@gemini-jp-cli /triage') &&
-         (
-@@ -69,33 +69,6 @@ jobs:
-     timeout-minutes: 10
-     runs-on: 'ubuntu-latest'
-     steps:
--      - name: '🐛 デバッグ: イベント情報を出力'
--        run: |-
--          echo "=== イベント詳細 ==="
--          echo "Event Name: ${{ github.event_name }}"
--          echo "Event Action: ${{ github.event.action }}"
--          echo "Repository: ${{ github.repository }}"
--          echo "Actor: ${{ github.actor }}"
--          echo ""
--          echo "=== Issue情報 ==="
--          echo "Issue Number: ${{ github.event.issue.number || 'N/A' }}"
--          echo "Issue Title: ${{ github.event.issue.title || 'N/A' }}"
--          echo "Issue Body Length: $(echo '${{ github.event.issue.body || '' }}' | wc -c)"
--          echo "Issue Author: ${{ github.event.issue.user.login || 'N/A' }}"
--          echo "Issue Association: ${{ github.event.issue.author_association || 'N/A' }}"
--          echo ""
--          echo "=== Comment情報 ==="
--          echo "Comment Body Length: $(echo '${{ github.event.comment.body || '' }}' | wc -c)"
--          echo "Comment Author: ${{ github.event.comment.user.login || 'N/A' }}"
--          echo "Comment Association: ${{ github.event.comment.author_association || 'N/A' }}"
--          echo ""
--          echo "=== PR Review情報 ==="
--          echo "Review Body Length: $(echo '${{ github.event.review.body || '' }}' | wc -c)"
--          echo "PR Number: ${{ github.event.pull_request.number || 'N/A' }}"
--          echo ""
--          echo "=== 完全なイベントペイロード ==="
--          echo '${{ toJSON(github.event) }}'
+diff --git a/README.ja.md b/README.ja.md
+index 8b25a6e..8ddf803 100644
+--- a/README.ja.md
++++ b/README.ja.md
+@@ -1,8 +1,14 @@
+-# ジェミニ・アクション・ラボ
 -
-       - name: 'GitHub App トークンを生成'
-         id: 'generate_token'
-         if: |-
-@@ -107,90 +80,43 @@ jobs:
+ <div align="center">
+-  <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+-  <img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
++
++# Gemini Actions Lab
++
++<a href="./README.md"><img src="https://img.shields.io/badge/English-Readme-blue?style=for-the-badge&logo=github&logoColor=white" alt="English" /></a>
++<a href="./README.ja.md"><img src="https://img.shields.io/badge/日本語-Readme-red?style=for-the-badge&logo=github&logoColor=white" alt="日本語" /></a>
++
++![Image](https://github.com/user-attachments/assets/1e294058-a1e6-4b44-979d-f4c8f09cb8ae)
++
++<img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
++<img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
+ </div>
  
-       - name: 'イベントからコンテキストを取得'
-         id: 'get_context'
--        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
--        with:
--          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
--          script: |-
--            console.log('=== コンテキスト取得開始 ===');
--            console.log(`Event Name: ${context.eventName}`);
--            console.log(`Event Action: ${context.payload.action || 'N/A'}`);
--            console.log(`Repository: ${context.repo.owner}/${context.repo.repo}`);
--            console.log(`Actor: ${context.actor}`);
--
--            let userRequest = '';
--            let issueNumber = '';
--            let isPR = false;
--            let rawBody = '';
--            let issueTitle = '';
--
--            try {
--              if (context.eventName === 'issues') {
--                rawBody = context.payload.issue.body || '';
--              } else if (context.eventName === 'issue_comment') {
--                rawBody = context.payload.comment.body || '';
--              } else if (context.eventName === 'pull_request_review') {
--                rawBody = context.payload.review.body || '';
--              } else if (context.eventName === 'pull_request_review_comment') {
--                rawBody = context.payload.comment.body || '';
--              }
--
--              if (context.eventName === 'issues' || context.eventName === 'issue_comment') {
--                issueNumber = context.payload.issue.number.toString();
--                issueTitle = context.payload.issue.title || '';
--                if (context.payload.issue.pull_request) {
--                  isPR = true;
--                }
--              } else if (context.eventName === 'pull_request_review' || context.eventName === 'pull_request_review_comment') {
--                issueNumber = context.payload.pull_request.number.toString();
--                issueTitle = context.payload.pull_request.title || '';
--                isPR = true;
--              }
-+        env:
-+          EVENT_NAME: '${{ github.event_name }}'
-+          EVENT_PAYLOAD: '${{ toJSON(github.event) }}'
-+        run: |-
-+          set -euo pipefail
+ ---
+@@ -44,7 +50,76 @@
  
--              userRequest = rawBody;
-+          USER_REQUEST=""
-+          ISSUE_NUMBER=""
-+          IS_PR="false"
+ ---
  
--              // @gemini-jp-cli or @gemini-cli-jp を探して削除
--              const mentionJpCli = '@gemini-jp-cli';
--              const mentionCliJp = '@gemini-cli-jp';
--              
--              let mentionIndex = userRequest.indexOf(mentionJpCli);
--              if (mentionIndex !== -1) {
--                userRequest = userRequest.substring(mentionIndex + mentionJpCli.length).trim();
--              } else {
--                mentionIndex = userRequest.indexOf(mentionCliJp);
--                if (mentionIndex !== -1) {
--                  userRequest = userRequest.substring(mentionIndex + mentionCliJp.length).trim();
--                }
--              }
--              
--              core.setOutput('user_request', userRequest);
--              core.setOutput('issue_number', issueNumber);
--              core.setOutput('issue_title', issueTitle);
--              core.setOutput('is_pr', isPR.toString());
--              core.setOutput('raw_body', rawBody);
-+          if [[ "${EVENT_NAME}" == "issues" ]]; then
-+            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.body)
-+            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.number)
-+          elif [[ "${EVENT_NAME}" == "issue_comment" ]]; then
-+            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .comment.body)
-+            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.number)
-+            if [[ $(echo "${EVENT_PAYLOAD}" | jq -r .issue.pull_request) != "null" ]]; then
-+              IS_PR="true"
-+            fi
-+          elif [[ "${EVENT_NAME}" == "pull_request_review" ]]; then
-+            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .review.body)
-+            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .pull_request.number)
-+            IS_PR="true"
-+          elif [[ "${EVENT_NAME}" == "pull_request_review_comment" ]]; then
-+            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .comment.body)
-+            ISSUE_NUMBER=$(echo "${EVENT_PAYLOAD}" | jq -r .pull_request.number)
-+            IS_PR="true"
-+          fi
+-## 🚀 使い方
++## 📸 スクリーンショット & 例
++
++### 🤖 CLI 対話例
++Issueを作成して `@gemini-cli-jp /help` とコメントすることで、使用可能なコマンドを確認できます：
++
++\```
++@gemini-cli-jp /help
++\```
++
++AIアシスタントは、使用可能なコマンドと使用例で応答します。
++
++### 🏗️ ワークフローアーキテクチャ
++\```mermaid
++graph TD
++    A[GitHub Issue/PR] --> B[GitHub Actions トリガー]
++    B --> C[Gemini CLI ワークフロー]
++    C --> D[Gemini AI 処理]
++    D --> E[リポジトリ操作]
++    E --> F[自動応答]
++
++    G[スケジュール/定期実行] --> H[自動トリアージ]
++    H --> I[Issue管理]
++
++    J[PR作成] --> K[PRレビューワークフロー]
++    K --> L[コード解析]
++    L --> M[フィードバックと提案]
++\```
++
++### 💬 使用例
++
++**コードレビューリクエスト:**
++\```
++@gemini-cli-jp /review-pr
++このプルリクエストを確認して改善点を提案してください
++\```
++
++**Issueトリアージ:**
++\```
++@gemini-cli-jp /triage
++このIssueを分析して適切なラベルと担当者を提案してください
++\```
++
++---
++
++## 🛠️ トラブルシューティング
++
++### よくある問題
++
++**❌ ワークフローがトリガーされない:**
++- リポジトリ設定でGitHub Actionsが有効になっているか確認してください
++- リポジトリ設定でWebhook配信を確認してください
++- トリガー条件（例：コメント内の `@gemini-cli-jp`）が満たされているか確認してください
++
++**❌ Gemini API エラー:**
++- `GEMINI_API_KEY` シークレットが設定されているか確認してください
++- APIキーの権限とクォータを確認してください
++- APIキーが有効で期限切れでないか確認してください
++
++**❌ 権限エラー:**
++- ユーザーに書き込み権限があるか確認してください
++- リポジトリがプライベートかどうか確認してください（信頼できるユーザーの検出に影響します）
++
++### ヘルプの取得
++1. 同様の問題がないか [GitHub Issues](https://github.com/your-repo/issues) を確認してください
++2. 詳細なエラーログを添えて新しいIssueを作成してください
++3. 報告時にはワークフローの実行ログを含めてください
++
++---
++
++## � 使い方
  
--            } catch (error) {
--              core.setFailed(`コンテキスト取得中にエラーが発生: ${error.message}`);
--              core.setOutput('user_request', 'エラーが発生しました');
--              core.setOutput('issue_number', '0');
--              core.setOutput('issue_title', 'エラー');
--              core.setOutput('is_pr', 'false');
--              core.setOutput('raw_body', '');
--            }
-+          # ユーザーリクエストをクリーンアップ
-+          USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-jp-cli//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+ これらのワークフローを独自のリポジトリで使用するには、`.github/workflows`ディレクトリからワークフローファイルをコピーし、ニーズに合わせて適応させます。Gemini APIキーなどの必要なシークレットを設定する必要があります。
  
--      - name: '🐛 デバッグ: 取得したコンテキストを確認'
--        env:
--          USER_REQUEST: ${{ steps.get_context.outputs.user_request }}
--          ISSUE_NUMBER: ${{ steps.get_context.outputs.issue_number }}
--          ISSUE_TITLE: ${{ steps.get_context.outputs.issue_title }}
--          IS_PR: ${{ steps.get_context.outputs.is_pr }}
--          RAW_BODY: ${{ steps.get_context.outputs.raw_body }}
--        run: |
--          echo "=== 取得されたコンテキスト ==="
--          echo "User Request: '$USER_REQUEST'"
--          echo "Issue Number: '$ISSUE_NUMBER'"
--          echo "Issue Title: '$ISSUE_TITLE'"
--          echo "Is PR: '$IS_PR'"
--          echo "Raw Body: '$RAW_BODY'"
-+          {
-+            echo "user_request=${USER_REQUEST}"
-+            echo "issue_number=${ISSUE_NUMBER}"
-+            echo "is_pr=${IS_PR}"
-+          } >> "${GITHUB_OUTPUT}"
+diff --git a/README.md b/README.md
+index 3fff9ff..cd20ac5 100644
+--- a/README.md
++++ b/README.md
+@@ -1,8 +1,14 @@
++<div align="center">
++
+ # Gemini Actions Lab
  
-       - name: 'コミット用のgitユーザーを設定'
-         run: |-
-@@ -200,7 +126,7 @@ jobs:
-       - name: 'PRブランチをチェックアウト'
-         if: |-
-           ${{  steps.get_context.outputs.is_pr == 'true' }}
--        uses: 'actions/checkout@v4'
-+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # ratchet:actions/checkout@v4
-         with:
-           token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
-           repository: '${{ github.repository }}'
-@@ -210,7 +136,7 @@ jobs:
-       - name: 'メインブランチをチェックアウト'
-         if: |-
-           ${{  steps.get_context.outputs.is_pr == 'false' }}
--        uses: 'actions/checkout@v4'
-+        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # ratchet:actions/checkout@v4
-         with:
-           token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
-           repository: '${{ github.repository }}'
-@@ -222,90 +148,53 @@ jobs:
-           GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
-           ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
-           REPOSITORY: '${{ github.repository }}'
--          USER_REQUEST: '${{ steps.get_context.outputs.user_request }}'
--          RAW_BODY: '${{ steps.get_context.outputs.raw_body }}'
-+          REQUEST_TYPE: '${{ steps.get_context.outputs.request_type }}'
-         run: |-
-           set -euo pipefail
--          MESSAGE="@${GITHUB_ACTOR} リクエストを受け取りました。今から作業を開始します！ 🤖
--
--          デバッグ情報:
--          - ユーザーリクエスト: '${USER_REQUEST}'
--          - Issue/PR番号: ${ISSUE_NUMBER}
--          - イベント種類: ${{ github.event_name }}
--          - 生データ: '${RAW_BODY}'"
--          
-+          MESSAGE="@${GITHUB_ACTOR} リクエストを受け取りました。今から作業を開始します！ 🤖"
-           if [[ -n "${MESSAGE}" ]]; then
--            if [[ "${{ steps.get_context.outputs.is_pr }}" == "true" ]]; then
--              gh pr comment "${ISSUE_NUMBER}" \
--                --body "${MESSAGE}" \
--                --repo "${REPOSITORY}"
--            else
--              gh issue comment "${ISSUE_NUMBER}" \
--                --body "${MESSAGE}" \
--                --repo "${REPOSITORY}"
--            fi
-+            gh issue comment "${ISSUE_NUMBER}" \
-+              --body "${MESSAGE}" \
-+              --repo "${REPOSITORY}"
-           fi
+-<div align="center">
+-  <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+-  <img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
++<a href="./README.md"><img src="https://img.shields.io/badge/English-Readme-blue?style=for-the-badge&logo=github&logoColor=white" alt="English" /></a>
++<a href="./README.ja.md"><img src="https://img.shields.io/badge/日本語-Readme-red?style=for-the-badge&logo=github&logoColor=white" alt="日本語" /></a>
++
++![Image](https://github.com/user-attachments/assets/1e294058-a1e6-4b44-979d-f4c8f09cb8ae)
++
++<img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
++<img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
+ </div>
  
-       - name: '説明を取得'
-         id: 'get_description'
--        uses: 'actions/github-script@v7'
--        with:
--          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
--          script: |-
--            const isPR = '${{ steps.get_context.outputs.is_pr }}' === 'true';
--            const issueNumber = parseInt('${{ steps.get_context.outputs.issue_number }}');
--            let description = '';
--            try {
--              if (isPR) {
--                const { data: pr } = await github.rest.pulls.get({
--                  owner: context.repo.owner, repo: context.repo.repo, pull_number: issueNumber
--                });
--                description = pr.body || '';
--              } else {
--                const { data: issue } = await github.rest.issues.get({
--                  owner: context.repo.owner, repo: context.repo.repo, issue_number: issueNumber
--                });
--                description = issue.body || '';
--              }
--            } catch (error) {
--              description = `${isPR ? 'PR' : 'Issue'}情報の取得に失敗: ${error.message}`;
--            }
--            core.setOutput('description', description);
-+        env:
-+          GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
-+          IS_PR: '${{ steps.get_context.outputs.is_pr }}'
-+          ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
-+        run: |-
-+          set -euo pipefail
-+          if [[ "${IS_PR}" == "true" ]]; then
-+            DESCRIPTION=$(gh pr view "${ISSUE_NUMBER}" --json body --template '{{.body}}')
-+          else
-+            DESCRIPTION=$(gh issue view "${ISSUE_NUMBER}" --json body --template '{{.body}}')
-+          fi
-+          {
-+            echo "description<<EOF"
-+            echo "${DESCRIPTION}"
-+            echo "EOF"
-+          } >> "${GITHUB_OUTPUT}"
+ ---
+@@ -20,43 +26,188 @@ This repository serves as a laboratory and showcase for integrating Google's Gem
  
-       - name: 'コメントを取得'
-         id: 'get_comments'
--        uses: 'actions/github-script@v7'
--        with:
--          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
--          script: |-
--            const issueNumber = parseInt('${{ steps.get_context.outputs.issue_number }}');
--            let comments = '';
--            try {
--              const { data: commentsList } = await github.rest.issues.listComments({
--                owner: context.repo.owner, repo: context.repo.repo, issue_number: issueNumber
--              });
--              comments = commentsList.map(comment => `${comment.user.login}: ${comment.body}`).join('\n');
--            } catch (error) {
--              comments = `コメントの取得に失敗: ${error.message}`;
--            }
--            core.setOutput('comments', comments);
--
--      - name: '🐛 デバッグ: 最終データを確認'
-         env:
--          USER_REQUEST: ${{ steps.get_context.outputs.user_request }}
--          ISSUE_NUMBER: ${{ steps.get_context.outputs.issue_number }}
--          ISSUE_TITLE: ${{ steps.get_context.outputs.issue_title }}
--          DESCRIPTION: ${{ steps.get_description.outputs.description }}
--          COMMENTS: ${{ steps.get_comments.outputs.comments }}
--          IS_PR: ${{ steps.get_context.outputs.is_pr }}
--        run: |
--          echo "=== 最終データ確認 ==="
--          echo "User Request: '$USER_REQUEST'"
--          echo "Issue Number: '$ISSUE_NUMBER'"
--          echo "Issue Title: '$ISSUE_TITLE'"
--          echo "Description Length: $(echo "$DESCRIPTION" | wc -c)"
--          echo "Comments Length: $(echo "$COMMENTS" | wc -c)"
--          echo "Is PR: '$IS_PR'"
-+          GITHUB_TOKEN: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
-+          IS_PR: '${{ steps.get_context.outputs.is_pr }}'
-+          ISSUE_NUMBER: '${{ steps.get_context.outputs.issue_number }}'
-+        run: |-
-+          set -euo pipefail
-+          if [[ "${IS_PR}" == "true" ]]; then
-+            COMMENTS=$(gh pr view "${ISSUE_NUMBER}" --json comments --template '{{range .comments}}{{.author.login}}: {{.body}}{{"\n"}}{{end}}')
-+          else
-+            COMMENTS=$(gh issue view "${ISSUE_NUMBER}" --json comments --template '{{range .comments}}{{.author.login}}: {{.body}}{{"\n"}}{{end}}')
-+          fi
-+          {
-+            echo "comments<<EOF"
-+            echo "${COMMENTS}"
-+            echo "EOF"
-+          } >> "${GITHUB_OUTPUT}"
+ ## 🤖 Workflows
  
-       - name: 'Geminiを実行'
-         id: 'run_gemini'
-@@ -326,34 +215,103 @@ jobs:
-           use_gemini_code_assist: '${{ vars.GOOGLE_GENAI_USE_GCA }}'
-           settings: |-
-             {
--              "debug": true,
-+              "debug": ${{ fromJSON(env.DEBUG || env.ACTIONS_STEP_DEBUG || false) }},
-               "maxSessionTurns": 50,
--              "telemetry": { "enabled": false }
-+              "telemetry": {
-+                "enabled": false,
-+                "target": "gcp"
-+              }
-             }
-           prompt: |-
--            ## デバッグ情報
--            - **生のBody**: `${{ steps.get_context.outputs.raw_body }}`
--            - **処理されたユーザーリクエスト**: `${{ steps.get_context.outputs.user_request }}`
-             ## 役割
+-This repository contains the following GitHub Actions workflows:
++このリポジトリは、GoogleのGemini AIをGitHub Actionsと統合するための実験室およびショーケースとして機能します。生成AIの力を利用して、さまざまなリポジトリ管理タスクを自動化する方法を示します。
 +
-             あなたはGitHubワークフローのCLIインターフェース経由で呼び出される親切なAIアシスタントです。リポジトリとやり取りし、ユーザーに応答するためのツールを使用できます。
++### 🎯 主な機能
++- **AIによる自動化**: Geminiを活用して、Issueのトリアージ、プルリクエストのレビューなどのタスクを処理します。
++- **CLIライクな対話**: Issueのコメントから直接AIアシスタントと対話します。
++- **拡張可能なワークフロー**: 独自のプロジェクトに合わせてワークフローを簡単に適応およびカスタマイズできます。
 +
-             ## コンテキスト
++---
 +
-             - **リポジトリ**: `${{ github.repository }}`
-             - **トリガーイベント**: `${{ github.event_name }}`
-             - **Issue/PR番号**: `${{ steps.get_context.outputs.issue_number }}`
--            - **Issue/PRタイトル**: `${{ steps.get_context.outputs.issue_title }}`
-             - **これはPRですか？**: `${{ steps.get_context.outputs.is_pr }}`
-             - **Issue/PRの説明**:
-             `${{ steps.get_description.outputs.description }}`
-             - **コメント**:
-             `${{ steps.get_comments.outputs.comments }}`
++## 🤖 ワークフロー
+ 
+-### 📄 `gemini-cli.yml`
+-- **Trigger**: Issue comments.
+-- **Function**: Allows users to interact with a Gemini-powered CLI assistant by creating comments on issues (e.g., `@gemini-cli /do-something`). The assistant can perform actions on the repository based on the user's request.
++このリポジトリには、以下のGitHub Actionsワークフローが含まれています：
 +
-             ## ユーザーリクエスト
++### 📄 `gemini-cli-jp.yml`
++- **トリガー**: Issueのコメント
++- **機能**: ユーザーがIssueにコメント（例：`@gemini-cli-jp /do-something`）を作成することで、Gemini搭載のCLIアシスタントと対話できるようにします。アシスタントは、ユーザーのリクエストに基づいてリポジトリでアクションを実行できます。
+ 
+ ###  triage `gemini-issue-automated-triage.yml`
+-- **Trigger**: Issue creation or edits.
+-- **Function**: Automatically triages new or updated issues. It can add labels, assignees, or post comments based on the issue's content, as determined by Gemini.
++- **トリガー**: Issueの作成または編集
++- **機能**: 新規または更新されたIssueを自動的にトリアージします。Geminiによって決定されたIssueの内容に基づいて、ラベルの追加、担当者の割り当て、またはコメントの投稿ができます。
+ 
+ ### 🕒 `gemini-issue-scheduled-triage.yml`
+-- **Trigger**: Scheduled cron job.
+-- **Function**: Periodically scans through open issues and performs triage tasks, such as identifying stale issues or suggesting priorities.
++- **トリガー**: スケジュールされたcronジョブ
++- **機能**: 定期的にオープンなIssueをスキャンし、古いIssueの特定や優先順位の提案などのトリアージタスクを実行します。
+ 
+ ### 🔍 `gemini-pr-review.yml`
+-- **Trigger**: Pull request creation or updates.
+-- **Function**: Automatically reviews pull requests. Gemini can provide feedback on code quality, suggest improvements, or identify potential issues.
++- **トリガー**: プルリクエストの作成または更新
++- **機能**: プルリクエストを自動的にレビューします。Geminiは、コードの品質に関するフィードバックの提供、改善の提案、または潜在的な問題の特定ができます。
+ 
+ ### 🔄 `sync-to-report-gh.yml`
+-- **Trigger**: Pushes to the main branch.
+-- **Function**: This is a legacy workflow from a previous template and is not actively used in this lab. It was designed to sync daily reports to a central repository.
++- **トリガー**: mainブランチへのプッシュ
++- **機能**: これは以前のテンプレートからのレガシーワークフローであり、このラボでは積極的に使用されていません。日次レポートを中央リポジトリに同期するように設計されていました。
+ 
+ ---
+ 
+-## 🚀 Usage
++## 📸 Screenshots & Examples
 +
-             ユーザーから以下のリクエストが送信されました：
-             `${{ steps.get_context.outputs.user_request }}`
--            ## 指示
--            あなたは熟練したソフトウェアエンジニアとして振る舞い、提供されたツールを使用してユーザーのリクエストを解決してください。
--            - **計画の提示**: 最初に、問題を解決するためのステップをチェックリスト形式でコメントしてください。(`gh issue comment` または `gh pr comment` を使用)
--            - **ブランチ管理**: `main`ブランチには直接コミットしないでください。Issueの場合は `issue/${{ steps.get_context.outputs.issue_number }}/<短い説明>` のような新しいブランチを作成してください。PRの場合は、チェックアウト済みのブランチで作業してください。
--            - **コードの変更**: `write_file` ツールを使用してコードを修正します。
--            - **コミットとプッシュ**: 変更をコミットし、適切なブランチにプッシュしてください。
--            - **応答**: 完了したら、行った変更の概要をコメントで報告してください。
--            - **言語**: すべての応答は日本語で行ってください。
++### 🤖 CLI Interaction Example
++Create an issue and comment with `@gemini-cli /help` to see available commands:
 +
-+            ## Issue、PRコメント、質問への応答方法
++\```
++@gemini-cli /help
++\```
 +
-+            このワークフローは3つの主要なシナリオをサポートしています：
++The AI assistant will respond with available commands and usage examples.
 +
-+            1. **Issueの修正を作成**
-+               - ユーザーリクエストと関連するIssueまたはPRの説明を注意深く読んでください。
-+               - 利用可能なツールを使用してすべての関連コンテキストを収集してください（例：`gh issue view`、`gh pr view`、`gh pr diff`、`cat`、`head`、`tail`）。
-+               - 先に進む前に問題の根本原因を特定してください。
-+               - **チェックリストとして計画を表示し維持してください**：
-+                 - 最初に、Issueまたはリクエストを解決するために必要なステップを概説し、IssueまたはPRにチェックリストコメントとして投稿してください（GitHubマークダウンのチェックボックスを使用：`- [ ] タスク`）。
-+                 - 例：
-+                   \```
-+                   ### 計画
-+                   - [ ] 根本原因の調査
-+                   - [ ] `file.py`での修正の実装
-+                   - [ ] テストの追加/修正
-+                   - [ ] ドキュメントの更新
-+                   - [ ] 修正の確認とIssueのクローズ
-+                   \```
-+                 - 使用：`gh pr comment "${ISSUE_NUMBER}" --body "<plan>"`または`gh issue comment "${ISSUE_NUMBER}" --body "<plan>"`で初期計画を投稿。
-+                 - 進捗に応じて、同じコメントを編集してチェックリストを最新かつ見やすく保ってください（完了したタスクに`- [x]`をチェック）。
-+                   - チェックリストを更新するには：
-+                     1. チェックリストのコメントIDを見つけます（`gh pr comment list "${ISSUE_NUMBER}"`または`gh issue comment list "${ISSUE_NUMBER}"`を使用）。
-+                     2. 更新されたチェックリストでコメントを編集します：
-+                        - PRの場合：`gh pr comment --edit <comment-id> --body "<updated plan>"`
-+                        - Issueの場合：`gh issue comment --edit <comment-id> --body "<updated plan>"`
-+                     3. チェックリストはIssueまたはPRのコメントとしてのみ維持されるべきです。コードファイルでチェックリストを追跡または更新しないでください。
-+               - 修正にコードの変更が必要な場合は、影響を受けるファイルと行を特定してください。明確化が必要な場合は、ユーザーへの質問をメモしてください。
-+               - 利用可能なツール（例：`write_file`）を使用して必要なコードまたはドキュメントの変更を行ってください。すべての変更がプロジェクトの規約とベストプラクティスに従っていることを確認してください。エラーを防ぐため、すべてのシェル変数を`"${VAR}"`（引用符と波括弧付き）として参照してください。
-+               - 修正が意図通りに動作することを確認するために、関連するテストまたはチェックを実行してください。可能であれば、Issueが解決されたという証拠（テスト出力、スクリーンショットなど）を提供してください。
-+               - **ブランチ作成とコミット**：
-+                 - **決して`main`ブランチに直接コミットしないでください。**
-+                 - **プルリクエスト**（`IS_PR`が`true`）で作業している場合、正しいブランチは既にチェックアウトされています。単純にコミットしてプッシュしてください。
-+                   - `git add .`
-+                   - `git commit -m "feat: <変更の説明>"`
-+                   - `git push`
-+                 - **Issue**（`IS_PR`が`false`）で作業している場合、変更のための新しいブランチを作成してください。適切なブランチ名は`issue/${ISSUE_NUMBER}/<短い説明>`です。
-+                   - `git checkout -b issue/${ISSUE_NUMBER}/my-fix`
-+                   - `git add .`
-+                   - `git commit -m "feat: <修正の説明>"`
-+                   - `git push origin issue/${ISSUE_NUMBER}/my-fix`
-+                   - プッシュ後、プルリクエストを作成できます：`gh pr create --title "Fixes #${ISSUE_NUMBER}: <短いタイトル>" --body "このPRはIssue #${ISSUE_NUMBER}に対処します。"`
-+               - マークダウンファイルで何が変更され、その理由を要約してください：`write_file("response.md", "<ここにあなたの応答>")`
-+               - 応答をコメントとして投稿：
-+                 - PRの場合：`gh pr comment "${ISSUE_NUMBER}" --body-file response.md`
-+                 - Issueの場合：`gh issue comment "${ISSUE_NUMBER}" --body-file response.md`
++### 🏗️ Workflow Architecture
++\```mermaid
++graph TD
++    A[GitHub Issue/PR] --> B[GitHub Actions Trigger]
++    B --> C[Gemini CLI Workflow]
++    C --> D[Gemini AI Processing]
++    D --> E[Repository Actions]
++    E --> F[Automated Response]
 +
-+            2. **プルリクエストのコメントに対処**
-+               - 特定のコメントとPRのコンテキストを読んでください。
-+               - `gh pr view`、`gh pr diff`、`cat`などのツールを使用してコードと議論を理解してください。
-+               - コメントが変更や明確化を求めている場合、Issueの修正と同じプロセスに従ってください：チェックリスト計画を作成し、実装し、テストし、必要な変更をコミットし、進行に応じてチェックリストを更新してください。
-+               - **変更のコミット**：正しいPRブランチは既にチェックアウトされています。単純に変更を追加、コミット、プッシュしてください。
-+                 - `git add .`
-+                 - `git commit -m "fix: レビューコメントに対処"`
-+                 - `git push`
-+               - コメントが質問の場合、必要に応じてコードまたはドキュメントを参照して、直接的かつ明確に答えてください。
-+               - `response.md`で応答を文書化し、PRコメントとして投稿：`gh pr comment "${ISSUE_NUMBER}" --body-file response.md`
++    G[Schedule/Cron] --> H[Automated Triage]
++    H --> I[Issue Management]
 +
-+            3. **Issueの任意の質問に答える**
-+               - `gh issue view`および関連ツールを使用して、質問と完全なIssueコンテキストを読んでください。
-+               - 正確な回答を提供するために、必要に応じてコードベースを研究または分析してください。
-+               - 質問にコードまたはドキュメントの変更が必要な場合、上記の修正プロセスに従い、チェックリスト計画の作成と更新、および**セクション1で説明されている変更のための新しいブランチの作成**を含めてください。
-+               - `response.md`で明確で簡潔な回答を書き、Issueコメントとして投稿：`gh issue comment "${ISSUE_NUMBER}" --body-file response.md`
++    J[PR Created] --> K[PR Review Workflow]
++    K --> L[Code Analysis]
++    L --> M[Feedback & Suggestions]
++\```
 +
-+            ## ガイドライン
++### 💬 Example Interactions
 +
-+            - **簡潔で実行可能であること。** ユーザーの問題を効率的に解決することに焦点を当ててください。
-+            - **コードまたはドキュメントを修正した場合は、常に変更をコミットしてプッシュしてください。**
-+            - **修正や回答について不明な場合は、あなたの推論を説明し、明確化の質問をしてください。**
-+            - **プロジェクトの規約とベストプラクティスに従ってください。**
++**Code Review Request:**
++\```
++@gemini-cli /review-pr
++Please review this pull request and suggest improvements
++\```
 +
-+            すべての応答とコメントは日本語で行ってください。
++**Issue Triage:**
++\```
++@gemini-cli /triage
++Analyze this issue and suggest appropriate labels and assignees
++\```
++
++---
++
++## 🛠️ Troubleshooting
++
++### Common Issues
++
++**❌ Workflow not triggering:**
++- Check if GitHub Actions are enabled in repository settings
++- Verify webhook delivery in repository settings
++- Ensure the trigger conditions are met (e.g., `@gemini-cli` in comment)
++
++**❌ Gemini API errors:**
++- Verify `GEMINI_API_KEY` secret is configured
++- Check API key permissions and quota
++- Ensure the API key is valid and not expired
++
++**❌ Permission errors:**
++- Confirm the user has write permissions
++- Check if the repository is private (affects trusted user detection)
++
++### Getting Help
++1. Check the [GitHub Issues](https://github.com/your-repo/issues) for similar problems
++2. Create a new issue with detailed error logs
++3. Include workflow run logs when reporting issues
++
++---
++
++## 🚀 Installation & Setup
++
++### Prerequisites
++- GitHub account with repository creation permissions
++- Gemini API key from Google AI Studio
++- Basic understanding of GitHub Actions
++
++### Quick Start
++1. **Fork this repository** to your GitHub account
++2. **Configure GitHub Secrets** in your repository settings:
++   - `GEMINI_API_KEY`: Your Gemini API key
++   - `GITHUB_TOKEN`: (automatically provided)
++3. **Copy workflow files** from `.github/workflows/` to your repository
++4. **Customize workflows** according to your needs
++5. **Test the setup** by creating an issue and commenting `@gemini-cli /help`
++
++### Advanced Configuration
++For additional features, configure these optional secrets:
++- `APP_ID` and `APP_PRIVATE_KEY`: For GitHub App integration
++- `GCP_WIF_PROVIDER` and related GCP variables: For Vertex AI usage
++
++---
++
++## 🛠️ Troubleshooting
++
++### Common Issues
++
++**❌ Workflow not triggering:**
++- Check if GitHub Actions are enabled in repository settings
++- Verify webhook delivery in repository settings
++- Ensure the trigger conditions are met (e.g., `@gemini-cli` in comment)
++
++**❌ Gemini API errors:**
++- Verify `GEMINI_API_KEY` secret is configured
++- Check API key permissions and quota
++- Ensure the API key is valid and not expired
++
++**❌ Permission errors:**
++- Confirm the user has write permissions
++- Check if the repository is private (affects trusted user detection)
++
++### Getting Help
++1. Check the [GitHub Issues](https://github.com/your-repo/issues) for similar problems
++2. Create a new issue with detailed error logs
++3. Include workflow run logs when reporting issues
++
++---
++
++## 🚀 Installation & Setup
++
++### Prerequisites
++- GitHub account with repository creation permissions
++- Gemini API key from Google AI Studio
++- Basic understanding of GitHub Actions
++
++### Quick Start
++1. **Fork this repository** to your GitHub account
++2. **Configure GitHub Secrets** in your repository settings:
++   - `GEMINI_API_KEY`: Your Gemini API key
++   - `GITHUB_TOKEN`: (automatically provided)
++3. **Copy workflow files** from `.github/workflows/` to your repository
++4. **Customize workflows** according to your needs
++5. **Test the setup** by creating an issue and commenting `@gemini-cli /help`
+ 
+-To use these workflows in your own repository, you can copy the workflow files from the `.github/workflows` directory and adapt them to your needs. You will need to configure the necessary secrets, such as your Gemini API key.
++### Advanced Configuration
++For additional features, configure these optional secrets:
++- `APP_ID` and `APP_PRIVATE_KEY`: For GitHub App integration
++- `GCP_WIF_PROVIDER` and related GCP variables: For Vertex AI usage
+ 
+ ---
+ 
+-## 📁 Directory Structure
++## 📁 ディレクトリ構造
+ 
+ \```
+ .
+ ├── .github/
+ │   └── workflows/
+-│       ├── gemini-cli.yml
++│       ├── gemini-cli-jp.yml
+ │       ├── gemini-issue-automated-triage.yml
+ │       ├── gemini-issue-scheduled-triage.yml
+ │       ├── gemini-pr-review.yml
+@@ -68,10 +219,10 @@ To use these workflows in your own repository, you can copy the workflow files f
+ 
+ ---
+ 
+-## 📝 License
++## 📝 ライセンス
+ 
+-This project is licensed under the terms of the [LICENSE](LICENSE) file.
++このプロジェクトは、[LICENSE](LICENSE)ファイルの条件に基づいてライセンスされています。
+ 
+ ---
+ 
+-© 2025 Sunwood-ai-labsII
+\ No newline at end of file
++© 2025 Sunwood-ai-labsII
 ```

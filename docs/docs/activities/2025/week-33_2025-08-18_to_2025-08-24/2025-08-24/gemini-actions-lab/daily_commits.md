@@ -1504,3 +1504,242 @@ Date:   Sun Aug 24 14:07:46 2025 +0900
 
 ---
 
+## ⏰ 14:54:28 - `81a973a`
+**Add GitHub Actions workflow for Gemini CLI (JP)**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 14:54:28 2025 +0900
+A	.github/workflows/gemini-cli-jp.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Aug 24 14:54:28 2025 +0900
+
+    Add GitHub Actions workflow for Gemini CLI (JP)
+
+ .github/workflows/gemini-cli-jp.yml | 317 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 317 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli-jp.yml b/.github/workflows/gemini-cli-jp.yml
+new file mode 100644
+index 0000000..dee8545
+--- /dev/null
++++ b/.github/workflows/gemini-cli-jp.yml
+@@ -0,0 +1,317 @@
++name: '💬 Gemini CLI (日本語版)'
++
++on:
++  pull_request_review_comment:
++    types:
++      - 'created'
++  pull_request_review:
++    types:
++      - 'submitted'
++  issue_comment:
++    types:
++      - 'created'
++
++concurrency:
++  group: '${{ github.workflow }}-${{ github.event.issue.number }}'
++  cancel-in-progress: |-
++    ${{ github.event.sender.type == 'User' && ( github.event.issue.author_association == 'OWNER' || github.event.issue.author_association == 'MEMBER' || github.event.issue.author_association == 'COLLABORATOR') }}
++
++defaults:
++  run:
++    shell: 'bash'
++
++permissions:
++  contents: 'write'
++  id-token: 'write'
++  pull-requests: 'write'
++  issues: 'write'
++
++jobs:
++  gemini-cli-jp:
++    # この条件は信頼できるユーザーによってアクションがトリガーされた場合のみ実行されるようにします。
++    # プライベートリポジトリの場合、リポジトリにアクセスできるユーザーは信頼できるとみなされます。
++    # パブリックリポジトリの場合、メンバー、オーナー、またはコラボレーターが信頼できるとみなされます。
++    if: |-
++      github.event_name == 'workflow_dispatch' ||
++      (
++        github.event_name == 'issues' && github.event.action == 'opened' &&
++        contains(github.event.issue.body, '@gemini-cli-jp') &&
++        !contains(github.event.issue.body, '@gemini-cli-jp /review') &&
++        !contains(github.event.issue.body, '@gemini-cli-jp /triage') &&
++        (
++          github.event.repository.private == true ||
++          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
++        )
++      ) ||
++      (
++        (
++          github.event_name == 'issue_comment' ||
++          github.event_name == 'pull_request_review_comment'
++        ) &&
++        contains(github.event.comment.body, '@gemini-cli-jp') &&
++        !contains(github.event.comment.body, '@gemini-cli-jp /review') &&
++        !contains(github.event.comment.body, '@gemini-cli-jp /triage') &&
++        (
++          github.event.repository.private == true ||
++          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
++        )
++      ) ||
++      (
++        github.event_name == 'pull_request_review' &&
++        contains(github.event.review.body, '@gemini-cli-jp') &&
++        !contains(github.event.review.body, '@gemini-cli-jp /review') &&
++        !contains(github.event.review.body, '@gemini-cli-jp /triage') &&
++        (
++          github.event.repository.private == true ||
++          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
++        )
++      )
++    timeout-minutes: 10
++    runs-on: 'ubuntu-latest'
++    steps:
++      - name: 'GitHub App トークンを生成'
++        id: 'generate_token'
++        if: |-
++          ${{ vars.APP_ID }}
++        uses: 'actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e' # ratchet:actions/create-github-app-token@v2
++        with:
++          app-id: '${{ vars.APP_ID }}'
++          private-key: '${{ secrets.APP_PRIVATE_KEY }}'
++
++      - name: 'イベントからコンテキストを取得'
++        id: 'get_context'
++        env:
++          EVENT_NAME: '${{ github.event_name }}'
++          EVENT_PAYLOAD: '${{ toJSON(github.event) }}'
++        run: |-
++          set -euo pipefail
++
++          USER_REQUEST=""
++          ISSUE_NUMBER=""
++          IS_PR="false"
++
++          if [[ "${EVENT_NAME}" == "issues" ]]; then
++            USER_REQUEST=$(echo "${EVENT_PAYLOAD}" | jq -r .issue.body)
+```
+
+---
+
+## ⏰ 05:57:33 - `710fa8b`
+**feat: Add Japanese README**
+*by gemini-cli-jp[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli-jp[bot] <gemini-cli-jp[bot]@users.noreply.github.com>
+Date:   Sun Aug 24 05:57:33 2025 +0000
+A	README.ja.md
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli-jp[bot] <gemini-cli-jp[bot]@users.noreply.github.com>
+Date:   Sun Aug 24 05:57:33 2025 +0000
+
+    feat: Add Japanese README
+
+ README.ja.md | 77 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.ja.md b/README.ja.md
+new file mode 100644
+index 0000000..8b25a6e
+--- /dev/null
++++ b/README.ja.md
+@@ -0,0 +1,77 @@
++# ジェミニ・アクション・ラボ
++
++<div align="center">
++  <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
++  <img src="https://img.shields.io/badge/Gemini-AI-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white" alt="Gemini" />
++</div>
++
++---
++
++## 📖 概要
++
++このリポジトリは、GoogleのGemini AIをGitHub Actionsと統合するための実験室およびショーケースとして機能します。生成AIの力を利用して、さまざまなリポジトリ管理タスクを自動化する方法を示します。
++
++### 🎯 主な機能
++- **AIによる自動化**: Geminiを活用して、Issueのトリアージ、プルリクエストのレビューなどのタスクを処理します。
++- **CLIライクな対話**: Issueのコメントから直接AIアシスタントと対話します。
++- **拡張可能なワークフロー**: 独自のプロジェクトに合わせてワークフローを簡単に適応およびカスタマイズできます。
++
++---
++
++## 🤖 ワークフロー
++
++このリポジトリには、以下のGitHub Actionsワークフローが含まれています：
++
++### 📄 `gemini-cli-jp.yml`
++- **トリガー**: Issueのコメント
++- **機能**: ユーザーがIssueにコメント（例：`@gemini-cli-jp /do-something`）を作成することで、Gemini搭載のCLIアシスタントと対話できるようにします。アシスタントは、ユーザーのリクエストに基づいてリポジトリでアクションを実行できます。
++
++###  triage `gemini-issue-automated-triage.yml`
++- **トリガー**: Issueの作成または編集
++- **機能**: 新規または更新されたIssueを自動的にトリアージします。Geminiによって決定されたIssueの内容に基づいて、ラベルの追加、担当者の割り当て、またはコメントの投稿ができます。
++
++### 🕒 `gemini-issue-scheduled-triage.yml`
++- **トリガー**: スケジュールされたcronジョブ
++- **機能**: 定期的にオープンなIssueをスキャンし、古いIssueの特定や優先順位の提案などのトリアージタスクを実行します。
++
++### 🔍 `gemini-pr-review.yml`
++- **トリガー**: プルリクエストの作成または更新
++- **機能**: プルリクエストを自動的にレビューします。Geminiは、コードの品質に関するフィードバックの提供、改善の提案、または潜在的な問題の特定ができます。
++
++### 🔄 `sync-to-report-gh.yml`
++- **トリガー**: mainブランチへのプッシュ
++- **機能**: これは以前のテンプレートからのレガシーワークフローであり、このラボでは積極的に使用されていません。日次レポートを中央リポジトリに同期するように設計されていました。
++
++---
++
++## 🚀 使い方
++
++これらのワークフローを独自のリポジトリで使用するには、`.github/workflows`ディレクトリからワークフローファイルをコピーし、ニーズに合わせて適応させます。Gemini APIキーなどの必要なシークレットを設定する必要があります。
++
++---
++
++## 📁 ディレクトリ構造
++
++\```
++.
++├── .github/
++│   └── workflows/
++│       ├── gemini-cli-jp.yml
++│       ├── gemini-issue-automated-triage.yml
++│       ├── gemini-issue-scheduled-triage.yml
++│       ├── gemini-pr-review.yml
++│       └── sync-to-report-gh.yml
++├── .gitignore
++├── LICENSE
++└── README.md
++\```
++
++---
++
++## 📝 ライセンス
++
++このプロジェクトは、[LICENSE](LICENSE)ファイルの条件に基づいてライセンスされています。
++
++---
++
++© 2025 Sunwood-ai-labsII
+```
+
+---
+

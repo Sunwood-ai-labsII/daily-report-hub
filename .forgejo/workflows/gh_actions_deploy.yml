@@ -1,0 +1,87 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to static-pages branch
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: write  # static-pagesブランチへのpushに必要
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Switch to static-pages branch
+        run: |
+          # Gitの設定
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # static-pagesブランチに切り替え（存在しない場合は作成）
+          git checkout -B static-pages
+          
+          # mainブランチの内容で上書き
+          git reset --hard main
+          
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+          
+      - name: Install dependencies
+        run: cd docs && npm ci
+
+      # ▼▼▼▼▼【修正】ここからデバッグと置換処理▼▼▼▼▼
+      - name: 1. Check current directory and file existence
+        run: |
+          pwd
+          ls -R ./docs
+          
+      - name: 2. Show <br> tags BEFORE replacement
+        run: |
+          echo "--- Searching for <br> in all .md files before replacement ---"
+          grep -r --color=auto "<br>" ./docs || true
+
+      - name: 3. Replace <br> with <br />
+        run: |
+          find ./docs -type f -name "*.md" -exec sed -i 's#<br>#<br />#g' {} +
+          echo "Replacement command executed."
+
+      - name: 4. Show <br> tags AFTER replacement
+        run: |
+          echo "--- Searching for <br> in all .md files after replacement ---"
+          grep -r --color=auto "<br>" ./docs || true
+      # ▲▲▲▲▲【修正】ここまでデバッグと置換処理▲▲▲▲▲
+
+      - name: Build website
+        run: cd docs && npm run build
+
+      - name: Debug - Check build output
+        run: |
+          echo "=== Current directory ==="
+          pwd
+          echo "=== Root directory contents ==="
+          ls -la
+          echo "=== docs directory contents ==="
+          ls -la docs/
+          echo "=== Checking for docs/build ==="
+          if [ -d "docs/build" ]; then
+            echo "docs/build directory exists"
+            ls -la docs/build/
+          else
+            echo "docs/build directory does NOT exist"
+          fi
+
+      - name: Deploy to static-pages branch
+        run: |
+          git add .
+          git commit -m "Deploy to static-pages: $(date '+%Y-%m-%d %H:%M:%S')"
+          git push --force origin static-pages

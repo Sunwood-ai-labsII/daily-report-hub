@@ -1,0 +1,39 @@
+name: Daily Report Generator (Individual Repos)
+on:
+  schedule:
+    # 毎日 JST 18:00 (UTC 09:00) に実行
+    - cron: '0 9 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate-repo-reports:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout daily-report-hub
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.REPORT_HUB_REPO || 'Sunwood-ai-labs/daily-report-hub' }}
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install litellm
+
+      - name: Generate individual repo reports
+        env:
+          GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+        run: python .github/scripts/generate_daily_report.py
+
+      - name: Commit and push reports
+        run: |
+          git config user.name "Daily Report Bot"
+          git config user.email "bot@example.com"
+          git add docs/docs/activities/
+          if ! git diff --staged --quiet; then
+            git commit -m "🤖 Individual Daily Reports: $(date '+%Y-%m-%d')"
+            git push
+          fi

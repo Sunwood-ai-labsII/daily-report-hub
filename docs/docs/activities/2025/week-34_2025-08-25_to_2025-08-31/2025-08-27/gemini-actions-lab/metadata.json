@@ -1,0 +1,27 @@
+{
+  "repository": "Sunwood-ai-labsII/gemini-actions-lab",
+  "date": "2025-08-27",
+  "week_folder": "week-34_2025-08-25_to_2025-08-31",
+  "week_number": 34,
+  "week_start_date": "2025-08-25",
+  "week_end_date": "2025-08-31",
+  "branch": "main",
+  "latest_commit_sha": "4d85a9d654dabf20a5d78b0ee7204609a7c6aeb3",
+  "sync_timestamp": "2025-08-27T14:51:33Z",
+  "workflow_run": "17270339080",
+  "daily_commit_count": 0,
+  "daily_files_changed": 1,
+  "has_activity": false,
+  "pr_creator": "yukihiko",
+  "auto_approved": true,
+  "files": {
+    "readme": "README.md",
+    "summary": "daily_summary.md",
+    "commits": "daily_commits.md",
+    "file_changes": "daily_cumulative_diff.md",
+    "stats": "daily_diff_stats.md",
+    "code_diff": "daily_code_diff.md",
+    "latest_diff": "latest_diff.md",
+    "latest_code_diff": "latest_code_diff.md"
+  }
+}

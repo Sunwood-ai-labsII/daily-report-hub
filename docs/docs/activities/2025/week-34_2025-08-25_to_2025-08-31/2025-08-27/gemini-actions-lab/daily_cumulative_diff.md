@@ -1,3 +1,5 @@
 # 📋 Daily File Changes
 
-- 📝 **No commits found for today:** `No commits found for today`
+- ✏️ **Modified:** `.github/workflows/gemini-jp-cli.yml`
+- ✏️ **Modified:** `README.ja.md`
+- ✏️ **Modified:** `README.md`

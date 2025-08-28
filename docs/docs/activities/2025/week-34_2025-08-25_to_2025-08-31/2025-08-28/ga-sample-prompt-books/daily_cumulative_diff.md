@@ -12,5 +12,6 @@
 - 🆕 **Added:** `README.ja.md`
 - 🆕 **Added:** `README.md`
 - 🆕 **Added:** `index.html`
+- 🆕 **Added:** `plan.md`
 - 🆕 **Added:** `script.js`
 - 🆕 **Added:** `style.css`

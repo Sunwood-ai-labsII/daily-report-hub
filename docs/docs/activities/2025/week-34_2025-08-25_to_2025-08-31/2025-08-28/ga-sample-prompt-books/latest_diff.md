@@ -1,5 +1,8 @@
 # 🔄 Latest Changes (File List)
 
-- 🆕 **Added:** `index.html`
-- 🆕 **Added:** `script.js`
-- 🆕 **Added:** `style.css`
+- ✏️ **Modified:** `README.ja.md`
+- ✏️ **Modified:** `README.md`
+- ✏️ **Modified:** `index.html`
+- 🆕 **Added:** `plan.md`
+- ✏️ **Modified:** `script.js`
+- ✏️ **Modified:** `style.css`

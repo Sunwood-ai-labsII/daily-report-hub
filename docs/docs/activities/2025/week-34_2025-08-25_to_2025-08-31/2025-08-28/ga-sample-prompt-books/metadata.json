@@ -1,0 +1,27 @@
+{
+  "repository": "Sunwood-ai-labsII/ga-sample-prompt-books",
+  "date": "2025-08-28",
+  "week_folder": "week-34_2025-08-25_to_2025-08-31",
+  "week_number": 34,
+  "week_start_date": "2025-08-25",
+  "week_end_date": "2025-08-31",
+  "branch": "main",
+  "latest_commit_sha": "a601f7441662d99c70420107ef4a3e7a28fb3b9f",
+  "sync_timestamp": "2025-08-28T10:24:07Z",
+  "workflow_run": "17293011237",
+  "daily_commit_count": 0,
+  "daily_files_changed": 1,
+  "has_activity": false,
+  "pr_creator": "yukihiko",
+  "auto_approved": true,
+  "files": {
+    "readme": "README.md",
+    "summary": "daily_summary.md",
+    "commits": "daily_commits.md",
+    "file_changes": "daily_cumulative_diff.md",
+    "stats": "daily_diff_stats.md",
+    "code_diff": "daily_code_diff.md",
+    "latest_diff": "latest_diff.md",
+    "latest_code_diff": "latest_code_diff.md"
+  }
+}

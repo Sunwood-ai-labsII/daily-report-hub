@@ -1,3 +1,5 @@
 # 🔄 Latest Changes (File List)
 
-- 📝 **No recent diff available:** `No recent diff available`
+- 🆕 **Added:** `index.html`
+- 🆕 **Added:** `script.js`
+- 🆕 **Added:** `style.css`

@@ -501,3 +501,270 @@ Date:   Mon Sep 1 14:30:25 2025 +0000
 
 ---
 
+## ⏰ 14:31:14 - `4cda15b`
+**Merge branch 'develop'**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Merge: 9b4d4fc 674b289
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 14:31:14 2025 +0000
+```
+
+### 📊 Statistics
+```bash
+Merge: 9b4d4fc 674b289
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 14:31:14 2025 +0000
+
+    Merge branch 'develop'
+
+ .github/prompts/gemini-cli_prompt.ja.md |  84 +++++++++++++++++++++
+ .github/workflows/gemini-cli.yml        | 128 +++++++++-----------------------
+ 2 files changed, 121 insertions(+), 91 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 15:31:23 - `86d5ff8`
+**WIP: initial commit**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 15:31:23 2025 +0000
+M	.github/workflows/gemini-cli.yml
+M	.github/workflows/gemini-issue-automated-triage.yml
+M	.github/workflows/gemini-issue-scheduled-triage.yml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 15:31:23 2025 +0000
+
+    WIP: initial commit
+
+ .github/workflows/gemini-cli.yml                   | 33 +++++++++++++-----
+ .../workflows/gemini-issue-automated-triage.yml    |  8 +++--
+ .../workflows/gemini-issue-scheduled-triage.yml    | 40 +++++++++++++++++-----
+ 3 files changed, 61 insertions(+), 20 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index c6f115f..b8052fe 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -217,15 +217,30 @@ jobs:
+             exit 1
+           fi
+           # Safe variable substitution without executing content
+-          EXPANDED=$(sed \
+-            -e "s|\\$\\{REPOSITORY\\}|${REPOSITORY}|g" \
+-            -e "s|\\$\\{EVENT_NAME\\}|${EVENT_NAME}|g" \
+-            -e "s|\\$\\{ISSUE_NUMBER\\}|${ISSUE_NUMBER}|g" \
+-            -e "s|\\$\\{IS_PR\\}|${IS_PR}|g" \
+-            -e "s|\\$\\{DESCRIPTION\\}|${DESCRIPTION}|g" \
+-            -e "s|\\$\\{COMMENTS\\}|${COMMENTS}|g" \
+-            -e "s|\\$\\{USER_REQUEST\\}|${USER_REQUEST}|g" \
+-            "${TEMPLATE_PATH}")
++          if command -v envsubst >/dev/null 2>&1; then
++            EXPANDED=$(\
++              REPOSITORY="${REPOSITORY}" \
++              EVENT_NAME="${EVENT_NAME}" \
++              ISSUE_NUMBER="${ISSUE_NUMBER}" \
++              IS_PR="${IS_PR}" \
++              DESCRIPTION="${DESCRIPTION}" \
++              COMMENTS="${COMMENTS}" \
++              USER_REQUEST="${USER_REQUEST}" \
++              envsubst '${REPOSITORY} ${EVENT_NAME} ${ISSUE_NUMBER} ${IS_PR} ${DESCRIPTION} ${COMMENTS} ${USER_REQUEST}' < "${TEMPLATE_PATH}"
++            )
++          else
++            # Fallback to perl if envsubst is unavailable
++            EXPANDED=$(\
++              REPOSITORY="${REPOSITORY}" \
++              EVENT_NAME="${EVENT_NAME}" \
++              ISSUE_NUMBER="${ISSUE_NUMBER}" \
++              IS_PR="${IS_PR}" \
++              DESCRIPTION="${DESCRIPTION}" \
++              COMMENTS="${COMMENTS}" \
++              USER_REQUEST="${USER_REQUEST}" \
++              perl -pe 's/\$\{REPOSITORY\}/$ENV{REPOSITORY}/g; s/\$\{EVENT_NAME\}/$ENV{EVENT_NAME}/g; s/\$\{ISSUE_NUMBER\}/$ENV{ISSUE_NUMBER}/g; s/\$\{IS_PR\}/$ENV{IS_PR}/g; s/\$\{DESCRIPTION\}/$ENV{DESCRIPTION}/g; s/\$\{COMMENTS\}/$ENV{COMMENTS}/g; s/\$\{USER_REQUEST\}/$ENV{USER_REQUEST}/g' "${TEMPLATE_PATH}"
++            )
++          fi
+           {
+             echo "prompt<<EOF"
+             echo "${EXPANDED}"
+diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
+index 4c85ade..bc76c52 100644
+--- a/.github/workflows/gemini-issue-automated-triage.yml
++++ b/.github/workflows/gemini-issue-automated-triage.yml
+@@ -129,9 +129,7 @@ jobs:
+             {
+               "debug": true,
+               "maxSessionTurns": 25,
+-              "coreTools": [
+-                "run_shell_command(echo)"
+-              ],
++              "coreTools": [],
+               "telemetry": {
+                 "enabled": false,
+                 "target": "gcp"
+@@ -150,6 +148,10 @@ jobs:
+             
+             Important: Respond with ONLY the JSON object, no additional text or explanations before or after.
+ 
++            Constraints:
++            - Do NOT run any shell or external commands; use only the provided environment variables
++            - Do NOT attempt to execute `gh label list` or call the GitHub API to fetch labels. The available labels are already provided in "${AVAILABLE_LABELS}".
++
+             Output format (JSON only):
+             {"labels_to_set": ["label1", "label2"], "explanation": "reasoning for these labels"}
+ 
+diff --git a/.github/workflows/gemini-issue-scheduled-triage.yml b/.github/workflows/gemini-issue-scheduled-triage.yml
+index 878dc72..aacbbe4 100644
+--- a/.github/workflows/gemini-issue-scheduled-triage.yml
++++ b/.github/workflows/gemini-issue-scheduled-triage.yml
+@@ -100,9 +100,7 @@ jobs:
+             {
+               "debug": ${{ fromJSON(env.DEBUG || env.ACTIONS_STEP_DEBUG || false) }},
+               "maxSessionTurns": 25,
+-              "coreTools": [
+-                "run_shell_command(echo)"
+-              ],
++              "coreTools": [],
+               "telemetry": {
+                 "enabled": false,
+                 "target": "gcp"
+@@ -142,6 +140,9 @@ jobs:
+             - Only use labels that already exist in the repository
+             - Assign all applicable labels based on the issue content
+             - Reference all shell variables as "${VAR}" (with quotes and braces)
++            - Do NOT run any shell or external commands; use only the provided environment variables
++            - Do NOT attempt to execute `gh label list` or call the GitHub API to fetch labels. The full list of labels is provided in "${AVAILABLE_LABELS}".
++            - Do NOT attempt to list or fetch issues yourself. The issues to triage are provided in "${ISSUES_TO_TRIAGE}".
+             - Output only valid JSON format
+             - Do not include any explanation or additional text, just the JSON
+ 
+@@ -156,14 +157,37 @@ jobs:
+         with:
+           github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
+           script: |-
+-            // Strip code block markers if present
+```
+
+---
+
+## ⏰ 15:34:02 - `eea347e`
+**🔧 GitHub workflowの変数置換機能を改善**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 15:34:02 2025 +0000
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 15:34:02 2025 +0000
+
+    🔧 GitHub workflowの変数置換機能を改善
+    
+    - issues opened トリガーを追加
+    - JA prompt file の読み込み機能を追加
+    - envsubst を使用した拡大 option substitution, perl fallback を追加
+
+ .github/workflows/gemini-cli.yml | 33 +++++++++------------------------
+ 1 file changed, 9 insertions(+), 24 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index b8052fe..c6f115f 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -217,30 +217,15 @@ jobs:
+             exit 1
+           fi
+           # Safe variable substitution without executing content
+-          if command -v envsubst >/dev/null 2>&1; then
+-            EXPANDED=$(\
+-              REPOSITORY="${REPOSITORY}" \
+-              EVENT_NAME="${EVENT_NAME}" \
+-              ISSUE_NUMBER="${ISSUE_NUMBER}" \
+-              IS_PR="${IS_PR}" \
+-              DESCRIPTION="${DESCRIPTION}" \
+-              COMMENTS="${COMMENTS}" \
+-              USER_REQUEST="${USER_REQUEST}" \
+-              envsubst '${REPOSITORY} ${EVENT_NAME} ${ISSUE_NUMBER} ${IS_PR} ${DESCRIPTION} ${COMMENTS} ${USER_REQUEST}' < "${TEMPLATE_PATH}"
+-            )
+-          else
+-            # Fallback to perl if envsubst is unavailable
+-            EXPANDED=$(\
+-              REPOSITORY="${REPOSITORY}" \
+-              EVENT_NAME="${EVENT_NAME}" \
+-              ISSUE_NUMBER="${ISSUE_NUMBER}" \
+-              IS_PR="${IS_PR}" \
+-              DESCRIPTION="${DESCRIPTION}" \
+-              COMMENTS="${COMMENTS}" \
+-              USER_REQUEST="${USER_REQUEST}" \
+-              perl -pe 's/\$\{REPOSITORY\}/$ENV{REPOSITORY}/g; s/\$\{EVENT_NAME\}/$ENV{EVENT_NAME}/g; s/\$\{ISSUE_NUMBER\}/$ENV{ISSUE_NUMBER}/g; s/\$\{IS_PR\}/$ENV{IS_PR}/g; s/\$\{DESCRIPTION\}/$ENV{DESCRIPTION}/g; s/\$\{COMMENTS\}/$ENV{COMMENTS}/g; s/\$\{USER_REQUEST\}/$ENV{USER_REQUEST}/g' "${TEMPLATE_PATH}"
+-            )
+-          fi
++          EXPANDED=$(sed \
++            -e "s|\\$\\{REPOSITORY\\}|${REPOSITORY}|g" \
++            -e "s|\\$\\{EVENT_NAME\\}|${EVENT_NAME}|g" \
++            -e "s|\\$\\{ISSUE_NUMBER\\}|${ISSUE_NUMBER}|g" \
++            -e "s|\\$\\{IS_PR\\}|${IS_PR}|g" \
++            -e "s|\\$\\{DESCRIPTION\\}|${DESCRIPTION}|g" \
++            -e "s|\\$\\{COMMENTS\\}|${COMMENTS}|g" \
++            -e "s|\\$\\{USER_REQUEST\\}|${USER_REQUEST}|g" \
++            "${TEMPLATE_PATH}")
+           {
+             echo "prompt<<EOF"
+             echo "${EXPANDED}"
+```
+
+---
+
+## ⏰ 15:34:27 - `458e151`
+**🔀 Merge: GitHub workflows improvement**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Merge: 86d5ff8 eea347e
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 15:34:27 2025 +0000
+```
+
+### 📊 Statistics
+```bash
+Merge: 86d5ff8 eea347e
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Mon Sep 1 15:34:27 2025 +0000
+
+    🔀 Merge: GitHub workflows improvement
+
+ .github/workflows/gemini-cli.yml | 33 +++++++++------------------------
+ 1 file changed, 9 insertions(+), 24 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

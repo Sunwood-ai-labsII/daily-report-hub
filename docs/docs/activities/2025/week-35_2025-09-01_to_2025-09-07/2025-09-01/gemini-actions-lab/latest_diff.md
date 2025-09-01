@@ -1,4 +1,4 @@
 # 🔄 Latest Changes (File List)
 
-- ✏️ **Modified:** `README.ja.md`
-- ✏️ **Modified:** `README.md`
+- 🆕 **Added:** `.github/prompts/gemini-cli_prompt.ja.md`
+- ✏️ **Modified:** `.github/workflows/gemini-cli.yml`

@@ -1,2 +1,186 @@
 # 📝 Daily Commits
 
+## ⏰ 22:37:40 - `4b2fe15`
+**Update gemini-jp-cli.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 1 22:37:40 2025 +0900
+M	.github/workflows/gemini-jp-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 1 22:37:40 2025 +0900
+
+    Update gemini-jp-cli.yml
+
+ .github/workflows/gemini-jp-cli.yml | 73 ++++++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 26 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-jp-cli.yml b/.github/workflows/gemini-jp-cli.yml
+index 12fe964..1336224 100644
+--- a/.github/workflows/gemini-jp-cli.yml
++++ b/.github/workflows/gemini-jp-cli.yml
+@@ -225,12 +225,12 @@ jobs:
+               }
+             }
+           prompt: |-
+-            ## 役割
+-
++            ## 🤖 役割
++            
+             あなたはGitHubワークフローのCLIインターフェース経由で呼び出される親切なAIアシスタントです。リポジトリとやり取りし、ユーザーに応答するためのツールを使用できます。
+-
+-            ## コンテキスト
+-
++            
++            ## 📋 コンテキスト
++            
+             - **リポジトリ**: `${{ github.repository }}`
+             - **トリガーイベント**: `${{ github.event_name }}`
+             - **Issue/PR番号**: `${{ steps.get_context.outputs.issue_number }}`
+@@ -239,25 +239,25 @@ jobs:
+             `${{ steps.get_description.outputs.description }}`
+             - **コメント**:
+             `${{ steps.get_comments.outputs.comments }}`
+-
++            
+             ## ユーザーリクエスト
+-
++            
+             ユーザーから以下のリクエストが送信されました：
+             `${{ steps.get_context.outputs.user_request }}`
+-
+-            ## Issue、PRコメント、質問への応答方法
+-
++            
++            ## 🚀 Issue、PRコメント、質問への応答方法
++            
+             このワークフローは3つの主要なシナリオをサポートしています：
+-
+-            1. **Issueの修正を作成**
++            
++            ### 1. **Issueの修正を作成**
+                - ユーザーリクエストと関連するIssueまたはPRの説明を注意深く読んでください。
+                - 利用可能なツールを使用してすべての関連コンテキストを収集してください（例：`gh issue view`、`gh pr view`、`gh pr diff`、`cat`、`head`、`tail`）。
+                - 先に進む前に問題の根本原因を特定してください。
+-               - **チェックリストとして計画を表示し維持してください**：
++               - **📋 チェックリストとして計画を表示し維持してください**：
+                  - 最初に、Issueまたはリクエストを解決するために必要なステップを概説し、IssueまたはPRにチェックリストコメントとして投稿してください（GitHubマークダウンのチェックボックスを使用：`- [ ] タスク`）。
+                  - 例：
+                    \```
+-                   ### 計画
++                   ### 📋 計画
+                    - [ ] 根本原因の調査
+                    - [ ] `file.py`での修正の実装
+                    - [ ] テストの追加/修正
+@@ -279,41 +279,62 @@ jobs:
+                  - **決して`main`ブランチに直接コミットしないでください。**
+                  - **プルリクエスト**（`IS_PR`が`true`）で作業している場合、正しいブランチは既にチェックアウトされています。単純にコミットしてプッシュしてください。
+                    - `git add .`
+-                   - `git commit -m "feat: <変更の説明>"`
++                   - `git commit -m "✨ feat: <変更の説明>"`
+                    - `git push`
+                  - **Issue**（`IS_PR`が`false`）で作業している場合、変更のための新しいブランチを作成してください。適切なブランチ名は`issue/${ISSUE_NUMBER}/<短い説明>`です。
+                    - `git checkout -b issue/${ISSUE_NUMBER}/my-fix`
+                    - `git add .`
+-                   - `git commit -m "feat: <修正の説明>"`
++                   - `git commit -m "✨ feat: <修正の説明>"`
+                    - `git push origin issue/${ISSUE_NUMBER}/my-fix`
+-                   - プッシュ後、プルリクエストを作成できます：`gh pr create --title "Fixes #${ISSUE_NUMBER}: <短いタイトル>" --body "このPRはIssue #${ISSUE_NUMBER}に対処します。"`
++                   - プッシュ後、プルリクエストを作成できます：`gh pr create --title "🔧 Fixes #${ISSUE_NUMBER}: <短いタイトル>" --body "✨ このPRはIssue #${ISSUE_NUMBER}に対処します。"`
+                - マークダウンファイルで何が変更され、その理由を要約してください：`write_file("response.md", "<ここにあなたの応答>")`
+                - 応答をコメントとして投稿：
+                  - PRの場合：`gh pr comment "${ISSUE_NUMBER}" --body-file response.md`
+                  - Issueの場合：`gh issue comment "${ISSUE_NUMBER}" --body-file response.md`
+-
+-            2. **プルリクエストのコメントに対処**
++            
++            ### 2. **プルリクエストのコメントに対処**
+                - 特定のコメントとPRのコンテキストを読んでください。
+                - `gh pr view`、`gh pr diff`、`cat`などのツールを使用してコードと議論を理解してください。
+                - コメントが変更や明確化を求めている場合、Issueの修正と同じプロセスに従ってください：チェックリスト計画を作成し、実装し、テストし、必要な変更をコミットし、進行に応じてチェックリストを更新してください。
+                - **変更のコミット**：正しいPRブランチは既にチェックアウトされています。単純に変更を追加、コミット、プッシュしてください。
+                  - `git add .`
+-                 - `git commit -m "fix: レビューコメントに対処"`
++                 - `git commit -m "🔧 fix: レビューコメントに対処"`
+                  - `git push`
+                - コメントが質問の場合、必要に応じてコードまたはドキュメントを参照して、直接的かつ明確に答えてください。
+                - `response.md`で応答を文書化し、PRコメントとして投稿：`gh pr comment "${ISSUE_NUMBER}" --body-file response.md`
+-
+-            3. **Issueの任意の質問に答える**
++            
++            ### 3. **Issueの任意の質問に答える**
+                - `gh issue view`および関連ツールを使用して、質問と完全なIssueコンテキストを読んでください。
+                - 正確な回答を提供するために、必要に応じてコードベースを研究または分析してください。
+                - 質問にコードまたはドキュメントの変更が必要な場合、上記の修正プロセスに従い、チェックリスト計画の作成と更新、および**セクション1で説明されている変更のための新しいブランチの作成**を含めてください。
+                - `response.md`で明確で簡潔な回答を書き、Issueコメントとして投稿：`gh issue comment "${ISSUE_NUMBER}" --body-file response.md`
+-
++            
+```
+
+---
+
+## ⏰ 13:54:29 - `2cad723`
+**feat: add workflow status badge to READMEs**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Mon Sep 1 13:54:29 2025 +0000
+M	README.ja.md
+M	README.md
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Mon Sep 1 13:54:29 2025 +0000
+
+    feat: add workflow status badge to READMEs
+
+ README.ja.md | 2 ++
+ README.md    | 2 ++
+ 2 files changed, 4 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.ja.md b/README.ja.md
+index 087a0b0..56a17a7 100644
+--- a/README.ja.md
++++ b/README.ja.md
+@@ -5,6 +5,8 @@
+ <a href="./README.md"><img src="https://img.shields.io/badge/English-Readme-blue?style=for-the-badge&logo=github&logoColor=white" alt="English" /></a>
+ <a href="./README.ja.md"><img src="https://img.shields.io/badge/日本語-Readme-red?style=for-the-badge&logo=github&logoColor=white" alt="日本語" /></a>
+ 
++[![💬 Gemini CLI](https://github.com/Sunwood-ai-labsII/gemini-actions-lab/actions/workflows/gemini-cli.yml/badge.svg)](https://github.com/Sunwood-ai-labsII/gemini-actions-lab/actions/workflows/gemini-cli.yml)
++
+ ![Image](https://github.com/user-attachments/assets/1e294058-a1e6-4b44-979d-f4c8f09cb8ae)
+ 
+ <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+diff --git a/README.md b/README.md
+index ca6ca29..6ce4bca 100644
+--- a/README.md
++++ b/README.md
+@@ -5,6 +5,8 @@
+ <a href="./README.md"><img src="https://img.shields.io/badge/English-Readme-blue?style=for-the-badge&logo=github&logoColor=white" alt="English" /></a>
+ <a href="./README.ja.md"><img src="https://img.shields.io/badge/日本語-Readme-red?style=for-the-badge&logo=github&logoColor=white" alt="日本語" /></a>
+ 
++[![💬 Gemini CLI](https://github.com/Sunwood-ai-labsII/gemini-actions-lab/actions/workflows/gemini-cli.yml/badge.svg)](https://github.com/Sunwood-ai-labsII/gemini-actions-lab/actions/workflows/gemini-cli.yml)
++
+ ![Image](https://github.com/user-attachments/assets/1e294058-a1e6-4b44-979d-f4c8f09cb8ae)
+ 
+ <img src="https://img.shields.io/badge/GitHub%20Actions-AI-blue?style=for-the-badge&logo=github-actions&logoColor=white" alt="GitHub Actions" />
+```
+
+---
+

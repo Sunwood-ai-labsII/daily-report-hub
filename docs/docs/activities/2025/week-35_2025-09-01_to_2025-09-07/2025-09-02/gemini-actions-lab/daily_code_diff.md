@@ -98,7 +98,7 @@ index bc76c52..12875fe 100644
                // If no labels to set, leave the issue as is
                const explanation = parsedLabels.explanation ? ` - ${parsedLabels.explanation}` : '';
 diff --git a/.github/workflows/gemini-issue-scheduled-triage.yml b/.github/workflows/gemini-issue-scheduled-triage.yml
-index aacbbe4..e22de31 100644
+index aacbbe4..340296b 100644
 --- a/.github/workflows/gemini-issue-scheduled-triage.yml
 +++ b/.github/workflows/gemini-issue-scheduled-triage.yml
 @@ -38,29 +38,35 @@ jobs:
@@ -183,8 +183,8 @@ index aacbbe4..e22de31 100644
  
 -            ## Steps
 +            ## Inputs
-+            - Available labels: "${AVAILABLE_LABELS}"
-+            - Candidate issues (JSON array): "${ISSUES_TO_TRIAGE}"
++            - Available labels: "${{ env.AVAILABLE_LABELS }}"
++            - Candidate issues (JSON array): "${{ env.ISSUES_TO_TRIAGE }}"
  
 -            1. Review the available labels in the environment variable: "${AVAILABLE_LABELS}".
 -            2. Review the issues in the environment variable: "${ISSUES_TO_TRIAGE}".
@@ -200,8 +200,8 @@ index aacbbe4..e22de31 100644
 +            - Only choose labels from "${AVAILABLE_LABELS}".
 +
 +            ## Steps
-+            1. Read the candidate issues from "${ISSUES_TO_TRIAGE}".
-+            2. For each candidate, select one or more labels from "${AVAILABLE_LABELS}".
++            1. Read the candidate issues from "${{ env.ISSUES_TO_TRIAGE }}".
++            2. For each candidate, select one or more labels from "${{ env.AVAILABLE_LABELS }}".
 +            3. Return a JSON array with objects like:
 +               \```json
                 [
@@ -237,7 +237,7 @@ index aacbbe4..e22de31 100644
  
        - name: 'Apply Labels to Issues'
          if: |-
-@@ -153,9 +156,11 @@ jobs:
+@@ -153,15 +156,18 @@ jobs:
          env:
            REPOSITORY: '${{ github.repository }}'
            LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
@@ -250,8 +250,22 @@ index aacbbe4..e22de31 100644
            script: |-
              // Hardened JSON extraction to tolerate extra text
              const rawLabels = process.env.LABELS_OUTPUT || '';
-@@ -193,6 +198,26 @@ jobs:
-               return;
+             core.info(`Raw labels JSON: ${rawLabels}`);
+ 
+             let parsedLabels;
++            let parseError = false;
+             try {
+               let jsonString = rawLabels;
+ 
+@@ -189,10 +195,31 @@ jobs:
+               }
+               core.info(`Parsed labels JSON entries: ${parsedLabels.length}`);
+             } catch (err) {
+-              core.setFailed(`Failed to parse labels JSON from Gemini output: ${err.message}\nRaw output: ${rawLabels}`);
+-              return;
++              core.warning(`Failed to parse labels JSON from Gemini output: ${err.message}. Will attempt fallback.\nRaw output: ${rawLabels}`);
++              parsedLabels = [];
++              parseError = true;
              }
  
 +            // Build a set of existing labels, and auto-create missing ones using GH_PAT
@@ -277,7 +291,7 @@ index aacbbe4..e22de31 100644
              for (const entry of parsedLabels) {
                const issueNumber = entry.issue_number;
                if (!issueNumber) {
-@@ -200,18 +225,98 @@ jobs:
+@@ -200,18 +227,98 @@ jobs:
                  continue;
                }
  
@@ -352,7 +366,7 @@ index aacbbe4..e22de31 100644
 +            }
 +
 +            // Fallback: if nothing applied to candidates, add a minimal triage label
-+            if (appliedCount === 0 && allowed.size > 0) {
++            if ((appliedCount === 0 || parseError) && allowed.size > 0) {
 +              const fallbackLabel = 'status/needs-triage';
 +              try {
 +                if (!available.has(fallbackLabel)) {

@@ -1,3 +1,4 @@
 # 🔄 Latest Changes (File List)
 
-- ✏️ **Modified:** `example/index.html`
+- ✏️ **Modified:** `.github/prompts/gemini-cli_prompt.ja.md`
+- ✏️ **Modified:** `.github/workflows/gemini-cli.yml`

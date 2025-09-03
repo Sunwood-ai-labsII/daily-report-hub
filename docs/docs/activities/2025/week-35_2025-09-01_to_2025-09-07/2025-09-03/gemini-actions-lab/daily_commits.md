@@ -615,3 +615,34 @@ index dfeea9d..75b74b5 100644
 
 ---
 
+## ⏰ 23:04:57 - `93de7a0`
+**Merge pull request #18 from Sunwood-ai-labsII/issue/16/create-html-file**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 5d7e97c 8378ebb
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Wed Sep 3 23:04:57 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 5d7e97c 8378ebb
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Wed Sep 3 23:04:57 2025 +0900
+
+    Merge pull request #18 from Sunwood-ai-labsII/issue/16/create-html-file
+    
+    feat: ✨ example/index.html を作成
+
+ example/index.html | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

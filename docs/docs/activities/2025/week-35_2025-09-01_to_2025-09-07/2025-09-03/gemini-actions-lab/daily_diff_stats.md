@@ -1,6 +1,7 @@
 # 📈 Daily Statistics
 
 ```diff
- .github/workflows/gemini-cli.yml | 18 +++++++-----------
- 1 file changed, 7 insertions(+), 11 deletions(-)
+ .github/prompts/gemini-cli_prompt.ja.md | 11 ++++-
+ .github/workflows/gemini-cli.yml        | 84 ++++++++++++++++++++++++++++-----
+ 2 files changed, 83 insertions(+), 12 deletions(-)
 ```

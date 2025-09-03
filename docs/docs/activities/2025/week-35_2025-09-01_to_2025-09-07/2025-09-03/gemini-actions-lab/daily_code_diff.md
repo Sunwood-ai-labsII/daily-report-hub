@@ -221,22 +221,23 @@ index c6f115f..c8b04ba 100644
 +          fi
 diff --git a/example/index.html b/example/index.html
 new file mode 100644
-index 0000000..dfeea9d
+index 0000000..75b74b5
 --- /dev/null
 +++ b/example/index.html
 @@ -0,0 +1,12 @@
 +<!DOCTYPE html>
-+<html lang="en">
++<html lang="ja">
 +<head>
 +    <meta charset="UTF-8">
 +    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-+    <title>Simple HTML</title>
++    <title>シンプルなHTMLページ</title>
 +</head>
 +<body>
-+    <h1>Hello, World!</h1>
-+    <p>This is a simple HTML file.</p>
++    <h1>こんにちは、世界！</h1>
++    <p>これはシンプルなHTMLファイルです。</p>
 +</body>
 +</html>
+\ No newline at end of file
 diff --git a/response.md b/response.md
 new file mode 100644
 index 0000000..9dae9d9

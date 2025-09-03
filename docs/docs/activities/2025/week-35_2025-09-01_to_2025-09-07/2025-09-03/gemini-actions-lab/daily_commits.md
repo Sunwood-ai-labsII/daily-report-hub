@@ -491,3 +491,127 @@ index 63ee7a8..1c076d0 100644
 
 ---
 
+## ⏰ 14:01:12 - `5d7e97c`
+**add**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 14:01:12 2025 +0000
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 14:01:12 2025 +0000
+
+    add
+
+ .github/workflows/gemini-cli.yml | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index 1c076d0..c8b04ba 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -308,15 +308,15 @@ jobs:
+             else
+               PR_BODY_FILE=$(mktemp)
+               cat > "${PR_BODY_FILE}" <<EOF
+-            ## 📋 AAR
+-            - 🎯 目的: Issue #${ISSUE_NUMBER} のリクエストへの対応PRを作成
+-            - ✅ 実施: ブランチ作成・変更のコミット/プッシュ・PR作成を自動実行
+-            - 🔍 差異: 特になし（自動化フローで標準対応）
+-            - 💡 学び: 自動PRフローの確認と安定動作
+-            - ▶️ 次のアクション: レビューとマージのご確認をお願いします
++              ## 📋 AAR
++              - 🎯 目的: Issue #${ISSUE_NUMBER} のリクエストへの対応PRを作成
++              - ✅ 実施: ブランチ作成・変更のコミット/プッシュ・PR作成を自動実行
++              - 🔍 差異: 特になし（自動化フローで標準対応）
++              - 💡 学び: 自動PRフローの確認と安定動作
++              - ▶️ 次のアクション: レビューとマージのご確認をお願いします
+ 
+-            関連: #${ISSUE_NUMBER}
+-EOF
++              関連: #${ISSUE_NUMBER}
++              EOF
+               gh pr create \
+                 --head "${BRANCH}" \
+                 --base "${DEFAULT_BRANCH:-main}" \
+@@ -334,7 +334,7 @@ EOF
+             - 🎯 目的: Issue #${ISSUE_NUMBER} の対応PR作成
+             - ✅ 実施: ブランチ(${BRANCH})作成・コミット/プッシュ・PR作成
+             - ▶️ 次のアクション: レビューをお願いします
+-EOF
++            EOF
+             gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body-file "${AAR_COMMENT_FILE}"
+           else
+             echo "PR already exists: #${PR_NUMBER}"
+@@ -347,6 +347,6 @@ EOF
+             - 🎯 目的: Issue #${ISSUE_NUMBER} の対応PR確認
+             - ✅ 実施: 既存PR (#${PR_NUMBER}) を確認し、リンクを共有
+             - ▶️ 次のアクション: レビューをお願いします
+-EOF
++            EOF
+             gh issue comment "${ISSUE_NUMBER}" --repo "${REPOSITORY}" --body-file "${AAR_COMMENT_FILE}"
+           fi
+```
+
+---
+
+## ⏰ 14:03:19 - `8378ebb`
+**feat: ✨ example/index.html を作成**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Wed Sep 3 14:03:19 2025 +0000
+M	example/index.html
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Wed Sep 3 14:03:19 2025 +0000
+
+    feat: ✨ example/index.html を作成
+
+ example/index.html | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/index.html b/example/index.html
+index dfeea9d..75b74b5 100644
+--- a/example/index.html
++++ b/example/index.html
+@@ -1,12 +1,12 @@
+ <!DOCTYPE html>
+-<html lang="en">
++<html lang="ja">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+-    <title>Simple HTML</title>
++    <title>シンプルなHTMLページ</title>
+ </head>
+ <body>
+-    <h1>Hello, World!</h1>
+-    <p>This is a simple HTML file.</p>
++    <h1>こんにちは、世界！</h1>
++    <p>これはシンプルなHTMLファイルです。</p>
+ </body>
+-</html>
++</html>
+\ No newline at end of file
+```
+
+---
+

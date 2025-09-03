@@ -1,3 +1,3 @@
 # 🔄 Latest Changes (File List)
 
-- ✏️ **Modified:** `.github/workflows/gemini-cli.yml`
+- ✏️ **Modified:** `example/index.html`

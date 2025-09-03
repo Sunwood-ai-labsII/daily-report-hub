@@ -237,3 +237,132 @@ Date:   Wed Sep 3 13:35:03 2025 +0000
 
 ---
 
+## ⏰ 13:37:33 - `f2930d5`
+**Merge branch 'develop'**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Merge: 0f738f9 f71a58e
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:37:33 2025 +0000
+```
+
+### 📊 Statistics
+```bash
+Merge: 0f738f9 f71a58e
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:37:33 2025 +0000
+
+    Merge branch 'develop'
+
+ .SourceSageignore                                  |   4 +
+ .env.example                                       |  30 +-
+ .gitignore                                         |   8 +
+ README.md                                          | 192 +++++-
+ easy_dataset_cli/batch_process.py                  | 414 +++++++++++
+ easy_dataset_cli/commands.py                       | 753 +++++++++++++++++++++
+ easy_dataset_cli/core.py                           |  20 +-
+ easy_dataset_cli/file_utils.py                     |  27 +
+ easy_dataset_cli/ga_parser.py                      |  84 ++-
+ easy_dataset_cli/generators/__init__.py            |  20 +
+ easy_dataset_cli/generators/ga_generator.py        |  60 ++
+ easy_dataset_cli/generators/qa_generator.py        | 547 +++++++++++++++
+ .../generators/qa_generator_fulltext.py            | 437 ++++++++++++
+ .../qa_generator_thinking.py}                      | 426 +++++-------
+ easy_dataset_cli/main.py                           | 430 +-----------
+ easy_dataset_cli/prompts.py                        |  15 +-
+ .../prompts/ga/ga_definition_generation.md         |  51 ++
+ .../prompts/ga_definition_generation.md            |  47 --
+ easy_dataset_cli/prompts/qa/qa_generation.md       |  60 ++
+ .../prompts/qa/qa_generation_with_fulltext.md      |  65 ++
+ .../prompts/qa/qa_generation_with_surrounding.md   |  60 ++
+ .../prompts/qa/qa_generation_with_thinking.md      |  69 ++
+ easy_dataset_cli/text_splitter.py                  |  91 ++-
+ example/input/documents/Touhou_Chireiden.md        | 203 ------
+ example/input/documents/sample_ga_definition.md    |  21 -
+ example/scripts/simple.bat                         |   6 +
+ example/scripts/test_all_commands.sh               | 157 +++++
+ fix_xml_generation.py                              |  34 -
+ pyproject.toml                                     |  28 +-
+ 29 files changed, 3344 insertions(+), 1015 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 13:40:00 - `5be39da`
+**🔧 プロジェクトバージョンの更新**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:40:00 2025 +0000
+M	pyproject.toml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:40:00 2025 +0000
+
+    🔧 プロジェクトバージョンの更新
+    
+    - versionを0.3.0に設定
+    - pyproject.tomlの修正
+
+ pyproject.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/pyproject.toml b/pyproject.toml
+index 3643071..c8d356e 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -1,6 +1,6 @@
+ [project]
+ name = "easy-dataset-cli"
+-version = "1.1.0"
++version = "0.3.0"
+ description = "A simple CLI tool to generate QA pairs from a text file using LLMs and GA pairs, outputting genre-specific XML files."
+ requires-python = ">=3.9"
+ dependencies = [
+```
+
+---
+
+## ⏰ 13:40:17 - `745ca8b`
+**🔀 バージョン更新のマージ**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Merge: f71a58e 5be39da
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:40:17 2025 +0000
+```
+
+### 📊 Statistics
+```bash
+Merge: f71a58e 5be39da
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:40:17 2025 +0000
+
+    🔀 バージョン更新のマージ
+
+ pyproject.toml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

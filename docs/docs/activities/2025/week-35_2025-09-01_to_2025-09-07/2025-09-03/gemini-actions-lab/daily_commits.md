@@ -69,3 +69,44 @@ index c6f115f..ca66afa 100644
 
 ---
 
+## ⏰ 13:24:01 - `c590738`
+**add**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:24:01 2025 +0000
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Wed Sep 3 13:24:01 2025 +0000
+
+    add
+
+ .github/workflows/gemini-cli.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index ca66afa..a736018 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -112,7 +112,7 @@ jobs:
+             IS_PR="true"
+           fi
+ 
+-a          # Clean up user request
++          # Clean up user request
+           USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-cli//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+ 
+           # Write outputs safely (supporting newlines/special chars)
+```
+
+---
+

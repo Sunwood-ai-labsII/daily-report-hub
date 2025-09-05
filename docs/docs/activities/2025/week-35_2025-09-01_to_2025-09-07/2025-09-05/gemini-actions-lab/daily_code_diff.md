@@ -5,7 +5,7 @@
 ```diff
 diff --git a/.github/workflows/gemini-release-notes.yml b/.github/workflows/gemini-release-notes.yml
 new file mode 100644
-index 0000000..d922bfa
+index 0000000..9d95cd6
 --- /dev/null
 +++ b/.github/workflows/gemini-release-notes.yml
 @@ -0,0 +1,163 @@
@@ -129,7 +129,7 @@ index 0000000..d922bfa
 +            - 出力はMarkdownのみ（余計な前置きや後書き、コードフェンスは不要）。
 +
 +            # 期待するMarkdownの構成例
-+            # ${{ steps.ctx.outputs.tag }}
++            # ${{ steps.ctx.outputs.tag }} ～このリリースノートの内容が分かるようなタイトル～
 +            ## ✨ Highlights
 +            - 主要な変更点の要約…
 +

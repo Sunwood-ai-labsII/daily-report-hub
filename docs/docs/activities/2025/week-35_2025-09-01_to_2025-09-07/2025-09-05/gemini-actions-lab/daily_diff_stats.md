@@ -2,5 +2,6 @@
 
 ```diff
  .github/workflows/gemini-release-notes.yml | 163 +++++++++++++++++++++++++++++
- 1 file changed, 163 insertions(+)
+ .github/workflows/imagen4.yml              |  55 ++++++++++
+ 2 files changed, 218 insertions(+)
 ```

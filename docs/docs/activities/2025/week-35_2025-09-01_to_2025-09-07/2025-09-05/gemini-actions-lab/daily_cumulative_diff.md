@@ -1,3 +1,3 @@
 # 📋 Daily File Changes
 
-- 📝 **No commits found for today:** `No commits found for today`
+- 🆕 **Added:** `.github/workflows/gemini-release-notes.yml`

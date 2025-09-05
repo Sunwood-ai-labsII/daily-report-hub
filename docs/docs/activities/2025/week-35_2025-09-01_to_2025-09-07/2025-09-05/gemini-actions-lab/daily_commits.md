@@ -215,3 +215,44 @@ index 36d68bb..d922bfa 100644
 
 ---
 
+## ⏰ 16:50:27 - `4fc3967`
+**add**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Sep 5 16:50:27 2025 +0000
+M	.github/workflows/gemini-release-notes.yml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Fri Sep 5 16:50:27 2025 +0000
+
+    add
+
+ .github/workflows/gemini-release-notes.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-release-notes.yml b/.github/workflows/gemini-release-notes.yml
+index d922bfa..9d95cd6 100644
+--- a/.github/workflows/gemini-release-notes.yml
++++ b/.github/workflows/gemini-release-notes.yml
+@@ -118,7 +118,7 @@ jobs:
+             - 出力はMarkdownのみ（余計な前置きや後書き、コードフェンスは不要）。
+ 
+             # 期待するMarkdownの構成例
+-            # ${{ steps.ctx.outputs.tag }}
++            # ${{ steps.ctx.outputs.tag }} ～このリリースノートの内容が分かるようなタイトル～
+             ## ✨ Highlights
+             - 主要な変更点の要約…
+ 
+```
+
+---
+

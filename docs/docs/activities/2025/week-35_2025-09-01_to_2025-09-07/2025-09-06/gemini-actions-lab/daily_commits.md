@@ -947,3 +947,194 @@ index e1fcb26..b4b24f4 100644
 
 ---
 
+## ⏰ 20:48:45 - `b466018`
+**Update imagen4.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sat Sep 6 20:48:45 2025 +0900
+M	.github/workflows/imagen4.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sat Sep 6 20:48:45 2025 +0900
+
+    Update imagen4.yml
+
+ .github/workflows/imagen4.yml | 204 ++++++++++++++++--------------------------
+ 1 file changed, 76 insertions(+), 128 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
+index b4b24f4..9e3f640 100644
+--- a/.github/workflows/imagen4.yml
++++ b/.github/workflows/imagen4.yml
+@@ -1,33 +1,28 @@
+-name: Generate Images with Gemini and Commit
++name: imagen4-commit-via-gemini-cli
+ 
+ on:
+   workflow_dispatch:
+     inputs:
+-      num_images:
+-        description: 'Number of images to generate'
+-        required: true
+-        default: '2'
+-        type: string
+-      prompt:
+-        description: 'Image generation prompt'
++      image_prompt:
++        description: '作りたい画像のプロンプト'
+         required: true
+         default: 'A beautiful Japanese landscape with cherry blossoms and mountains'
+-        type: string
++      model:
++        description: '画像生成モデル (imagen-4 / imagen-4-ultra / imagen-3)'
++        required: false
++        default: 'imagen-4'
++      num:
++        description: '生成枚数'
++        required: false
++        default: '2'
+       aspect_ratio:
+-        description: 'Aspect ratio (e.g., 16:9, 1:1, 4:3)'
+-        required: true
+-        default: '16:9'
+-        type: choice
+-        options:
+-          - '16:9'
+-          - '1:1'
+-          - '4:3'
+-          - '9:16'
++        description: 'アスペクト比 (例: 1:1, 16:9, 9:16)'
++        required: false
++        default: '1:1'
+       seed:
+-        description: 'Seed for reproducible generation (optional)'
++        description: 'シード値 (オプション)'
+         required: false
+         default: ''
+-        type: string
+ 
+ jobs:
+   generate_and_commit:
+@@ -42,120 +37,72 @@ jobs:
+         with:
+           token: ${{ secrets.GITHUB_TOKEN }}
+ 
+-      - name: Setup Node.js
+-        uses: actions/setup-node@v4
+-        with:
+-          node-version: '20'
+-
+-      - name: Install Gemini CLI
+-        run: |
+-          npm install -g @google/generative-ai-cli
+-          
+-      - name: Verify Gemini CLI installation
+-        run: |
+-          which gemini || echo "Gemini CLI not found in PATH"
+-          npm list -g @google/generative-ai-cli || echo "Package check failed"
+-
+       - name: Create output directory
+         run: |
+           mkdir -p generated-images
+           echo "Created generated-images directory"
+           ls -la
+ 
+-      - name: Setup environment variables
+-        run: |
+-          echo "NUM=${{ github.event.inputs.num_images }}" >> $GITHUB_ENV
+-          echo "PROMPT=${{ github.event.inputs.prompt }}" >> $GITHUB_ENV
+-          echo "AR=${{ github.event.inputs.aspect_ratio }}" >> $GITHUB_ENV
+-          echo "SEED=${{ github.event.inputs.seed }}" >> $GITHUB_ENV
+-          echo "GEMINI_MODEL=gemini-2.5-flash" >> $GITHUB_ENV
+-
+-      - name: Debug environment
+-        run: |
+-          echo "NUM: $NUM"
+-          echo "PROMPT: $PROMPT"
+-          echo "AR: $AR"
+-          echo "SEED: $SEED"
+-          echo "GEMINI_MODEL: $GEMINI_MODEL"
+-          echo "Working directory: $(pwd)"
+-          echo "Directory contents:"
+-          ls -la
+-
+-      - name: Generate images with Gemini
++      - name: Generate images via Gemini CLI (+ Imagen MCP)
++        uses: google-github-actions/run-gemini-cli@v0
+         env:
+```
+
+---
+
+## ⏰ 11:49:52 - `2561ece`
+**🎨 Generate images via Gemini Imagen API**
+*by GitHub Action*
+
+### 📋 Changed Files
+```bash
+Author: GitHub Action <action@github.com>
+Date:   Sat Sep 6 11:49:52 2025 +0000
+A	generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png
+A	generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png
+A	generated-images/metadata.json
+```
+
+### 📊 Statistics
+```bash
+Author: GitHub Action <action@github.com>
+Date:   Sat Sep 6 11:49:52 2025 +0000
+
+    🎨 Generate images via Gemini Imagen API
+    
+      Prompt: A beautiful Japanese landscape with cherry blossoms and mountains
+      Model: imagen-4
+      Images: 2
+      Aspect ratio: 1:1
+      Seed:
+      Generated at: 2025-09-06T11:49:52Z
+
+ ...tiful_Japanese_landscape_with_cherry_blossom_1.png | Bin 0 -> 2289651 bytes
+ ...tiful_Japanese_landscape_with_cherry_blossom_2.png | Bin 0 -> 1824554 bytes
+ generated-images/metadata.json                        |  10 ++++++++++
+ 3 files changed, 10 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png b/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png
+new file mode 100644
+index 0000000..9918f0c
+Binary files /dev/null and b/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png differ
+diff --git a/generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png b/generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png
+new file mode 100644
+index 0000000..d3ed6e9
+Binary files /dev/null and b/generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png differ
+diff --git a/generated-images/metadata.json b/generated-images/metadata.json
+new file mode 100644
+index 0000000..f54ec06
+--- /dev/null
++++ b/generated-images/metadata.json
+@@ -0,0 +1,10 @@
++{
++  "generation_date": "2025-09-06T11:49:51Z",
++  "prompt": "A beautiful Japanese landscape with cherry blossoms and mountains",
++  "model": "imagen-4",
++  "num_images": 2,
++  "aspect_ratio": "1:1",
++  "seed": "",
++  "workflow_run": "12",
++  "commit_sha": "b466018b57025ce0bde38ed96e71f39ea8c9b486"
++}
+```
+
+---
+

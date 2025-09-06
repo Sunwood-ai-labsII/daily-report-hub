@@ -4,12 +4,12 @@
 
 ```diff
 diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
-index 5fe2bca..9e3f640 100644
+index 5fe2bca..a1a254c 100644
 --- a/.github/workflows/imagen4.yml
 +++ b/.github/workflows/imagen4.yml
 @@ -1,55 +1,153 @@
 -name: Imagen4 via Gemini CLI (MCP)
-+name: imagen4-commit-via-gemini-cli
++name: "🎨 imagen4-commit-via-gemini-cli"
  
  on:
    workflow_dispatch:
@@ -191,4 +191,28 @@ index 5fe2bca..9e3f640 100644
 +          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
 +          ls -la generated-images/ >> $GITHUB_STEP_SUMMARY
 +          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
+diff --git a/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png b/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png
+new file mode 100644
+index 0000000..9918f0c
+Binary files /dev/null and b/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png differ
+diff --git a/generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png b/generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png
+new file mode 100644
+index 0000000..d3ed6e9
+Binary files /dev/null and b/generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png differ
+diff --git a/generated-images/metadata.json b/generated-images/metadata.json
+new file mode 100644
+index 0000000..f54ec06
+--- /dev/null
++++ b/generated-images/metadata.json
+@@ -0,0 +1,10 @@
++{
++  "generation_date": "2025-09-06T11:49:51Z",
++  "prompt": "A beautiful Japanese landscape with cherry blossoms and mountains",
++  "model": "imagen-4",
++  "num_images": 2,
++  "aspect_ratio": "1:1",
++  "seed": "",
++  "workflow_run": "12",
++  "commit_sha": "b466018b57025ce0bde38ed96e71f39ea8c9b486"
++}
 ```

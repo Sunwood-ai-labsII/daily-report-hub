@@ -819,3 +819,131 @@ index a5b3b05..e1fcb26 100644
 
 ---
 
+## ⏰ 20:44:46 - `f279fcd`
+**Update imagen4.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sat Sep 6 20:44:46 2025 +0900
+M	.github/workflows/imagen4.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sat Sep 6 20:44:46 2025 +0900
+
+    Update imagen4.yml
+
+ .github/workflows/imagen4.yml | 274 +++++++++++++++++++++++++++---------------
+ 1 file changed, 177 insertions(+), 97 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
+index e1fcb26..b4b24f4 100644
+--- a/.github/workflows/imagen4.yml
++++ b/.github/workflows/imagen4.yml
+@@ -1,125 +1,205 @@
+-name: imagen4-commit-via-gemini-cli
++name: Generate Images with Gemini and Commit
+ 
+ on:
+   workflow_dispatch:
+     inputs:
+-      image_prompt:
+-        description: "作りたい画像のプロンプト"
++      num_images:
++        description: 'Number of images to generate'
+         required: true
+-      model:
+-        description: "画像生成モデル (imagen-4 / imagen-4-ultra / imagen-3)"
+-        default: "imagen-4"
+-      num:
+-        description: "生成枚数 (1-4)"
+-        default: "1"
++        default: '2'
++        type: string
++      prompt:
++        description: 'Image generation prompt'
++        required: true
++        default: 'A beautiful Japanese landscape with cherry blossoms and mountains'
++        type: string
+       aspect_ratio:
+-        description: "アスペクト比 (例: 1:1, 16:9, 9:16, 3:4, 4:3)"
+-        default: "1:1"
++        description: 'Aspect ratio (e.g., 16:9, 1:1, 4:3)'
++        required: true
++        default: '16:9'
++        type: choice
++        options:
++          - '16:9'
++          - '1:1'
++          - '4:3'
++          - '9:16'
+       seed:
+-        description: "固定シード（任意）"
++        description: 'Seed for reproducible generation (optional)'
+         required: false
+-
+-permissions:
+-  contents: write
++        default: ''
++        type: string
+ 
+ jobs:
+   generate_and_commit:
+     runs-on: ubuntu-latest
+-
++    
++    permissions:
++      contents: write
++      
+     steps:
+-      - name: Checkout
++      - name: Checkout repository
+         uses: actions/checkout@v4
+         with:
+-          persist-credentials: true
++          token: ${{ secrets.GITHUB_TOKEN }}
+ 
+-      - name: Generate images via Gemini CLI (+ Imagen MCP)
+-        uses: google-github-actions/run-gemini-cli@v0
++      - name: Setup Node.js
++        uses: actions/setup-node@v4
+         with:
+-          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+-          gemini_model: gemini-2.5-flash
+-          gemini_cli_version: latest
+-          gemini_debug: true
+-          settings: |
+-            {
+-              "mcpServers": {
+-                "gemini-imagen": {
+-                  "command": "npx",
+-                  "args": ["-y", "gemini-imagen-mcp-server",
+-                           "--output-dir", "generated-images",
+-                           "--model", "${{ inputs.model }}"],
+-                  "env": { "GEMINI_API_KEY": "${{ secrets.GEMINI_API_KEY }}" },
+-                  "trust": true,
+-                  "includeTools": ["generate_image"]
+-                }
+-              }
+-            }
+-          env: |
+-            PROMPT=${{ inputs.image_prompt }}
+-            NUM=${{ inputs.num }}
+-            AR=${{ inputs.aspect_ratio }}
+-            SEED=${{ inputs.seed }}
+-          prompt: |
+-            Use the @gemini-imagen.generate_image tool to generate $NUM image(s)
+-            from this prompt: "$PROMPT".
+-            Use aspect ratio "$AR".
+-            If a seed is provided, use it: "$SEED".
+```
+
+---
+

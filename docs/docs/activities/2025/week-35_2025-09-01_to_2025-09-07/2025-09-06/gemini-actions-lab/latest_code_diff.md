@@ -2,84 +2,88 @@
 
 ```diff
 diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
-index 87bc12b..f1da8e9 100644
+index f1da8e9..fd62fa1 100644
 --- a/.github/workflows/imagen4.yml
 +++ b/.github/workflows/imagen4.yml
-@@ -20,7 +20,7 @@ on:
-         required: false
- 
- permissions:
--  contents: write   # ← 直接コミットに必要
-+  contents: write
- 
+@@ -25,6 +25,7 @@ permissions:
  jobs:
    generate_and_commit:
-@@ -29,9 +29,8 @@ jobs:
+     runs-on: ubuntu-latest
++
+     steps:
        - name: Checkout
          uses: actions/checkout@v4
-         with:
--          persist-credentials: true  # GITHUB_TOKEN で push する
-+          persist-credentials: true
- 
--      # 画像生成：Gemini CLI + Imagen MCP（GEMINI_API_KEYだけで動作）
-       - name: Generate images via Gemini CLI (+ Imagen MCP)
-         uses: google-github-actions/run-gemini-cli@v0
-         with:
-@@ -61,34 +60,32 @@ jobs:
+@@ -56,14 +57,16 @@ jobs:
+             Use the @gemini-imagen.generate_image tool to generate ${{ github.event.inputs.num }} image(s)
+             from this prompt: "${{ github.event.inputs.image_prompt }}".
+             Use aspect ratio "${{ github.event.inputs.aspect_ratio }}".
+-            If "seed" is provided, use it: "${{ github.event.inputs.seed || '' }}".
++            If a seed is provided, use it: "${{ github.event.inputs.seed }}".
              Save files under ./generated-images and list only the filenames.
  
        - name: Verify outputs
-+        shell: bash
+         shell: bash
          run: |
            set -euo pipefail
-           test -d generated-images || { echo "generated-images not found"; exit 1; }
+-          test -d generated-images || { echo "generated-images not found"; exit 1; }
++          if [ ! -d generated-images ]; then
++            echo "generated-images not found"; exit 1
++          fi
            echo "== Generated files =="
            ls -lh generated-images
--          # 一応1枚以上あるか確認
            cnt=$(ls -1 generated-images | wc -l)
-           if [ "$cnt" -lt 1 ]; then
-             echo "No images were generated"; exit 1
-           fi
- 
-       - name: Commit directly to branch
-+        shell: bash
-         env:
-           GH_USER_NAME: github-actions[bot]
-           GH_USER_EMAIL: 41898282+github-actions[bot]@users.noreply.github.com
-         run: |
+@@ -80,25 +83,25 @@ jobs:
            set -euo pipefail
  
--          # 保存先（ランID＋日付でユニーク化）
            DATE_UTC=$(date -u +%Y%m%d)
-           DEST="assets/imagen4/${DATE_UTC}-${{ github.run_id }}"
+-          DEST="assets/imagen4/${DATE_UTC}-${{ github.run_id }}"
++          TS_UTC=$(date -u +%Y-%m-%dT%H:%M:%SZ)
++          DEST="assets/imagen4/${DATE_UTC}-${GITHUB_RUN_ID}"
            mkdir -p "$DEST"
  
--          # 画像コピー
            cp -v generated-images/* "$DEST"/
  
--          # メタデータ（後から追跡しやすく）
--          cat > "$DEST/index.json" <<EOF
-+          cat > "$DEST/index.json" <<'EOF'
-           {
-             "repo": "${{ github.repository }}",
-             "run_id": "${{ github.run_id }}",
-@@ -107,16 +104,14 @@ jobs:
-           git config user.email "$GH_USER_EMAIL"
-           git add "$DEST"
+-          cat > "$DEST/index.json" <<'EOF'
+-          {
+-            "repo": "${{ github.repository }}",
+-            "run_id": "${{ github.run_id }}",
+-            "run_url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+-            "workflow": "${{ github.workflow }}",
+-            "prompt": "${{ github.event.inputs.image_prompt || '' }}",
+-            "model": "${{ github.event.inputs.model || '' }}",
+-            "aspect_ratio": "${{ github.event.inputs.aspect_ratio || '' }}",
+-            "num": "${{ github.event.inputs.num || '' }}",
+-            "seed": "${{ github.event.inputs.seed || '' }}",
+-            "timestamp_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+-          }
+-          EOF
++          # index.json を安全に生成（式展開はbash側で完結させる）
++          printf '%s\n' "{
++            \"repo\": \"${GITHUB_REPOSITORY}\",
++            \"run_id\": \"${GITHUB_RUN_ID}\",
++            \"run_url\": \"https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}\",
++            \"workflow\": \"${GITHUB_WORKFLOW}\",
++            \"prompt\": \"${{ github.event.inputs.image_prompt }}\",
++            \"model\": \"${{ github.event.inputs.model }}\",
++            \"aspect_ratio\": \"${{ github.event.inputs.aspect_ratio }}\",
++            \"num\": \"${{ github.event.inputs.num }}\",
++            \"seed\": \"${{ github.event.inputs.seed }}\",
++            \"timestamp_utc\": \"${TS_UTC}\"
++          }" > "$DEST/index.json"
  
--          # 変更がなければスキップ
-           if git diff --cached --quiet; then
-             echo "No changes to commit."
+           git config user.name  "$GH_USER_NAME"
+           git config user.email "$GH_USER_EMAIL"
+@@ -109,9 +112,9 @@ jobs:
              exit 0
            fi
  
-           git commit -m "chore(images): add Imagen outputs for run ${{ github.run_id }}"
--          # 手動実行ブランチへそのままpush（通常は default branch）
-           git push origin HEAD:${{ github.ref_name }}
+-          git commit -m "chore(images): add Imagen outputs for run ${{ github.run_id }}"
+-          git push origin HEAD:${{ github.ref_name }}
++          git commit -m "chore(images): add Imagen outputs for run ${GITHUB_RUN_ID}"
++          git push origin "HEAD:${GITHUB_REF_NAME}"
  
--      # （任意）最終的に保存先をログ出力
        - name: Show saved path
--        run: echo "Saved to: assets/imagen4/${{ steps.date_tag.outputs.tag || '' }} (run ${{ github.run_id }})" || true
-+        shell: bash
-+        run: echo "Saved to: assets/imagen4/${{ github.run_id }}"
+         shell: bash
+-        run: echo "Saved to: assets/imagen4/${{ github.run_id }}"
++        run: echo "Saved to: assets/imagen4/$(date -u +%Y%m%d)-${GITHUB_RUN_ID}"
 ```

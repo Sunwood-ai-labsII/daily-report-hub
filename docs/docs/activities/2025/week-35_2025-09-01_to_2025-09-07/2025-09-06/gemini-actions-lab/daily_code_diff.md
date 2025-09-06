@@ -4,12 +4,12 @@
 
 ```diff
 diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
-index 5fe2bca..569e8bf 100644
+index 5fe2bca..87bc12b 100644
 --- a/.github/workflows/imagen4.yml
 +++ b/.github/workflows/imagen4.yml
 @@ -1,55 +1,122 @@
 -name: Imagen4 via Gemini CLI (MCP)
-+name: 🖼 imagen4-commit-via-gemini-cli
++name: imagen4-commit-via-gemini-cli
  
  on:
    workflow_dispatch:

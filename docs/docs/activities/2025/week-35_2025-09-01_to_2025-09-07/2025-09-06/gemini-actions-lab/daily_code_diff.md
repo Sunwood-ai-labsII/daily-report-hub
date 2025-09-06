@@ -4,10 +4,10 @@
 
 ```diff
 diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
-index 5fe2bca..2bbb708 100644
+index 5fe2bca..a5b3b05 100644
 --- a/.github/workflows/imagen4.yml
 +++ b/.github/workflows/imagen4.yml
-@@ -1,55 +1,127 @@
+@@ -1,55 +1,129 @@
 -name: Imagen4 via Gemini CLI (MCP)
 +name: imagen4-commit-via-gemini-cli
  
@@ -166,5 +166,7 @@ index 5fe2bca..2bbb708 100644
 +
 +      - name: Show saved path
 +        shell: bash
-+        run: echo "Saved to: assets/imagen4/$(date -u +%Y%m%d)-${GITHUB_RUN_ID}"
++        env:
++          DATE_FORMAT: "%Y%m%d"
++        run: echo "Saved to: assets/imagen4/$(date -u +"$DATE_FORMAT")-$GITHUB_RUN_ID"
 ```

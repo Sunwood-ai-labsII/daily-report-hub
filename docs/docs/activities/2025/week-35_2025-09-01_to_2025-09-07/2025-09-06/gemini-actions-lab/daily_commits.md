@@ -688,3 +688,43 @@ index f5a1c9f..2bbb708 100644
 
 ---
 
+## ⏰ 20:39:58 - `035164e`
+**Update imagen4.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sat Sep 6 20:39:58 2025 +0900
+M	.github/workflows/imagen4.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sat Sep 6 20:39:58 2025 +0900
+
+    Update imagen4.yml
+
+ .github/workflows/imagen4.yml | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/imagen4.yml b/.github/workflows/imagen4.yml
+index 2bbb708..a5b3b05 100644
+--- a/.github/workflows/imagen4.yml
++++ b/.github/workflows/imagen4.yml
+@@ -124,4 +124,6 @@ jobs:
+ 
+       - name: Show saved path
+         shell: bash
+-        run: echo "Saved to: assets/imagen4/$(date -u +%Y%m%d)-${GITHUB_RUN_ID}"
++        env:
++          DATE_FORMAT: "%Y%m%d"
++        run: echo "Saved to: assets/imagen4/$(date -u +"$DATE_FORMAT")-$GITHUB_RUN_ID"
+```
+
+---
+

@@ -1,0 +1,21 @@
+# 📋 Daily File Changes
+
+- ✏️ **Modified:** `.github/prompts/gemini-cli_prompt.ja.md`
+- ✏️ **Modified:** `.github/workflows/gemini-cli.yml`
+- ✏️ **Modified:** `.github/workflows/gemini-issue-automated-triage.yml`
+- ✏️ **Modified:** `.github/workflows/gemini-issue-scheduled-triage.yml`
+- 🆕 **Added:** `.github/workflows/gemini-release-notes.yml`
+- 🆕 **Added:** `.github/workflows/imagen-generate-and-commit.yml`
+- 🗑️ **Deleted:** `README.ja.md`
+- ✏️ **Modified:** `README.md`
+- 🆕 **Added:** `discord-issue-bot/.env.example`
+- 🆕 **Added:** `discord-issue-bot/Dockerfile`
+- 🆕 **Added:** `discord-issue-bot/README.md`
+- 🆕 **Added:** `discord-issue-bot/bot.py`
+- 🆕 **Added:** `discord-issue-bot/docker-compose.yaml`
+- 🆕 **Added:** `discord-issue-bot/pyproject.toml`
+- 🆕 **Added:** `example/index.html`
+- 🆕 **Added:** `generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png`
+- 🆕 **Added:** `generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png`
+- 🆕 **Added:** `generated-images/metadata.json`
+- 🆕 **Added:** `response.md`

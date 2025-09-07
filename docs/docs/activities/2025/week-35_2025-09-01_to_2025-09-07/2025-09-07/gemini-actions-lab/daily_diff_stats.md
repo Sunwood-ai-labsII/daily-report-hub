@@ -16,9 +16,12 @@
  discord-issue-bot/docker-compose.yaml              |   9 +
  discord-issue-bot/pyproject.toml                   |  12 ++
  example/index.html                                 | 221 ++++++++++++++++++++
+ example/todo/index.html                            |  22 ++
+ example/todo/script.js                             |  80 ++++++++
+ example/todo/style.css                             |  97 +++++++++
  ...ul_Japanese_landscape_with_cherry_blossom_1.png | Bin 0 -> 2289651 bytes
  ...ul_Japanese_landscape_with_cherry_blossom_2.png | Bin 0 -> 1824554 bytes
  generated-images/metadata.json                     |  10 +
  response.md                                        |  10 +
- 19 files changed, 1341 insertions(+), 334 deletions(-)
+ 22 files changed, 1540 insertions(+), 334 deletions(-)
 ```

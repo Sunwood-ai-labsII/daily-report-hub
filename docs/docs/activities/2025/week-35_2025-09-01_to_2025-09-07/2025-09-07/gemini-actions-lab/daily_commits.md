@@ -1197,3 +1197,196 @@ index 56e56dd..9b2d7fa 100644
 
 ---
 
+## ⏰ 00:03:29 - `d2a605d`
+**Update gemini-cli.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 00:03:29 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 00:03:29 2025 +0900
+
+    Update gemini-cli.yml
+
+ .github/workflows/gemini-cli.yml | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index 9b2d7fa..63671e6 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -234,16 +234,18 @@ jobs:
+             echo "Prompt template not found: ${TEMPLATE_PATH}" >&2
+             exit 1
+           fi
+-          # Safe variable substitution without executing content
+-          EXPANDED=$(sed \
+-            -e "s|\\$\\{REPOSITORY\\}|${REPOSITORY}|g" \
+-            -e "s|\\$\\{EVENT_NAME\\}|${EVENT_NAME}|g" \
+-            -e "s|\\$\\{ISSUE_NUMBER\\}|${ISSUE_NUMBER}|g" \
+-            -e "s|\\$\\{IS_PR\\}|${IS_PR}|g" \
+-            -e "s|\\$\\{DESCRIPTION\\}|${DESCRIPTION}|g" \
+-            -e "s|\\$\\{COMMENTS\\}|${COMMENTS}|g" \
+-            -e "s|\\$\\{USER_REQUEST\\}|${USER_REQUEST}|g" \
+-            "${TEMPLATE_PATH}")
++
++          # sedの代わりにperlを使用して、改行を含む変数を安全に置換
++          EXPANDED=$(perl -p -e '
++            s/\$\{REPOSITORY\}/$ENV{REPOSITORY}/g;
++            s/\$\{EVENT_NAME\}/$ENV{EVENT_NAME}/g;
++            s/\$\{ISSUE_NUMBER\}/$ENV{ISSUE_NUMBER}/g;
++            s/\$\{IS_PR\}/$ENV{IS_PR}/g;
++            s/\$\{DESCRIPTION\}/$ENV{DESCRIPTION}/g;
++            s/\$\{COMMENTS\}/$ENV{COMMENTS}/g;
++            s/\$\{USER_REQUEST\}/$ENV{USER_REQUEST}/g;
++          ' "${TEMPLATE_PATH}")
++
+           {
+             echo "prompt<<EOF"
+             echo "${EXPANDED}"
+```
+
+---
+
+## ⏰ 15:05:04 - `6bb98bf`
+**feat: ✨ exampleにTODOアプリを作成**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Sep 7 15:05:04 2025 +0000
+M	example/todo/index.html
+M	example/todo/script.js
+M	example/todo/style.css
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Sep 7 15:05:04 2025 +0000
+
+    feat: ✨ exampleにTODOアプリを作成
+
+ example/todo/index.html |  6 ++--
+ example/todo/script.js  | 78 ++++++++++++++++++++++---------------------------
+ example/todo/style.css  | 61 +++++++++++++++++---------------------
+ 3 files changed, 63 insertions(+), 82 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/todo/index.html b/example/todo/index.html
+index d8355be..2c3f8f6 100644
+--- a/example/todo/index.html
++++ b/example/todo/index.html
+@@ -10,12 +10,10 @@
+     <div class="container">
+         <h1>TODOアプリ</h1>
+         <div class="input-area">
+-            <input type="text" id="todo-input" placeholder="新しいタスクを入力">
++            <input type="text" id="todo-input" placeholder="新しいTODOを入力">
+             <button id="add-button">追加</button>
+         </div>
+-        <ul id="todo-list">
+-            <!-- タスクがここに追加されます -->
+-        </ul>
++        <ul id="todo-list"></ul>
+     </div>
+     <script src="script.js"></script>
+ </body>
+diff --git a/example/todo/script.js b/example/todo/script.js
+index ebeb9ba..c23b1bf 100644
+--- a/example/todo/script.js
++++ b/example/todo/script.js
+@@ -3,78 +3,70 @@ document.addEventListener('DOMContentLoaded', () => {
+     const addButton = document.getElementById('add-button');
+     const todoList = document.getElementById('todo-list');
+ 
+-    // ローカルストレージからタスクを読み込む
+-    const loadTasks = () => {
+-        const tasks = JSON.parse(localStorage.getItem('todos')) || [];
+-        tasks.forEach(task => createTaskElement(task.text, task.completed));
++    // ローカルストレージからTODOを読み込む
++    const loadTodos = () => {
++        const todos = JSON.parse(localStorage.getItem('todos')) || [];
++        todos.forEach(todo => {
++            addTodoToList(todo.text, todo.completed);
++        });
+     };
+ 
+-    // タスクをローカルストレージに保存する
+-    const saveTasks = () => {
+-        const tasks = [];
+-        todoList.querySelectorAll('.todo-item').forEach(item => {
+-            tasks.push({
+-                text: item.querySelector('span').textContent,
+-                completed: item.classList.contains('completed')
++    // ローカルストレージにTODOを保存する
++    const saveTodos = () => {
++        const todos = [];
++        todoList.querySelectorAll('li').forEach(li => {
++            todos.push({
++                text: li.querySelector('span').textContent,
++                completed: li.classList.contains('completed')
+             });
+         });
+-        localStorage.setItem('todos', JSON.stringify(tasks));
++        localStorage.setItem('todos', JSON.stringify(todos));
+     };
+ 
+-    // タスク要素を作成する
+-    const createTaskElement = (taskText, isCompleted = false) => {
++    // TODOをリストに追加する
++    const addTodoToList = (text, completed = false) => {
+         const li = document.createElement('li');
+-        li.classList.add('todo-item');
+-        if (isCompleted) {
++        if (completed) {
+             li.classList.add('completed');
+         }
+ 
+-        const checkbox = document.createElement('input');
+-        checkbox.type = 'checkbox';
+-        checkbox.checked = isCompleted;
+-        checkbox.addEventListener('change', () => {
++        const span = document.createElement('span');
++        span.textContent = text;
++        span.addEventListener('click', () => {
+             li.classList.toggle('completed');
+-            saveTasks();
++            saveTodos();
+         });
+ 
+-        const span = document.createElement('span');
+-        span.textContent = taskText;
+-
+         const deleteButton = document.createElement('button');
+         deleteButton.textContent = '削除';
+         deleteButton.classList.add('delete-button');
+         deleteButton.addEventListener('click', () => {
+             li.remove();
+-            saveTasks();
++            saveTodos();
+         });
+ 
+-        li.appendChild(checkbox);
+         li.appendChild(span);
+         li.appendChild(deleteButton);
+         todoList.appendChild(li);
+     };
+ 
+```
+
+---
+

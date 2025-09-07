@@ -2064,10 +2064,10 @@ index 0000000..e7103c4
 +</html>
 diff --git a/example/todo/index.html b/example/todo/index.html
 new file mode 100644
-index 0000000..d8355be
+index 0000000..2c3f8f6
 --- /dev/null
 +++ b/example/todo/index.html
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,20 @@
 +<!DOCTYPE html>
 +<html lang="ja">
 +<head>
@@ -2080,12 +2080,10 @@ index 0000000..d8355be
 +    <div class="container">
 +        <h1>TODOアプリ</h1>
 +        <div class="input-area">
-+            <input type="text" id="todo-input" placeholder="新しいタスクを入力">
++            <input type="text" id="todo-input" placeholder="新しいTODOを入力">
 +            <button id="add-button">追加</button>
 +        </div>
-+        <ul id="todo-list">
-+            <!-- タスクがここに追加されます -->
-+        </ul>
++        <ul id="todo-list"></ul>
 +    </div>
 +    <script src="script.js"></script>
 +</body>
@@ -2093,96 +2091,89 @@ index 0000000..d8355be
 \ No newline at end of file
 diff --git a/example/todo/script.js b/example/todo/script.js
 new file mode 100644
-index 0000000..ebeb9ba
+index 0000000..c23b1bf
 --- /dev/null
 +++ b/example/todo/script.js
-@@ -0,0 +1,80 @@
+@@ -0,0 +1,72 @@
 +document.addEventListener('DOMContentLoaded', () => {
 +    const todoInput = document.getElementById('todo-input');
 +    const addButton = document.getElementById('add-button');
 +    const todoList = document.getElementById('todo-list');
 +
-+    // ローカルストレージからタスクを読み込む
-+    const loadTasks = () => {
-+        const tasks = JSON.parse(localStorage.getItem('todos')) || [];
-+        tasks.forEach(task => createTaskElement(task.text, task.completed));
++    // ローカルストレージからTODOを読み込む
++    const loadTodos = () => {
++        const todos = JSON.parse(localStorage.getItem('todos')) || [];
++        todos.forEach(todo => {
++            addTodoToList(todo.text, todo.completed);
++        });
 +    };
 +
-+    // タスクをローカルストレージに保存する
-+    const saveTasks = () => {
-+        const tasks = [];
-+        todoList.querySelectorAll('.todo-item').forEach(item => {
-+            tasks.push({
-+                text: item.querySelector('span').textContent,
-+                completed: item.classList.contains('completed')
++    // ローカルストレージにTODOを保存する
++    const saveTodos = () => {
++        const todos = [];
++        todoList.querySelectorAll('li').forEach(li => {
++            todos.push({
++                text: li.querySelector('span').textContent,
++                completed: li.classList.contains('completed')
 +            });
 +        });
-+        localStorage.setItem('todos', JSON.stringify(tasks));
++        localStorage.setItem('todos', JSON.stringify(todos));
 +    };
 +
-+    // タスク要素を作成する
-+    const createTaskElement = (taskText, isCompleted = false) => {
++    // TODOをリストに追加する
++    const addTodoToList = (text, completed = false) => {
 +        const li = document.createElement('li');
-+        li.classList.add('todo-item');
-+        if (isCompleted) {
++        if (completed) {
 +            li.classList.add('completed');
 +        }
 +
-+        const checkbox = document.createElement('input');
-+        checkbox.type = 'checkbox';
-+        checkbox.checked = isCompleted;
-+        checkbox.addEventListener('change', () => {
-+            li.classList.toggle('completed');
-+            saveTasks();
-+        });
-+
 +        const span = document.createElement('span');
-+        span.textContent = taskText;
++        span.textContent = text;
++        span.addEventListener('click', () => {
++            li.classList.toggle('completed');
++            saveTodos();
++        });
 +
 +        const deleteButton = document.createElement('button');
 +        deleteButton.textContent = '削除';
 +        deleteButton.classList.add('delete-button');
 +        deleteButton.addEventListener('click', () => {
 +            li.remove();
-+            saveTasks();
++            saveTodos();
 +        });
 +
-+        li.appendChild(checkbox);
 +        li.appendChild(span);
 +        li.appendChild(deleteButton);
 +        todoList.appendChild(li);
 +    };
 +
-+    // タスクを追加する
-+    const addTask = () => {
-+        const taskText = todoInput.value.trim();
-+        if (taskText === '') {
-+            alert('タスクを入力してください。');
-+            return;
-+        }
-+        createTaskElement(taskText);
-+        saveTasks();
-+        todoInput.value = '';
-+        todoInput.focus();
-+    };
-+
-+    // イベントリスナーを設定
-+    addButton.addEventListener('click', addTask);
-+    todoInput.addEventListener('keypress', (e) => {
-+        if (e.key === 'Enter') {
-+            addTask();
++    // 追加ボタンのクリックイベント
++    addButton.addEventListener('click', () => {
++        const todoText = todoInput.value.trim();
++        if (todoText) {
++            addTodoToList(todoText);
++            saveTodos();
++            todoInput.value = '';
 +        }
 +    });
 +
-+    // 初期タスクを読み込む
-+    loadTasks();
++    // Enterキーでの追加
++    todoInput.addEventListener('keypress', (e) => {
++        if (e.key === 'Enter') {
++            addButton.click();
++        }
++    });
++
++    // 初期化
++    loadTodos();
 +});
+\ No newline at end of file
 diff --git a/example/todo/style.css b/example/todo/style.css
 new file mode 100644
-index 0000000..b253cf2
+index 0000000..dc6085a
 --- /dev/null
 +++ b/example/todo/style.css
-@@ -0,0 +1,97 @@
+@@ -0,0 +1,88 @@
 +body {
 +    font-family: sans-serif;
 +    background-color: #f4f4f4;
@@ -2191,16 +2182,15 @@ index 0000000..b253cf2
 +    display: flex;
 +    justify-content: center;
 +    align-items: center;
-+    min-height: 100vh;
++    height: 100vh;
 +}
 +
 +.container {
 +    background: #fff;
-+    padding: 2rem;
++    padding: 20px;
 +    border-radius: 8px;
-+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-+    width: 100%;
-+    max-width: 500px;
++    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
++    width: 400px;
 +}
 +
 +h1 {
@@ -2210,76 +2200,69 @@ index 0000000..b253cf2
 +
 +.input-area {
 +    display: flex;
-+    margin-bottom: 1rem;
++    margin-bottom: 20px;
 +}
 +
 +#todo-input {
 +    flex-grow: 1;
-+    padding: 0.5rem;
++    padding: 10px;
 +    border: 1px solid #ddd;
 +    border-radius: 4px;
-+    font-size: 1rem;
++    font-size: 16px;
 +}
 +
 +#add-button {
++    padding: 10px 15px;
++    border: none;
 +    background-color: #007bff;
 +    color: white;
-+    border: none;
-+    padding: 0.5rem 1rem;
 +    border-radius: 4px;
 +    cursor: pointer;
-+    margin-left: 0.5rem;
-+    font-size: 1rem;
++    font-size: 16px;
++    margin-left: 10px;
 +}
 +
 +#add-button:hover {
 +    background-color: #0056b3;
 +}
 +
-+#todo-list {
-+    list-style: none;
++ul {
++    list-style-type: none;
 +    padding: 0;
 +    margin: 0;
 +}
 +
-+.todo-item {
++li {
++    background: #f9f9f9;
++    padding: 10px;
++    border-bottom: 1px solid #ddd;
 +    display: flex;
++    justify-content: space-between;
 +    align-items: center;
-+    padding: 0.8rem 0.5rem;
-+    border-bottom: 1px solid #eee;
 +}
 +
-+.todo-item:last-child {
-+    border-bottom: none;
++li:first-child {
++    border-top: 1px solid #ddd;
 +}
 +
-+.todo-item.completed span {
++li.completed span {
 +    text-decoration: line-through;
-+    color: #aaa;
-+}
-+
-+.todo-item input[type="checkbox"] {
-+    margin-right: 1rem;
-+    cursor: pointer;
-+}
-+
-+.todo-item span {
-+    flex-grow: 1;
++    color: #888;
 +}
 +
 +.delete-button {
-+    background-color: #dc3545;
++    background: #dc3545;
 +    color: white;
 +    border: none;
-+    padding: 0.3rem 0.6rem;
++    padding: 5px 10px;
 +    border-radius: 4px;
 +    cursor: pointer;
-+    font-size: 0.9rem;
 +}
 +
 +.delete-button:hover {
-+    background-color: #c82333;
++    background: #c82333;
 +}
+\ No newline at end of file
 diff --git a/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png b/generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png
 new file mode 100644
 index 0000000..9918f0c

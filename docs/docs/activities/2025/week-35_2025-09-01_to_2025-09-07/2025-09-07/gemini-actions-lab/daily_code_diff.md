@@ -206,7 +206,7 @@ index c21bd48..ad9e315 100644
 +
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index c6f115f..1049c1b 100644
+index c6f115f..56e56dd 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
 @@ -30,48 +30,62 @@ permissions:
@@ -310,7 +310,7 @@ index c6f115f..1049c1b 100644
        - name: 'Generate GitHub App Token'
          id: 'generate_token'
          if: |-
-@@ -113,13 +127,18 @@ jobs:
+@@ -113,10 +127,14 @@ jobs:
            fi
  
            # Clean up user request
@@ -318,8 +318,8 @@ index c6f115f..1049c1b 100644
 -
 +          CLEANED_USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-cli//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 +          
-+          # ⬇⬇⬇ ここからが修正箇所 ⬇⬇⬇
-+          # GITHUB_OUTPUTへの書き込みをヒアドキュメント形式に変更して、特殊文字によるエラーを回避
++          # ⬇⬇⬇ ここを修正 ⬇⬇⬇
++          # GITHUB_OUTPUTへの書き込みをヒアドキュメント形式に変更
            {
 -            echo "user_request=${USER_REQUEST}"
 +            echo 'user_request<<EOF'
@@ -328,10 +328,6 @@ index c6f115f..1049c1b 100644
              echo "issue_number=${ISSUE_NUMBER}"
              echo "is_pr=${IS_PR}"
            } >> "${GITHUB_OUTPUT}"
-+          # ⬆⬆⬆ ここまでが修正箇所 ⬆⬆⬆
- 
-       - name: 'Set up git user for commits'
-         run: |-
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
 index bc76c52..12875fe 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml

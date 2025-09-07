@@ -700,3 +700,171 @@ Date:   Sun Sep 7 13:44:19 2025 +0000
 
 ---
 
+## ⏰ 14:19:55 - `7f2747b`
+**Merge branch 'develop'**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Merge: d4163ef 6b92cf2
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 14:19:55 2025 +0000
+```
+
+### 📊 Statistics
+```bash
+Merge: d4163ef 6b92cf2
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 14:19:55 2025 +0000
+
+    Merge branch 'develop'
+
+ README.ja.md                          | 171 ------------------------------
+ README.md                             | 192 ++++++++++++++++++++--------------
+ discord-issue-bot/.env.example        |   7 ++
+ discord-issue-bot/Dockerfile          |  10 ++
+ discord-issue-bot/README.md           |  92 ++++++++++++++++
+ discord-issue-bot/bot.py              | 141 +++++++++++++++++++++++++
+ discord-issue-bot/docker-compose.yaml |   9 ++
+ discord-issue-bot/pyproject.toml      |  12 +++
+ 8 files changed, 382 insertions(+), 252 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 14:30:19 - `8a6dee1`
+**feat: ✨ exampleにTODOアプリを追加**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Sep 7 14:30:19 2025 +0000
+A	example/todo/index.html
+A	example/todo/script.js
+A	example/todo/style.css
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Sun Sep 7 14:30:19 2025 +0000
+
+    feat: ✨ exampleにTODOアプリを追加
+
+ example/todo/index.html | 22 +++++++++++
+ example/todo/script.js  | 80 ++++++++++++++++++++++++++++++++++++++++
+ example/todo/style.css  | 97 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 199 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/todo/index.html b/example/todo/index.html
+new file mode 100644
+index 0000000..d8355be
+--- /dev/null
++++ b/example/todo/index.html
+@@ -0,0 +1,22 @@
++<!DOCTYPE html>
++<html lang="ja">
++<head>
++    <meta charset="UTF-8">
++    <meta name="viewport" content="width=device-width, initial-scale=1.0">
++    <title>TODOアプリ</title>
++    <link rel="stylesheet" href="style.css">
++</head>
++<body>
++    <div class="container">
++        <h1>TODOアプリ</h1>
++        <div class="input-area">
++            <input type="text" id="todo-input" placeholder="新しいタスクを入力">
++            <button id="add-button">追加</button>
++        </div>
++        <ul id="todo-list">
++            <!-- タスクがここに追加されます -->
++        </ul>
++    </div>
++    <script src="script.js"></script>
++</body>
++</html>
+\ No newline at end of file
+diff --git a/example/todo/script.js b/example/todo/script.js
+new file mode 100644
+index 0000000..ebeb9ba
+--- /dev/null
++++ b/example/todo/script.js
+@@ -0,0 +1,80 @@
++document.addEventListener('DOMContentLoaded', () => {
++    const todoInput = document.getElementById('todo-input');
++    const addButton = document.getElementById('add-button');
++    const todoList = document.getElementById('todo-list');
++
++    // ローカルストレージからタスクを読み込む
++    const loadTasks = () => {
++        const tasks = JSON.parse(localStorage.getItem('todos')) || [];
++        tasks.forEach(task => createTaskElement(task.text, task.completed));
++    };
++
++    // タスクをローカルストレージに保存する
++    const saveTasks = () => {
++        const tasks = [];
++        todoList.querySelectorAll('.todo-item').forEach(item => {
++            tasks.push({
++                text: item.querySelector('span').textContent,
++                completed: item.classList.contains('completed')
++            });
++        });
++        localStorage.setItem('todos', JSON.stringify(tasks));
++    };
++
++    // タスク要素を作成する
++    const createTaskElement = (taskText, isCompleted = false) => {
++        const li = document.createElement('li');
++        li.classList.add('todo-item');
++        if (isCompleted) {
++            li.classList.add('completed');
++        }
++
++        const checkbox = document.createElement('input');
++        checkbox.type = 'checkbox';
++        checkbox.checked = isCompleted;
++        checkbox.addEventListener('change', () => {
++            li.classList.toggle('completed');
++            saveTasks();
++        });
++
++        const span = document.createElement('span');
++        span.textContent = taskText;
++
++        const deleteButton = document.createElement('button');
++        deleteButton.textContent = '削除';
++        deleteButton.classList.add('delete-button');
++        deleteButton.addEventListener('click', () => {
++            li.remove();
++            saveTasks();
++        });
++
++        li.appendChild(checkbox);
++        li.appendChild(span);
++        li.appendChild(deleteButton);
++        todoList.appendChild(li);
++    };
++
++    // タスクを追加する
++    const addTask = () => {
++        const taskText = todoInput.value.trim();
++        if (taskText === '') {
++            alert('タスクを入力してください。');
++            return;
++        }
++        createTaskElement(taskText);
++        saveTasks();
+```
+
+---
+

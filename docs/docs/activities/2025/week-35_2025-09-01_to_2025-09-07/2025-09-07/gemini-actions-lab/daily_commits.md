@@ -868,3 +868,36 @@ index 0000000..ebeb9ba
 
 ---
 
+## ⏰ 23:31:31 - `cbd24f1`
+**Merge pull request #25 from Sunwood-ai-labsII/issue/24/create-todo-app**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: 7f2747b 8a6dee1
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Sep 7 23:31:31 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: 7f2747b 8a6dee1
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Sep 7 23:31:31 2025 +0900
+
+    Merge pull request #25 from Sunwood-ai-labsII/issue/24/create-todo-app
+    
+    feat: ✨ exampleにTODOアプリを追加
+
+ example/todo/index.html | 22 +++++++++++
+ example/todo/script.js  | 80 ++++++++++++++++++++++++++++++++++++++++
+ example/todo/style.css  | 97 +++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 199 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

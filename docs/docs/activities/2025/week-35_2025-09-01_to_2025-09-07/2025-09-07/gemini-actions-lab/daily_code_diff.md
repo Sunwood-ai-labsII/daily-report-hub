@@ -206,7 +206,7 @@ index c21bd48..ad9e315 100644
 +
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index c6f115f..9b2d7fa 100644
+index c6f115f..63671e6 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
 @@ -30,48 +30,62 @@ permissions:
@@ -327,6 +327,35 @@ index c6f115f..9b2d7fa 100644
              echo "issue_number=${ISSUE_NUMBER}"
              echo "is_pr=${IS_PR}"
            } >> "${GITHUB_OUTPUT}"
+@@ -216,16 +234,18 @@ jobs:
+             echo "Prompt template not found: ${TEMPLATE_PATH}" >&2
+             exit 1
+           fi
+-          # Safe variable substitution without executing content
+-          EXPANDED=$(sed \
+-            -e "s|\\$\\{REPOSITORY\\}|${REPOSITORY}|g" \
+-            -e "s|\\$\\{EVENT_NAME\\}|${EVENT_NAME}|g" \
+-            -e "s|\\$\\{ISSUE_NUMBER\\}|${ISSUE_NUMBER}|g" \
+-            -e "s|\\$\\{IS_PR\\}|${IS_PR}|g" \
+-            -e "s|\\$\\{DESCRIPTION\\}|${DESCRIPTION}|g" \
+-            -e "s|\\$\\{COMMENTS\\}|${COMMENTS}|g" \
+-            -e "s|\\$\\{USER_REQUEST\\}|${USER_REQUEST}|g" \
+-            "${TEMPLATE_PATH}")
++
++          # sedの代わりにperlを使用して、改行を含む変数を安全に置換
++          EXPANDED=$(perl -p -e '
++            s/\$\{REPOSITORY\}/$ENV{REPOSITORY}/g;
++            s/\$\{EVENT_NAME\}/$ENV{EVENT_NAME}/g;
++            s/\$\{ISSUE_NUMBER\}/$ENV{ISSUE_NUMBER}/g;
++            s/\$\{IS_PR\}/$ENV{IS_PR}/g;
++            s/\$\{DESCRIPTION\}/$ENV{DESCRIPTION}/g;
++            s/\$\{COMMENTS\}/$ENV{COMMENTS}/g;
++            s/\$\{USER_REQUEST\}/$ENV{USER_REQUEST}/g;
++          ' "${TEMPLATE_PATH}")
++
+           {
+             echo "prompt<<EOF"
+             echo "${EXPANDED}"
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
 index bc76c52..12875fe 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml

@@ -1390,3 +1390,336 @@ index ebeb9ba..c23b1bf 100644
 
 ---
 
+## ⏰ 16:19:47 - `419550c`
+**🔧 GitHub Actions workflow 条件簡略化とGITHUB_OUTPUT修正**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:19:47 2025 +0000
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:19:47 2025 +0000
+
+    🔧 GitHub Actions workflow 条件簡略化とGITHUB_OUTPUT修正
+    
+    - 複雑なif条件を簡略化してテスト準備
+      - issues openedイベントのみに限定
+    - GITHUB_OUTPUTへの書き込みをヒアドキュメント形式に変更
+      - 特殊文字によるエラーを回避
+    - デバッグ情報出力ステップを追加
+      - event_name, action, author情報を確認
+
+ .github/workflows/gemini-cli.yml | 101 +++++++++++++++++++++++----------------
+ 1 file changed, 60 insertions(+), 41 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index c6f115f..1049c1b 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -30,48 +30,62 @@ permissions:
+   issues: 'write'
+ 
+ jobs:
++  # gemini-cli:
++  #   # This condition seeks to ensure the action is only run when it is triggered by a trusted user.
++  #   # For private repos, users who have access to the repo are considered trusted.
++  #   # For public repos, users who members, owners, or collaborators are considered trusted.
++  #   if: |-
++  #     github.event_name == 'workflow_dispatch' ||
++  #     (
++  #       github.event_name == 'issues' && github.event.action == 'opened' &&
++  #       contains(github.event.issue.body, '@gemini-cli') &&
++  #       !contains(github.event.issue.body, '@gemini-cli /review') &&
++  #       !contains(github.event.issue.body, '@gemini-cli /triage') &&
++  #       (
++  #         github.event.repository.private == true ||
++  #         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
++  #       )
++  #     ) ||
++  #     (
++  #       (
++  #         github.event_name == 'issue_comment' ||
++  #         github.event_name == 'pull_request_review_comment'
++  #       ) &&
++  #       contains(github.event.comment.body, '@gemini-cli') &&
++  #       !contains(github.event.comment.body, '@gemini-cli /review') &&
++  #       !contains(github.event.comment.body, '@gemini-cli /triage') &&
++  #       (
++  #         github.event.repository.private == true ||
++  #         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
++  #       )
++  #     ) ||
++  #     (
++  #       github.event_name == 'pull_request_review' &&
++  #       contains(github.event.review.body, '@gemini-cli') &&
++  #       !contains(github.event.review.body, '@gemini-cli /review') &&
++  #       !contains(github.event.review.body, '@gemini-cli /triage') &&
++  #       (
++  #         github.event.repository.private == true ||
++  #         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
++  #       )
++  #     )
++
+   gemini-cli:
+-    # This condition seeks to ensure the action is only run when it is triggered by a trusted user.
+-    # For private repos, users who have access to the repo are considered trusted.
+-    # For public repos, users who members, owners, or collaborators are considered trusted.
++    # 一時的にシンプルな条件に変更してテスト
+     if: |-
+-      github.event_name == 'workflow_dispatch' ||
+-      (
+-        github.event_name == 'issues' && github.event.action == 'opened' &&
+-        contains(github.event.issue.body, '@gemini-cli') &&
+-        !contains(github.event.issue.body, '@gemini-cli /review') &&
+-        !contains(github.event.issue.body, '@gemini-cli /triage') &&
+-        (
+-          github.event.repository.private == true ||
+-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+-        )
+-      ) ||
+-      (
+-        (
+-          github.event_name == 'issue_comment' ||
+-          github.event_name == 'pull_request_review_comment'
+-        ) &&
+-        contains(github.event.comment.body, '@gemini-cli') &&
+-        !contains(github.event.comment.body, '@gemini-cli /review') &&
+-        !contains(github.event.comment.body, '@gemini-cli /triage') &&
+-        (
+-          github.event.repository.private == true ||
+-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+-        )
+-      ) ||
+-      (
+-        github.event_name == 'pull_request_review' &&
+-        contains(github.event.review.body, '@gemini-cli') &&
+-        !contains(github.event.review.body, '@gemini-cli /review') &&
+-        !contains(github.event.review.body, '@gemini-cli /triage') &&
+-        (
+-          github.event.repository.private == true ||
+-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
+-        )
+-      )
+-    timeout-minutes: 10
++      github.event_name == 'issues' && github.event.action == 'opened' &&
++      contains(github.event.issue.body, '@gemini-cli')
++
++          timeout-minutes: 10
+     runs-on: 'ubuntu-latest'
+     steps:
++      - name: 'Debug Event Information'
++        run: |-
++          echo "Event Name: ${{ github.event_name }}"
++          echo "Event Action: ${{ github.event.action }}"
++          echo "Issue Author: ${{ github.event.issue.user.login }}"
+```
+
+---
+
+## ⏰ 16:19:56 - `cb5b210`
+**📝 README.md 構造整理とDiscord Botセクション更新**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:19:56 2025 +0000
+M	README.md
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:19:56 2025 +0000
+
+    📝 README.md 構造整理とDiscord Botセクション更新
+    
+    - Discord Issue Bot の説明を簡略化
+      - ワークフロー不要・最小構成のボットを紹介
+    - ライセンスセクションの移動
+      - フッター部分に配置
+    - 全体的な文書構成の見直し
+
+ README.md | 32 +++++++++-----------------------
+ 1 file changed, 9 insertions(+), 23 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/README.md b/README.md
+index a4c7124..bed190c 100644
+--- a/README.md
++++ b/README.md
+@@ -167,35 +167,21 @@ graph TD
+ 
+ ---
+ 
+-## 📝 ライセンス
+ 
+-このプロジェクトは、[LICENSE](LICENSE)ファイルの条件に基づいてライセンスされています。
+ 
+----
++## 🤖 Discord Issue Bot
+ 
+-© 2025 Sunwood-ai-labsII
++Discord から直接 GitHub Issue を作成する最小ボットの詳細なドキュメントは、以下を参照してください。
+ 
++- ドキュメント: [discord-issue-bot/README.md](discord-issue-bot/README.md)
+ 
+----
++## 📝 ライセンス
++
++このプロジェクトは、[LICENSE](LICENSE)ファイルの条件に基づいてライセンスされています。
+ 
+-## 🤖 Discord Issue Bot（ワークフロー不要・最小構成）
++---
+ 
+-- 直に GitHub REST API で Issue を作成する最小ボットです。
+-- 必要な環境変数は 2 つのみ: `DISCORD_BOT_TOKEN`, `GITHUB_TOKEN`。
++© 2025 Sunwood-ai-labsII
+ 
+-使い方:
+-\```
+-export DISCORD_BOT_TOKEN=xxxx
+-export GITHUB_TOKEN=ghp_xxx
+-cd discord-issue-bot
+-docker compose -f compose.yaml up -d --build
+-\```
+ 
+-Discord で投稿（例）:
+-\```
+-!issue owner/repo "バグ: 保存できない" 再現手順… #kind/bug +maki
+-\```
+-ルール:
+-- 先頭 `!issue`、直後に `owner/repo` を含める
+-- タイトルは "ダブルクオート" で囲む（未指定時は1行目をタイトル）
+-- `#label` がラベル、`+user` がアサイン
++---
+\ No newline at end of file
+```
+
+---
+
+## ⏰ 01:20:03 - `452bfad`
+**Merge pull request #31 from Sunwood-ai-labsII/issue/30/create-todo-app**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Merge: d2a605d 6bb98bf
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 01:20:03 2025 +0900
+```
+
+### 📊 Statistics
+```bash
+Merge: d2a605d 6bb98bf
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 01:20:03 2025 +0900
+
+    Merge pull request #31 from Sunwood-ai-labsII/issue/30/create-todo-app
+    
+    feat: ✨ exampleにTODOアプリを作成 (Fixes #30)
+
+ example/todo/index.html |  6 ++--
+ example/todo/script.js  | 78 ++++++++++++++++++++++---------------------------
+ example/todo/style.css  | 61 +++++++++++++++++---------------------
+ 3 files changed, 63 insertions(+), 82 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+
+## ⏰ 16:20:25 - `8454ce5`
+**✨ メモファイル追加 - Discord Issue Bot の使用例**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:20:25 2025 +0000
+A	memo.md
+```
+
+### 📊 Statistics
+```bash
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:20:25 2025 +0000
+
+    ✨ メモファイル追加 - Discord Issue Bot の使用例
+    
+    - @gemini-cli を使ったサンプルアプリ作成リクエスト
+      - exampleフォルダにTODOアプリを作成
+    - Discord 連携の動作確認用メモ
+
+ memo.md | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/memo.md b/memo.md
+new file mode 100644
+index 0000000..4d041c1
+--- /dev/null
++++ b/memo.md
+@@ -0,0 +1,8 @@
++!issue Sunwood-ai-labsII/gemini-actions-lab
++
++サンプルアプリの作成
++
++@gemini-cli exampleフォルダにTODOアプリを作成して
++
++#example #demo
++
+```
+
+---
+
+## ⏰ 16:20:49 - `e472ff8`
+**🔀 Merge: Update workflow and documentation**
+*by maki*
+
+### 📋 Changed Files
+```bash
+Merge: 6b92cf2 8454ce5
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:20:49 2025 +0000
+```
+
+### 📊 Statistics
+```bash
+Merge: 6b92cf2 8454ce5
+Author: maki <sunwood.ai.labs@gmail.com>
+Date:   Sun Sep 7 16:20:49 2025 +0000
+
+    🔀 Merge: Update workflow and documentation
+    
+    - GitHub Actions workflowの改善
+    - README構造整理
+    - メモファイル追加
+
+ .github/workflows/gemini-cli.yml | 101 +++++++++++++++++++++++----------------
+ README.md                        |  32 ++++---------
+ memo.md                          |   8 ++++
+ 3 files changed, 77 insertions(+), 64 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+```
+
+---
+

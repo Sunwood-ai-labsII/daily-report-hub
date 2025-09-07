@@ -206,7 +206,7 @@ index c21bd48..ad9e315 100644
 +
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index c6f115f..63671e6 100644
+index c6f115f..18c798c 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
 @@ -30,48 +30,62 @@ permissions:
@@ -293,10 +293,11 @@ index c6f115f..63671e6 100644
 -          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
 -        )
 -      )
+-    timeout-minutes: 10
 +      github.event_name == 'issues' && github.event.action == 'opened' &&
 +      contains(github.event.issue.body, '@gemini-cli')
 +
-     timeout-minutes: 10
++          timeout-minutes: 10
      runs-on: 'ubuntu-latest'
      steps:
 +      - name: 'Debug Event Information'
@@ -309,7 +310,7 @@ index c6f115f..63671e6 100644
        - name: 'Generate GitHub App Token'
          id: 'generate_token'
          if: |-
-@@ -113,10 +127,14 @@ jobs:
+@@ -113,13 +127,18 @@ jobs:
            fi
  
            # Clean up user request
@@ -317,8 +318,8 @@ index c6f115f..63671e6 100644
 -
 +          CLEANED_USER_REQUEST=$(echo "${USER_REQUEST}" | sed 's/.*@gemini-cli//' | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
 +          
-+          # ⬇⬇⬇ ここを修正 ⬇⬇⬇
-+          # GITHUB_OUTPUTへの書き込みをヒアドキュメント形式に変更
++          # ⬇⬇⬇ ここからが修正箇所 ⬇⬇⬇
++          # GITHUB_OUTPUTへの書き込みをヒアドキュメント形式に変更して、特殊文字によるエラーを回避
            {
 -            echo "user_request=${USER_REQUEST}"
 +            echo 'user_request<<EOF'
@@ -327,7 +328,11 @@ index c6f115f..63671e6 100644
              echo "issue_number=${ISSUE_NUMBER}"
              echo "is_pr=${IS_PR}"
            } >> "${GITHUB_OUTPUT}"
-@@ -216,16 +234,18 @@ jobs:
++          # ⬆⬆⬆ ここまでが修正箇所 ⬆⬆⬆
+ 
+       - name: 'Set up git user for commits'
+         run: |-
+@@ -216,16 +235,18 @@ jobs:
              echo "Prompt template not found: ${TEMPLATE_PATH}" >&2
              exit 1
            fi
@@ -1258,7 +1263,7 @@ index 56a17a7..0000000
 -© 2025 Sunwood-ai-labsII
 \ No newline at end of file
 diff --git a/README.md b/README.md
-index 6ce4bca..a4c7124 100644
+index 6ce4bca..bed190c 100644
 --- a/README.md
 +++ b/README.md
 @@ -15,136 +15,136 @@
@@ -1488,14 +1493,22 @@ index 6ce4bca..a4c7124 100644
  ├── .gitignore
  ├── LICENSE
  └── README.md
-@@ -162,10 +167,35 @@ For additional features, configure these optional secrets:
+@@ -162,10 +167,21 @@ For additional features, configure these optional secrets:
  
  ---
  
 -## 📝 License
-+## 📝 ライセンス
  
 -This project is licensed under the terms of the [LICENSE](LICENSE) file.
++
++## 🤖 Discord Issue Bot
++
++Discord から直接 GitHub Issue を作成する最小ボットの詳細なドキュメントは、以下を参照してください。
++
++- ドキュメント: [discord-issue-bot/README.md](discord-issue-bot/README.md)
++
++## 📝 ライセンス
++
 +このプロジェクトは、[LICENSE](LICENSE)ファイルの条件に基づいてライセンスされています。
  
  ---
@@ -1506,28 +1519,7 @@ index 6ce4bca..a4c7124 100644
 +
 +
 +---
-+
-+## 🤖 Discord Issue Bot（ワークフロー不要・最小構成）
-+
-+- 直に GitHub REST API で Issue を作成する最小ボットです。
-+- 必要な環境変数は 2 つのみ: `DISCORD_BOT_TOKEN`, `GITHUB_TOKEN`。
-+
-+使い方:
-+\```
-+export DISCORD_BOT_TOKEN=xxxx
-+export GITHUB_TOKEN=ghp_xxx
-+cd discord-issue-bot
-+docker compose -f compose.yaml up -d --build
-+\```
-+
-+Discord で投稿（例）:
-+\```
-+!issue owner/repo "バグ: 保存できない" 再現手順… #kind/bug +maki
-+\```
-+ルール:
-+- 先頭 `!issue`、直後に `owner/repo` を含める
-+- タイトルは "ダブルクオート" で囲む（未指定時は1行目をタイトル）
-+- `#label` がラベル、`+user` がアサイン
+\ No newline at end of file
 diff --git a/discord-issue-bot/.env.example b/discord-issue-bot/.env.example
 new file mode 100644
 index 0000000..c4bf152
@@ -2287,6 +2279,20 @@ index 0000000..f54ec06
 +  "workflow_run": "12",
 +  "commit_sha": "b466018b57025ce0bde38ed96e71f39ea8c9b486"
 +}
+diff --git a/memo.md b/memo.md
+new file mode 100644
+index 0000000..4d041c1
+--- /dev/null
++++ b/memo.md
+@@ -0,0 +1,8 @@
++!issue Sunwood-ai-labsII/gemini-actions-lab
++
++サンプルアプリの作成
++
++@gemini-cli exampleフォルダにTODOアプリを作成して
++
++#example #demo
++
 diff --git a/response.md b/response.md
 new file mode 100644
 index 0000000..9dae9d9

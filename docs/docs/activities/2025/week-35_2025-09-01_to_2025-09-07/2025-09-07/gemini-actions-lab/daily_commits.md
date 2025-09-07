@@ -901,3 +901,131 @@ Date:   Sun Sep 7 23:31:31 2025 +0900
 
 ---
 
+## ⏰ 23:44:19 - `910bbe5`
+**Update gemini-cli.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Sep 7 23:44:19 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Sep 7 23:44:19 2025 +0900
+
+    Update gemini-cli.yml
+
+ .github/workflows/gemini-cli.yml | 108 +++++++++++++++++++++++----------------
+ 1 file changed, 63 insertions(+), 45 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index 979f1f2..1539ea8 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -30,48 +30,63 @@ permissions:
+   issues: 'write'
+ 
+ jobs:
++  # gemini-cli:
++  #   # This condition seeks to ensure the action is only run when it is triggered by a trusted user.
++  #   # For private repos, users who have access to the repo are considered trusted.
++  #   # For public repos, users who members, owners, or collaborators are considered trusted.
++  #   if: |-
++  #     github.event_name == 'workflow_dispatch' ||
++  #     (
++  #       github.event_name == 'issues' && github.event.action == 'opened' &&
++  #       contains(github.event.issue.body, '@gemini-cli') &&
++  #       !contains(github.event.issue.body, '@gemini-cli /review') &&
++  #       !contains(github.event.issue.body, '@gemini-cli /triage') &&
++  #       (
++  #         github.event.repository.private == true ||
++  #         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
++  #       )
++  #     ) ||
++  #     (
++  #       (
++  #         github.event_name == 'issue_comment' ||
++  #         github.event_name == 'pull_request_review_comment'
++  #       ) &&
++  #       contains(github.event.comment.body, '@gemini-cli') &&
++  #       !contains(github.event.comment.body, '@gemini-cli /review') &&
++  #       !contains(github.event.comment.body, '@gemini-cli /triage') &&
++  #       (
++  #         github.event.repository.private == true ||
++  #         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
++  #       )
++  #     ) ||
++  #     (
++  #       github.event_name == 'pull_request_review' &&
++  #       contains(github.event.review.body, '@gemini-cli') &&
++  #       !contains(github.event.review.body, '@gemini-cli /review') &&
++  #       !contains(github.event.review.body, '@gemini-cli /triage') &&
++  #       (
++  #         github.event.repository.private == true ||
++  #         contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
++  #       )
++  #     )
++
+   gemini-cli:
+-    # This condition seeks to ensure the action is only run when it is triggered by a trusted user.
+-    # For private repos, users who have access to the repo are considered trusted.
+-    # For public repos, users who members, owners, or collaborators are considered trusted.
++    # 一時的にシンプルな条件に変更してテスト
+     if: |-
+-      github.event_name == 'workflow_dispatch' ||
+-      (
+-        github.event_name == 'issues' && github.event.action == 'opened' &&
+-        contains(github.event.issue.body, '@gemini-cli') &&
+-        !contains(github.event.issue.body, '@gemini-cli /review') &&
+-        !contains(github.event.issue.body, '@gemini-cli /triage') &&
+-        (
+-          github.event.repository.private == true ||
+-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association)
+-        )
+-      ) ||
+-      (
+-        (
+-          github.event_name == 'issue_comment' ||
+-          github.event_name == 'pull_request_review_comment'
+-        ) &&
+-        contains(github.event.comment.body, '@gemini-cli') &&
+-        !contains(github.event.comment.body, '@gemini-cli /review') &&
+-        !contains(github.event.comment.body, '@gemini-cli /triage') &&
+-        (
+-          github.event.repository.private == true ||
+-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+-        )
+-      ) ||
+-      (
+-        github.event_name == 'pull_request_review' &&
+-        contains(github.event.review.body, '@gemini-cli') &&
+-        !contains(github.event.review.body, '@gemini-cli /review') &&
+-        !contains(github.event.review.body, '@gemini-cli /triage') &&
+-        (
+-          github.event.repository.private == true ||
+-          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
+-        )
+-      )
++      github.event_name == 'issues' && github.event.action == 'opened' &&
++      contains(github.event.issue.body, '@gemini-cli')
++
+     timeout-minutes: 10
+     runs-on: 'ubuntu-latest'
+     steps:
++      - name: 'Debug Event Information'
++        run: |-
++          echo "Event Name: ${{ github.event_name }}"
++          echo "Event Action: ${{ github.event.action }}"  
++          echo "Repository Private: ${{ github.event.repository.private }}"
++          echo "Author Association: ${{ github.event.issue.author_association }}"
+```
+
+---
+

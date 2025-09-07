@@ -2,7 +2,7 @@
 
 ```diff
  .github/prompts/gemini-cli_prompt.ja.md            | 176 +++++++++++++++-
- .github/workflows/gemini-cli.yml                   |  98 +++++----
+ .github/workflows/gemini-cli.yml                   | 120 ++++++-----
  .../workflows/gemini-issue-automated-triage.yml    |  64 +++++-
  .../workflows/gemini-issue-scheduled-triage.yml    | 225 +++++++++++++++------
  .github/workflows/gemini-release-notes.yml         | 163 +++++++++++++++
@@ -23,5 +23,5 @@
  ...ul_Japanese_landscape_with_cherry_blossom_2.png | Bin 0 -> 1824554 bytes
  generated-images/metadata.json                     |  10 +
  response.md                                        |  10 +
- 22 files changed, 1590 insertions(+), 363 deletions(-)
+ 22 files changed, 1602 insertions(+), 373 deletions(-)
 ```

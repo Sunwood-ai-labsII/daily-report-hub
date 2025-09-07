@@ -1156,3 +1156,44 @@ index 1049c1b..56e56dd 100644
 
 ---
 
+## ⏰ 23:57:54 - `2f5322a`
+**Fix indentation for timeout-minutes in workflow**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Sep 7 23:57:54 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Sun Sep 7 23:57:54 2025 +0900
+
+    Fix indentation for timeout-minutes in workflow
+
+ .github/workflows/gemini-cli.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index 56e56dd..9b2d7fa 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -76,7 +76,7 @@ jobs:
+       github.event_name == 'issues' && github.event.action == 'opened' &&
+       contains(github.event.issue.body, '@gemini-cli')
+ 
+-          timeout-minutes: 10
++    timeout-minutes: 10
+     runs-on: 'ubuntu-latest'
+     steps:
+       - name: 'Debug Event Information'
+```
+
+---
+

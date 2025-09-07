@@ -206,7 +206,7 @@ index c21bd48..ad9e315 100644
 +
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index c6f115f..18c798c 100644
+index c6f115f..8473f12 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
 @@ -30,48 +30,62 @@ permissions:
@@ -293,11 +293,10 @@ index c6f115f..18c798c 100644
 -          contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.review.author_association)
 -        )
 -      )
--    timeout-minutes: 10
 +      github.event_name == 'issues' && github.event.action == 'opened' &&
 +      contains(github.event.issue.body, '@gemini-cli')
 +
-+          timeout-minutes: 10
+     timeout-minutes: 10
      runs-on: 'ubuntu-latest'
      steps:
 +      - name: 'Debug Event Information'

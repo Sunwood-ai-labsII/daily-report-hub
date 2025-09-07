@@ -2,7 +2,7 @@
 
 ```diff
  .github/prompts/gemini-cli_prompt.ja.md            | 176 +++++++++++++++-
- .github/workflows/gemini-cli.yml                   | 123 ++++++-----
+ .github/workflows/gemini-cli.yml                   | 121 ++++++-----
  .../workflows/gemini-issue-automated-triage.yml    |  64 +++++-
  .../workflows/gemini-issue-scheduled-triage.yml    | 225 +++++++++++++++------
  .github/workflows/gemini-release-notes.yml         | 163 +++++++++++++++
@@ -24,5 +24,5 @@
  generated-images/metadata.json                     |  10 +
  memo.md                                            |   8 +
  response.md                                        |  10 +
- 23 files changed, 1579 insertions(+), 374 deletions(-)
+ 23 files changed, 1578 insertions(+), 373 deletions(-)
 ```

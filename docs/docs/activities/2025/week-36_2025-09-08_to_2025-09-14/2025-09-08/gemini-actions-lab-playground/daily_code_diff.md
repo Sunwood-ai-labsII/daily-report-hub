@@ -3,22 +3,57 @@
 ## Full Diff
 
 ```diff
-commit 775af94c2baacd6b27a389cd3cf9005337b3ead2
+commit 6dceb0b045c832bebe096395beae6371e5f20582
 Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
-Date:   Tue Sep 9 00:13:39 2025 +0900
+Date:   Tue Sep 9 00:23:15 2025 +0900
 
     Update gemini-cli.yml
 
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index 87bbd9f..16acaf6 100644
+index 16acaf6..f23f691 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
-@@ -209,6 +209,7 @@ jobs:
-           gemini_api_key: ${{ secrets.GEMINI_API_KEY }} # Vertex を使わない場合は必須
-           # gemini_model: 'gemini-2.5-flash'              # ← 明示的に指定（必要に応じて pro へ）
-           # gemini_model: 'gemini-2.5-pro'              # ← 明示的に指定（必要に応じて pro へ）
-+          gemini_model: 'gemini-1.5-pro-002'
-           gemini_debug: true                            # 追加ログで原因特定しやすく
-           # Vertex / GCA を使う構成なら以下を有効化
-           gcp_workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+@@ -118,6 +118,7 @@ jobs:
+         env:
+           GITHUB_ACTOR: ${{ github.actor }}
+           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
++          GH_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
+           ISSUE_NUMBER: ${{ steps.get_context.outputs.issue_number }}
+           REPOSITORY: ${{ github.repository }}
+         run: |
+@@ -130,6 +131,7 @@ jobs:
+         id: get_description
+         env:
+           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
++          GH_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
+           IS_PR: ${{ steps.get_context.outputs.is_pr }}
+           ISSUE_NUMBER: ${{ steps.get_context.outputs.issue_number }}
+         run: |
+@@ -149,6 +151,7 @@ jobs:
+         id: get_comments
+         env:
+           GITHUB_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
++          GH_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
+           IS_PR: ${{ steps.get_context.outputs.is_pr }}
+           ISSUE_NUMBER: ${{ steps.get_context.outputs.issue_number }}
+         run: |
+@@ -202,6 +205,10 @@ jobs:
+         id: run_gemini
+         uses: google-github-actions/run-gemini-cli@v0 # ← アクションをピン留め
+         # ↑↑ 必要なら v0 固定でもOKだが、マイナーの既知安定版を明示推奨
++        env:
++          # ← ここで “両方” を与えるのがポイント
++          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
++          GH_TOKEN: ${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}
+         with:
+           # ---- 重要：CLI バージョンを固定して回帰を遮断 ----
+           gemini_cli_version: 'latest'                  # ← 直近で動いた版に固定（例）
+@@ -218,6 +225,7 @@ jobs:
+           gcp_service_account: ${{ vars.SERVICE_ACCOUNT_EMAIL }}
+           use_vertex_ai: ${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}
+           use_gemini_code_assist: ${{ vars.GOOGLE_GENAI_USE_GCA }}
++          
+           settings: |
+             {
+               "debug": true,
 ```

@@ -1112,3 +1112,119 @@ index b58b174..87bbd9f 100644
 
 ---
 
+## ⏰ 00:13:39 - `775af94`
+**Update gemini-cli.yml**
+*by Yukihiko.F@sunwood.ai.labs*
+
+### 📋 Changed Files
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Tue Sep 9 00:13:39 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Tue Sep 9 00:13:39 2025 +0900
+
+    Update gemini-cli.yml
+
+ .github/workflows/gemini-cli.yml | 1 +
+ 1 file changed, 1 insertion(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index 87bbd9f..16acaf6 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -209,6 +209,7 @@ jobs:
+           gemini_api_key: ${{ secrets.GEMINI_API_KEY }} # Vertex を使わない場合は必須
+           # gemini_model: 'gemini-2.5-flash'              # ← 明示的に指定（必要に応じて pro へ）
+           # gemini_model: 'gemini-2.5-pro'              # ← 明示的に指定（必要に応じて pro へ）
++          gemini_model: 'gemini-1.5-pro-002'
+           gemini_debug: true                            # 追加ログで原因特定しやすく
+           # Vertex / GCA を使う構成なら以下を有効化
+           gcp_workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+```
+
+---
+
+## ⏰ 15:14:31 - `df480a1`
+**feat: ✨ example/demo005 におみくじアプリを作成**
+*by gemini-cli[bot]*
+
+### 📋 Changed Files
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Mon Sep 8 15:14:31 2025 +0000
+A	example/demo005/index.html
+```
+
+### 📊 Statistics
+```bash
+Author: gemini-cli[bot] <gemini-cli[bot]@users.noreply.github.com>
+Date:   Mon Sep 8 15:14:31 2025 +0000
+
+    feat: ✨ example/demo005 におみくじアプリを作成
+
+ example/demo005/index.html | 41 +++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 41 insertions(+)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/example/demo005/index.html b/example/demo005/index.html
+new file mode 100644
+index 0000000..b2c4b84
+--- /dev/null
++++ b/example/demo005/index.html
+@@ -0,0 +1,41 @@
++<!DOCTYPE html>
++<html lang="ja">
++<head>
++  <meta charset="UTF-8">
++  <meta name="viewport" content="width=device-width, initial-scale=1.0">
++  <title>おみくじ</title>
++  <style>
++    body {
++      font-family: sans-serif;
++      text-align: center;
++    }
++    #result {
++      font-size: 2em;
++      margin-top: 20px;
++    }
++  </style>
++</head>
++<body>
++  <h1>おみくじ</h1>
++  <button id="draw">おみくじを引く</button>
++  <div id="result"></div>
++  <script>
++    const results = [
++      "大吉",
++      "中吉",
++      "小吉",
++      "吉",
++      "末吉",
++      "凶",
++      "大凶"
++    ];
++    const drawButton = document.getElementById('draw');
++    const resultDiv = document.getElementById('result');
++
++    drawButton.addEventListener('click', () => {
++      const randomIndex = Math.floor(Math.random() * results.length);
++      resultDiv.textContent = results[randomIndex];
++    });
++  </script>
++</body>
++</html>
+\ No newline at end of file
+```
+
+---
+

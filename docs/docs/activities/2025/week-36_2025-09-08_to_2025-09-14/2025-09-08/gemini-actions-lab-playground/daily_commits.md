@@ -1030,3 +1030,85 @@ index fb89603..af6a92f 100644
 
 ---
 
+## ⏰ 00:05:59 - `a859e11`
+**Update gemini-cli.yml**
+*by Yukihiko.F@sunwood.ai.labs*
+
+### 📋 Changed Files
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Tue Sep 9 00:05:59 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Tue Sep 9 00:05:59 2025 +0900
+
+    Update gemini-cli.yml
+
+ .github/workflows/gemini-cli.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index af6a92f..b58b174 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -200,7 +200,7 @@ jobs:
+ 
+       - name: Run Gemini (pinned + explicit model)
+         id: run_gemini
+-        uses: google-github-actions/run-gemini-cli@v0.1.10 # ← アクションをピン留め
++        uses: google-github-actions/run-gemini-cli@v0 # ← アクションをピン留め
+         # ↑↑ 必要なら v0 固定でもOKだが、マイナーの既知安定版を明示推奨
+         with:
+           # ---- 重要：CLI バージョンを固定して回帰を遮断 ----
+```
+
+---
+
+## ⏰ 00:06:13 - `5c6366e`
+**Update gemini-cli.yml**
+*by Yukihiko.F@sunwood.ai.labs*
+
+### 📋 Changed Files
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Tue Sep 9 00:06:13 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Tue Sep 9 00:06:13 2025 +0900
+
+    Update gemini-cli.yml
+
+ .github/workflows/gemini-cli.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index b58b174..87bbd9f 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -208,7 +208,7 @@ jobs:
+           # ---- 認証/モデルは“入力”として明示（env 依存しない）----
+           gemini_api_key: ${{ secrets.GEMINI_API_KEY }} # Vertex を使わない場合は必須
+           # gemini_model: 'gemini-2.5-flash'              # ← 明示的に指定（必要に応じて pro へ）
+-          gemini_model: 'gemini-2.5-pro'              # ← 明示的に指定（必要に応じて pro へ）
++          # gemini_model: 'gemini-2.5-pro'              # ← 明示的に指定（必要に応じて pro へ）
+           gemini_debug: true                            # 追加ログで原因特定しやすく
+           # Vertex / GCA を使う構成なら以下を有効化
+           gcp_workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+```
+
+---
+

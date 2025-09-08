@@ -317,10 +317,10 @@ index ad9e315..2dac199 100644
 -> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、AON形式でのレポート内容をPR本文として活用する運用を推奨します。
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
-index 12875fe..861d0d6 100644
+index 12875fe..a532d09 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml
 +++ b/.github/workflows/gemini-issue-automated-triage.yml
-@@ -2,9 +2,7 @@ name: '🏷️ Gemini Automated Issue Triage'
+@@ -2,314 +2,136 @@ name: '🏷️ Gemini Automated Issue Triage'
  
  on:
    issues:
@@ -331,10 +331,10 @@ index 12875fe..861d0d6 100644
    workflow_dispatch:
      inputs:
        issue_number:
-@@ -12,304 +10,110 @@ on:
+         description: 'issue number to triage'
          required: true
-         type: 'number'
- 
+-        type: 'number'
+-
 -concurrency:
 -  group: '${{ github.workflow }}-${{ github.event.issue.number || github.event.inputs.issue_number }}'
 -  cancel-in-progress: true
@@ -342,7 +342,8 @@ index 12875fe..861d0d6 100644
 -defaults:
 -  run:
 -    shell: 'bash'
--
++        type: number
+ 
  permissions:
 -  contents: 'read'
 -  id-token: 'write'
@@ -382,7 +383,7 @@ index 12875fe..861d0d6 100644
 -      - name: 'Get Issue Information'
 -        id: 'get_issue'
 -        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
-+      - name: 'Get Issue Info'
++      - name: Get Issue Info
 +        id: issue
 +        env:
 +          INPUT_ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
@@ -417,7 +418,7 @@ index 12875fe..861d0d6 100644
 -              issueBody = context.payload.issue.body || '';
 +              issue = context.payload.issue;
              }
-             
+-            
 -            console.log(`Event name: ${context.eventName}`);
 -            console.log(`Issue number: ${issueNumber}`);
 -            console.log(`Issue title: '${issueTitle}'`);
@@ -429,13 +430,13 @@ index 12875fe..861d0d6 100644
 -            core.setOutput('issue_title', issueTitle);
 -            core.setOutput('issue_body', issueBody);
 +            core.setOutput('number', issue.number);
-+            core.setOutput('title', issue.title);
++            core.setOutput('title', issue.title || '');
 +            core.setOutput('body', issue.body || '');
  
 -      - name: 'Get Repository Labels'
 -        id: 'get_labels'
 -        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
-+      - name: 'Get Labels'
++      - name: Get Labels
 +        id: labels
 +        uses: actions/github-script@v7
          with:
@@ -451,26 +452,24 @@ index 12875fe..861d0d6 100644
 -            const labelNames = labels.map(label => label.name).filter(Boolean);
 -            core.setOutput('available_labels', labelNames.join(','));
 -            core.info(`Found ${labelNames.length} labels: ${labelNames.join(', ')}`);
-+            const labelNames = labels.map(l => l.name).join(', ');
-+            core.setOutput('available', labelNames);
-             return labelNames;
+-            return labelNames;
++            const names = labels.map(l => l.name);
++            core.setOutput('available', names.join(','));
++            return names.join(',');
  
 -      - name: 'Run Gemini Issue Analysis'
 -        uses: 'google-github-actions/run-gemini-cli@v0'
 -        id: 'gemini_issue_analysis'
-+      - name: 'Analyze with Gemini'
-+        uses: google-github-actions/run-gemini-cli@v0
-+        id: gemini
-         env:
+-        env:
 -          GITHUB_TOKEN: '' # Do not pass any auth token here since this runs on untrusted inputs
 -          ISSUE_TITLE: '${{ steps.get_issue.outputs.issue_title }}'
 -          ISSUE_BODY: '${{ steps.get_issue.outputs.issue_body }}'
 -          ISSUE_NUMBER: '${{ steps.get_issue.outputs.issue_number }}'
 -          REPOSITORY: '${{ github.repository }}'
 -          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
-+          ISSUE_TITLE: ${{ steps.issue.outputs.title }}
-+          ISSUE_BODY: ${{ steps.issue.outputs.body }}
-+          AVAILABLE_LABELS: ${{ steps.labels.outputs.available }}
++      - name: Analyze with Gemini
++        id: gemini
++        uses: google-github-actions/run-gemini-cli@v0
          with:
 -          gemini_cli_version: '${{ vars.GEMINI_CLI_VERSION }}'
 -          gcp_workload_identity_provider: '${{ vars.GCP_WIF_PROVIDER }}'
@@ -497,14 +496,10 @@ index 12875fe..861d0d6 100644
 -            Issue Number: ${ISSUE_NUMBER}
 -            Issue Title: "${ISSUE_TITLE}"
 -            Issue Body: "${ISSUE_BODY}"
-+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
-+          prompt: |
-+            Issue Title: ${ISSUE_TITLE}
-+            Issue Body: ${ISSUE_BODY}
-             Available Labels: ${AVAILABLE_LABELS}
+-            Available Labels: ${AVAILABLE_LABELS}
 -
 -            Please analyze this issue carefully and suggest appropriate labels from the available labels list.
-             
+-            
 -            Important: Respond with ONLY the JSON object, no additional text or explanations before or after.
 -
 -            Constraints:
@@ -515,24 +510,38 @@ index 12875fe..861d0d6 100644
 -            {"labels_to_set": ["label1", "label2"], "explanation": "reasoning for these labels"}
 -
 -            If the issue content appears to be empty or placeholder text, still try to categorize it based on any available information.
-+            Select appropriate labels for this GitHub issue. Use this XML format:
-+            <labels>
-+            <label>example</label>
-+            <label>kind/task</label>
-+            </labels>
- 
+-
 -      - name: 'Apply Labels to Issue'
 -        if: |-
 -          ${{ steps.gemini_issue_analysis.outputs.summary != '' }}
-+      - name: 'Apply Labels'
++          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
++          # ← ここは ${{ ... }} で式展開するのがポイント
++          prompt: |
++            You are a GitHub issue triage assistant.
++            Issue Title: ${{ steps.issue.outputs.title }}
++            Issue Body:
++            ---
++            ${{ steps.issue.outputs.body }}
++            ---
++            Available Labels (comma-separated): ${{ steps.labels.outputs.available }}
++
++            Task: Choose the MOST relevant labels from the available list only.
++            Return EXACTLY this XML (no prose, no markdown):
++            <labels>
++            <label>label-1</label>
++            <label>label-2</label>
++            </labels>
++
++
++      - name: Apply Labels
++        uses: actions/github-script@v7
          env:
 -          REPOSITORY: '${{ github.repository }}'
 -          ISSUE_NUMBER: '${{ steps.get_issue.outputs.issue_number }}'
 -          LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
 -        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
-+          GEMINI_OUTPUT: ${{ steps.gemini.outputs.summary }}
++          GEMINI_OUTPUT: ${{ steps.gemini.outputs.text || steps.gemini.outputs.summary }}
 +          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
-+        uses: actions/github-script@v7
          with:
 -          github-token: '${{ secrets.GH_PAT || steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
 -          script: |-
@@ -606,7 +615,7 @@ index 12875fe..861d0d6 100644
 -            }
 -
 +          script: |
-+            const output = process.env.GEMINI_OUTPUT;
++            const raw = process.env.GEMINI_OUTPUT || '';
              const issueNumber = parseInt(process.env.ISSUE_NUMBER);
 -
 -            // Track available labels and allow auto-create of missing labels using GH_PAT
@@ -625,13 +634,41 @@ index 12875fe..861d0d6 100644
 -              for (const label of proposed) {
 -                if (available.has(label)) continue;
 -                try {
--                  await github.rest.issues.createLabel({
--                    owner: context.repo.owner,
--                    repo: context.repo.repo,
--                    name: label,
++      
++            console.log('Gemini output:', raw);
++      
++            let labels = [];
++            const matches = raw.match(/<label>(.*?)<\/label>/gis);
++            if (matches) {
++              labels = matches
++                .map(m => m.replace(/<\/?label>/gi, '').trim())
++                .filter(Boolean);
++              console.log('Extracted labels from XML:', labels);
++            } else {
++              throw new Error('❌ Gemini output に <label> タグが見つかりませんでした');
++            }
++      
++            // ラベルごとに存在チェック → 無ければ作成
++            for (const label of labels) {
++              try {
++                await github.rest.issues.getLabel({
++                  owner: context.repo.owner,
++                  repo: context.repo.repo,
++                  name: label,
++                });
++                console.log(`Label "${label}" already exists`);
++              } catch (err) {
++                if (err.status === 404) {
++                  console.log(`Label "${label}" does not exist. Creating...`);
+                   await github.rest.issues.createLabel({
+                     owner: context.repo.owner,
+                     repo: context.repo.repo,
+                     name: label,
 -                    color: 'ededed',
 -                    description: 'Auto-created by Gemini triage'
--                  });
++                    color: 'ededed',   // デフォルト色。必要なら調整
++                    description: `Created automatically by Gemini triage`,
+                   });
 -                  core.info(`Created missing label: ${label}`);
 -                  available.add(label);
 -                } catch (err) {
@@ -643,8 +680,10 @@ index 12875fe..861d0d6 100644
 -                  } else {
 -                    core.error(`Failed to create label '${label}': ${err}`);
 -                  }
--                }
--              }
++                } else {
++                  throw err;
+                 }
+               }
 -
 -              const finalLabels = proposed.filter(l => available.has(l));
 -              if (finalLabels.length === 0) {
@@ -660,40 +699,10 @@ index 12875fe..861d0d6 100644
 -                const explanation = parsedLabels.explanation ? ` - ${parsedLabels.explanation}` : '';
 -                core.info(`Applied labels for #${issueNumber}: ${finalLabels.join(', ')}${explanation}`);
 -              }
-+            
-+            console.log('Gemini output:', output);
-+            
-+            let labels = [];
-+            
-+            // XMLタグから正規表現でラベルを抽出
-+            const labelMatches = output.match(/<label>(.*?)<\/label>/g);
-+            if (labelMatches) {
-+              labels = labelMatches.map(match => 
-+                match.replace(/<\/?label>/g, '').trim()
-+              ).filter(label => label.length > 0);
-+              console.log('Extracted labels from XML:', labels);
-             } else {
+-            } else {
 -              // If no labels to set, leave the issue as is
 -              const explanation = parsedLabels.explanation ? ` - ${parsedLabels.explanation}` : '';
 -              core.info(`No labels to set for #${issueNumber}, leaving as is${explanation}`);
-+              console.log('No XML labels found, using fallback');
-+            }
-+            
-+            // フォールバック: needs-triage のみ
-+            if (labels.length === 0) {
-+              console.log('No labels extracted, applying needs-triage');
-+              labels = ['needs-triage'];
-+            }
-+            
-+            // ラベル適用
-+            if (labels.length > 0) {
-+              await github.rest.issues.addLabels({
-+                owner: context.repo.owner,
-+                repo: context.repo.repo,
-+                issue_number: issueNumber,
-+                labels: labels
-+              });
-+              console.log(`Applied labels: ${labels.join(', ')}`);
              }
 -
 -      - name: 'Post Issue Analysis Failure Comment'
@@ -707,9 +716,17 @@ index 12875fe..861d0d6 100644
 -          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
 -          script: |-
 -            github.rest.issues.createComment({
--              owner: context.repo.owner,
--              repo: context.repo.repo,
++      
++            // すべて存在するはずなのでまとめて適用
++            await github.rest.issues.addLabels({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
 -              issue_number: parseInt(process.env.ISSUE_NUMBER),
 -              body: `There is a problem with the Gemini CLI issue triaging. Please check the [action logs](${process.env.RUN_URL}) for details.`
 -            })
++              issue_number: issueNumber,
++              labels,
++            });
++            console.log(`✅ Applied labels: ${labels.join(', ')}`);
++
 ```

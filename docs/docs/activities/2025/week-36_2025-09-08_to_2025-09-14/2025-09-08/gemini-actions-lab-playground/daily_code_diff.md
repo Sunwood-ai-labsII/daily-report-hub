@@ -3,23 +3,22 @@
 ## Full Diff
 
 ```diff
-commit a859e11d68408b15cbbd6cbc187f92098f02972d
+commit 775af94c2baacd6b27a389cd3cf9005337b3ead2
 Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
-Date:   Tue Sep 9 00:05:59 2025 +0900
+Date:   Tue Sep 9 00:13:39 2025 +0900
 
     Update gemini-cli.yml
 
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index af6a92f..b58b174 100644
+index 87bbd9f..16acaf6 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
-@@ -200,7 +200,7 @@ jobs:
- 
-       - name: Run Gemini (pinned + explicit model)
-         id: run_gemini
--        uses: google-github-actions/run-gemini-cli@v0.1.10 # ← アクションをピン留め
-+        uses: google-github-actions/run-gemini-cli@v0 # ← アクションをピン留め
-         # ↑↑ 必要なら v0 固定でもOKだが、マイナーの既知安定版を明示推奨
-         with:
-           # ---- 重要：CLI バージョンを固定して回帰を遮断 ----
+@@ -209,6 +209,7 @@ jobs:
+           gemini_api_key: ${{ secrets.GEMINI_API_KEY }} # Vertex を使わない場合は必須
+           # gemini_model: 'gemini-2.5-flash'              # ← 明示的に指定（必要に応じて pro へ）
+           # gemini_model: 'gemini-2.5-pro'              # ← 明示的に指定（必要に応じて pro へ）
++          gemini_model: 'gemini-1.5-pro-002'
+           gemini_debug: true                            # 追加ログで原因特定しやすく
+           # Vertex / GCA を使う構成なら以下を有効化
+           gcp_workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
 ```

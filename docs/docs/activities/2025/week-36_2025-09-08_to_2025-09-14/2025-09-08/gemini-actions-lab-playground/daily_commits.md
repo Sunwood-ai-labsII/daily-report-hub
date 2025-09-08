@@ -774,3 +774,44 @@ index 87bda35..613b206 100644
 
 ---
 
+## ⏰ 23:41:39 - `b4216a3`
+**Update gemini-cli.yml**
+*by Yukihiko.F@sunwood.ai.labs*
+
+### 📋 Changed Files
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Mon Sep 8 23:41:39 2025 +0900
+M	.github/workflows/gemini-cli.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Yukihiko.F@sunwood.ai.labs <yukihiko.fuyuki@gmail.com>
+Date:   Mon Sep 8 23:41:39 2025 +0900
+
+    Update gemini-cli.yml
+
+ .github/workflows/gemini-cli.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
+index 613b206..c0c051d 100644
+--- a/.github/workflows/gemini-cli.yml
++++ b/.github/workflows/gemini-cli.yml
+@@ -200,7 +200,7 @@ jobs:
+ 
+       - name: Run Gemini (pinned + explicit model)
+         id: run_gemini
+-        uses: google-github-actions/run-gemini-cli@v0.1.12  # ← アクションをピン留め
++        uses: google-github-actions/run-gemini-cli@latest # ← アクションをピン留め
+         # ↑↑ 必要なら v0 固定でもOKだが、マイナーの既知安定版を明示推奨
+         with:
+           # ---- 重要：CLI バージョンを固定して回帰を遮断 ----
+```
+
+---
+

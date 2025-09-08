@@ -317,7 +317,7 @@ index ad9e315..2dac199 100644
 -> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、AON形式でのレポート内容をPR本文として活用する運用を推奨します。
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
-index 12875fe..2ded6df 100644
+index 12875fe..861d0d6 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml
 +++ b/.github/workflows/gemini-issue-automated-triage.yml
 @@ -2,9 +2,7 @@ name: '🏷️ Gemini Automated Issue Triage'
@@ -331,7 +331,7 @@ index 12875fe..2ded6df 100644
    workflow_dispatch:
      inputs:
        issue_number:
-@@ -12,304 +10,103 @@ on:
+@@ -12,304 +10,110 @@ on:
          required: true
          type: 'number'
  
@@ -384,6 +384,8 @@ index 12875fe..2ded6df 100644
 -        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
 +      - name: 'Get Issue Info'
 +        id: issue
++        env:
++          INPUT_ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
 +        uses: actions/github-script@v7
          with:
 -          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
@@ -398,11 +400,11 @@ index 12875fe..2ded6df 100644
 -              
 -              // APIでissue情報を取得
 -              const { data: issue } = await github.rest.issues.get({
++              const issueNumber = parseInt(process.env.INPUT_ISSUE_NUMBER);
 +              const { data } = await github.rest.issues.get({
                  owner: context.repo.owner,
                  repo: context.repo.repo,
--                issue_number: issueNumber
-+                issue_number: ${{ github.event.inputs.issue_number }}
+                 issue_number: issueNumber
                });
 -              
 -              issueTitle = issue.title;
@@ -456,16 +458,19 @@ index 12875fe..2ded6df 100644
 -      - name: 'Run Gemini Issue Analysis'
 -        uses: 'google-github-actions/run-gemini-cli@v0'
 -        id: 'gemini_issue_analysis'
--        env:
++      - name: 'Analyze with Gemini'
++        uses: google-github-actions/run-gemini-cli@v0
++        id: gemini
+         env:
 -          GITHUB_TOKEN: '' # Do not pass any auth token here since this runs on untrusted inputs
 -          ISSUE_TITLE: '${{ steps.get_issue.outputs.issue_title }}'
 -          ISSUE_BODY: '${{ steps.get_issue.outputs.issue_body }}'
 -          ISSUE_NUMBER: '${{ steps.get_issue.outputs.issue_number }}'
 -          REPOSITORY: '${{ github.repository }}'
 -          AVAILABLE_LABELS: '${{ steps.get_labels.outputs.available_labels }}'
-+      - name: 'Analyze with Gemini'
-+        uses: google-github-actions/run-gemini-cli@v0
-+        id: gemini
++          ISSUE_TITLE: ${{ steps.issue.outputs.title }}
++          ISSUE_BODY: ${{ steps.issue.outputs.body }}
++          AVAILABLE_LABELS: ${{ steps.labels.outputs.available }}
          with:
 -          gemini_cli_version: '${{ vars.GEMINI_CLI_VERSION }}'
 -          gcp_workload_identity_provider: '${{ vars.GCP_WIF_PROVIDER }}'
@@ -492,14 +497,13 @@ index 12875fe..2ded6df 100644
 -            Issue Number: ${ISSUE_NUMBER}
 -            Issue Title: "${ISSUE_TITLE}"
 -            Issue Body: "${ISSUE_BODY}"
--            Available Labels: ${AVAILABLE_LABELS}
--
--            Please analyze this issue carefully and suggest appropriate labels from the available labels list.
 +          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
 +          prompt: |
-+            Issue Title: ${{ steps.issue.outputs.title }}
-+            Issue Body: ${{ steps.issue.outputs.body }}
-+            Available Labels: ${{ steps.labels.outputs.available }}
++            Issue Title: ${ISSUE_TITLE}
++            Issue Body: ${ISSUE_BODY}
+             Available Labels: ${AVAILABLE_LABELS}
+-
+-            Please analyze this issue carefully and suggest appropriate labels from the available labels list.
              
 -            Important: Respond with ONLY the JSON object, no additional text or explanations before or after.
 -

@@ -384,3 +384,131 @@ index bf0bf84..8dda875 100644
 
 ---
 
+## ⏰ 21:51:10 - `86535bd`
+**Update gemini-issue-automated-triage.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 21:51:10 2025 +0900
+M	.github/workflows/gemini-issue-automated-triage.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 21:51:10 2025 +0900
+
+    Update gemini-issue-automated-triage.yml
+
+ .../workflows/gemini-issue-automated-triage.yml    | 388 ++++-----------------
+ 1 file changed, 66 insertions(+), 322 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
+index 8dda875..32a71f6 100644
+--- a/.github/workflows/gemini-issue-automated-triage.yml
++++ b/.github/workflows/gemini-issue-automated-triage.yml
+@@ -2,9 +2,7 @@ name: '🏷️ Gemini Automated Issue Triage'
+ 
+ on:
+   issues:
+-    types:
+-      - 'opened'
+-      - 'reopened'
++    types: [opened, reopened]
+   workflow_dispatch:
+     inputs:
+       issue_number:
+@@ -12,352 +10,98 @@ on:
+         required: true
+         type: 'number'
+ 
+-concurrency:
+-  group: '${{ github.workflow }}-${{ github.event.issue.number || github.event.inputs.issue_number }}'
+-  cancel-in-progress: true
+-
+-defaults:
+-  run:
+-    shell: 'bash'
+-
+ permissions:
+-  contents: 'read'
+-  id-token: 'write'
+-  issues: 'write'
+-  statuses: 'write'
++  contents: read
++  issues: write
++  id-token: write
+ 
+ jobs:
+-  triage-issue:
+-    if: |-
+-      github.event_name == 'issues' ||
+-      github.event_name == 'workflow_dispatch' ||
+-      (
+-        github.event_name == 'issue_comment' &&
+-        contains(github.event.comment.body, '@gemini-cli /triage') &&
+-        contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.comment.author_association)
+-      )
+-    timeout-minutes: 5
+-    runs-on: 'ubuntu-latest'
++  triage:
++    runs-on: ubuntu-latest
+     steps:
+-      - name: 'Checkout repository'
+-        uses: 'actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683' # ratchet:actions/checkout@v4
+-
+-      - name: 'Generate GitHub App Token'
+-        id: 'generate_token'
+-        if: |-
+-          ${{ vars.APP_ID }}
+-        uses: 'actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e' # ratchet:actions/create-github-app-token@v2
+-        with:
+-          app-id: '${{ vars.APP_ID }}'
+-          private-key: '${{ secrets.APP_PRIVATE_KEY }}'
+-
+-      - name: 'Get Issue Information'
+-        id: 'get_issue'
+-        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
++      - name: 'Get Issue Info'
++        id: issue
++        uses: actions/github-script@v7
+         with:
+-          github-token: '${{ steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
+           script: |
+-            let issueNumber, issueTitle, issueBody;
+-            
++            let issue;
+             if (context.eventName === 'workflow_dispatch') {
+-              // 手動実行の場合はinputから取得
+-              issueNumber = parseInt('${{ github.event.inputs.issue_number }}');
+-              console.log(`Manual dispatch for issue #${issueNumber}`);
+-              
+-              // APIでissue情報を取得
+-              const { data: issue } = await github.rest.issues.get({
++              const { data } = await github.rest.issues.get({
+                 owner: context.repo.owner,
+                 repo: context.repo.repo,
+-                issue_number: issueNumber
++                issue_number: ${{ github.event.inputs.issue_number }}
+               });
+-              
+-              issueTitle = issue.title;
+-              issueBody = issue.body || '';
++              issue = data;
+             } else {
+-              // 通常のイベントの場合
+-              issueNumber = context.payload.issue.number;
+-              issueTitle = context.payload.issue.title;
+-              issueBody = context.payload.issue.body || '';
++              issue = context.payload.issue;
+             }
+             
+```
+
+---
+

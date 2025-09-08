@@ -2,6 +2,6 @@
 
 ```diff
  .github/prompts/gemini-cli_prompt.ja.md            | 272 ++++++++--------
- .../workflows/gemini-issue-automated-triage.yml    | 348 +++++----------------
- 2 files changed, 211 insertions(+), 409 deletions(-)
+ .../workflows/gemini-issue-automated-triage.yml    | 349 +++++----------------
+ 2 files changed, 214 insertions(+), 407 deletions(-)
 ```

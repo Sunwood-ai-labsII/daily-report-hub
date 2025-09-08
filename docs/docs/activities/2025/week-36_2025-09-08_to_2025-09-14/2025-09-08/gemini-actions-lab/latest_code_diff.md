@@ -2,33 +2,47 @@
 
 ```diff
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
-index 32a71f6..2ded6df 100644
+index 2ded6df..861d0d6 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml
 +++ b/.github/workflows/gemini-issue-automated-triage.yml
-@@ -70,10 +70,15 @@ jobs:
-             </labels>
- 
-       - name: 'Apply Labels'
+@@ -21,15 +21,18 @@ jobs:
+     steps:
+       - name: 'Get Issue Info'
+         id: issue
 +        env:
-+          GEMINI_OUTPUT: ${{ steps.gemini.outputs.summary }}
-+          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
++          INPUT_ISSUE_NUMBER: ${{ github.event.inputs.issue_number }}
          uses: actions/github-script@v7
          with:
            script: |
--            const output = `${{ steps.gemini.outputs.summary }}`;
-+            const output = process.env.GEMINI_OUTPUT;
-+            const issueNumber = parseInt(process.env.ISSUE_NUMBER);
-+            
-             console.log('Gemini output:', output);
-             
-             let labels = [];
-@@ -100,7 +105,7 @@ jobs:
-               await github.rest.issues.addLabels({
+             let issue;
+             if (context.eventName === 'workflow_dispatch') {
++              const issueNumber = parseInt(process.env.INPUT_ISSUE_NUMBER);
+               const { data } = await github.rest.issues.get({
                  owner: context.repo.owner,
                  repo: context.repo.repo,
--                issue_number: ${{ steps.issue.outputs.number }},
-+                issue_number: issueNumber,
-                 labels: labels
+-                issue_number: ${{ github.event.inputs.issue_number }}
++                issue_number: issueNumber
                });
-               console.log(`Applied labels: ${labels.join(', ')}`);
+               issue = data;
+             } else {
+@@ -56,12 +59,16 @@ jobs:
+       - name: 'Analyze with Gemini'
+         uses: google-github-actions/run-gemini-cli@v0
+         id: gemini
++        env:
++          ISSUE_TITLE: ${{ steps.issue.outputs.title }}
++          ISSUE_BODY: ${{ steps.issue.outputs.body }}
++          AVAILABLE_LABELS: ${{ steps.labels.outputs.available }}
+         with:
+           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+           prompt: |
+-            Issue Title: ${{ steps.issue.outputs.title }}
+-            Issue Body: ${{ steps.issue.outputs.body }}
+-            Available Labels: ${{ steps.labels.outputs.available }}
++            Issue Title: ${ISSUE_TITLE}
++            Issue Body: ${ISSUE_BODY}
++            Available Labels: ${AVAILABLE_LABELS}
+             
+             Select appropriate labels for this GitHub issue. Use this XML format:
+             <labels>
 ```

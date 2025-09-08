@@ -22,6 +22,7 @@
 - 🆕 **Added:** `example/demo003/index.html`
 - 🆕 **Added:** `example/demo003/script.js`
 - 🆕 **Added:** `example/demo003/style.css`
+- 🆕 **Added:** `example/demo005/index.html`
 - 🆕 **Added:** `example/index.html`
 - 🆕 **Added:** `example/todo/index.html`
 - 🆕 **Added:** `example/todo/script.js`

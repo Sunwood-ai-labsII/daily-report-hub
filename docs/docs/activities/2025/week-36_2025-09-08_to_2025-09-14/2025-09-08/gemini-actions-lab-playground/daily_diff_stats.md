@@ -3,7 +3,7 @@
 ```diff
  .SourceSageignore                                  |  54 +++
  .github/prompts/gemini-cli_prompt.ja.md            | 268 ++++++++++++
- .github/workflows/gemini-cli.yml                   | 237 +++++++++++
+ .github/workflows/gemini-cli.yml                   | 238 +++++++++++
  .../workflows/gemini-issue-automated-triage.yml    | 162 +++++++
  .../workflows/gemini-issue-scheduled-triage.yml    | 324 ++++++++++++++
  .github/workflows/gemini-jp-cli.yml                | 340 +++++++++++++++
@@ -32,5 +32,5 @@
  generated-images/metadata.json                     |  10 +
  memo.md                                            |   8 +
  response.md                                        |  10 +
- 31 files changed, 3494 insertions(+)
+ 31 files changed, 3495 insertions(+)
 ```

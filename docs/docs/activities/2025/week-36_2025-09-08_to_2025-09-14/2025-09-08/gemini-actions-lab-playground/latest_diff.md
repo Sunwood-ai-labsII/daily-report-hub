@@ -1,5 +1,3 @@
 # 🔄 Latest Changes (File List)
 
-- 🆕 **Added:** `example/demo003/index.html`
-- 🆕 **Added:** `example/demo003/script.js`
-- 🆕 **Added:** `example/demo003/style.css`
+- ✏️ **Modified:** `.github/workflows/gemini-issue-automated-triage.yml`

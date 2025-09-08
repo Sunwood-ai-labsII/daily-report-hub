@@ -1,3 +1,33 @@
 # 📋 Daily File Changes
 
-- 📝 **No commits found for today:** `No commits found for today`
+- 🆕 **Added:** `.SourceSageignore`
+- 🆕 **Added:** `.github/prompts/gemini-cli_prompt.ja.md`
+- 🆕 **Added:** `.github/workflows/gemini-cli.yml`
+- 🆕 **Added:** `.github/workflows/gemini-issue-automated-triage.yml`
+- 🆕 **Added:** `.github/workflows/gemini-issue-scheduled-triage.yml`
+- 🆕 **Added:** `.github/workflows/gemini-jp-cli.yml`
+- 🆕 **Added:** `.github/workflows/gemini-pr-review.yml`
+- 🆕 **Added:** `.github/workflows/gemini-release-notes.yml`
+- 🆕 **Added:** `.github/workflows/imagen-generate-and-commit.yml`
+- 🆕 **Added:** `.github/workflows/sync-to-report-gh.yml`
+- 🆕 **Added:** `.gitignore`
+- 🆕 **Added:** `LICENSE`
+- 🆕 **Added:** `README.md`
+- 🆕 **Added:** `discord-issue-bot/.env.example`
+- 🆕 **Added:** `discord-issue-bot/Dockerfile`
+- 🆕 **Added:** `discord-issue-bot/README.md`
+- 🆕 **Added:** `discord-issue-bot/bot.py`
+- 🆕 **Added:** `discord-issue-bot/docker-compose.yaml`
+- 🆕 **Added:** `discord-issue-bot/pyproject.toml`
+- 🆕 **Added:** `example/demo003/index.html`
+- 🆕 **Added:** `example/demo003/script.js`
+- 🆕 **Added:** `example/demo003/style.css`
+- 🆕 **Added:** `example/index.html`
+- 🆕 **Added:** `example/todo/index.html`
+- 🆕 **Added:** `example/todo/script.js`
+- 🆕 **Added:** `example/todo/style.css`
+- 🆕 **Added:** `generated-images/imagen-4_2025-09-06T11-49-47-885Z_A_beautiful_Japanese_landscape_with_cherry_blossom_1.png`
+- 🆕 **Added:** `generated-images/imagen-4_2025-09-06T11-49-47-892Z_A_beautiful_Japanese_landscape_with_cherry_blossom_2.png`
+- 🆕 **Added:** `generated-images/metadata.json`
+- 🆕 **Added:** `memo.md`
+- 🆕 **Added:** `response.md`

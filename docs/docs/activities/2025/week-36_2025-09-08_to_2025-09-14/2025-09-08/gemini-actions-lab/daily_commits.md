@@ -256,3 +256,131 @@ index 12875fe..bf0bf84 100644
 
 ---
 
+## ⏰ 21:45:40 - `e87c104`
+**Update gemini-issue-automated-triage.yml**
+*by Maki*
+
+### 📋 Changed Files
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 21:45:40 2025 +0900
+M	.github/workflows/gemini-issue-automated-triage.yml
+```
+
+### 📊 Statistics
+```bash
+Author: Maki <108736814+Sunwood-ai-labs@users.noreply.github.com>
+Date:   Mon Sep 8 21:45:40 2025 +0900
+
+    Update gemini-issue-automated-triage.yml
+
+ .../workflows/gemini-issue-automated-triage.yml    | 160 +++++++++++----------
+ 1 file changed, 82 insertions(+), 78 deletions(-)
+```
+
+### 💻 Code Changes
+```diff
+diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
+index bf0bf84..8dda875 100644
+--- a/.github/workflows/gemini-issue-automated-triage.yml
++++ b/.github/workflows/gemini-issue-automated-triage.yml
+@@ -178,89 +178,86 @@ jobs:
+ 
+       - name: 'Apply Labels to Issue'
+         if: |-
+-          ${{ steps.gemini_issue_analysis.outputs.summary != '' }}
++          ${{ always() && steps.gemini_issue_analysis.outputs.summary != '' }}
+         env:
+           REPOSITORY: '${{ github.repository }}'
+           ISSUE_NUMBER: '${{ steps.get_issue.outputs.issue_number }}'
+           LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
++          GEMINI_RESPONSE: '${{ steps.gemini_issue_analysis.outputs.gemini_response }}'
+         uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
+         with:
+           github-token: '${{ secrets.GH_PAT || steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
+           script: |-
+-            // Strip code block markers if present and extract JSON
+-            const rawLabels = process.env.LABELS_OUTPUT;
+-            core.info(`Raw labels output: ${rawLabels}`);
++            // Get output from multiple sources
++            const summaryOutput = process.env.LABELS_OUTPUT || '';
++            const geminiResponse = process.env.GEMINI_RESPONSE || '';
++            
++            console.log(`Summary output: "${summaryOutput}"`);
++            console.log(`Gemini response: "${geminiResponse}"`);
++            
++            // Try to use the best available output
++            const rawLabels = summaryOutput || geminiResponse;
++            
++            if (!rawLabels || rawLabels.trim() === '') {
++              core.warning('No output received from Gemini CLI');
++              return;
++            }
++            
++            core.info(`Processing output: ${rawLabels}`);
+             
+             let parsedLabels;
+             try {
+               // 改良されたJSON抽出および検証ロジック
+               let jsonString = rawLabels.trim();
+               
+-              // まず、生の出力がJSONかどうかをチェック
+-              if (!jsonString.startsWith('{') && !jsonString.startsWith('[')) {
+-                // JSONではない場合、フォールバック処理
+-                core.warning(`Output is not JSON format: ${jsonString}`);
++              // Check if output looks like JSON
++              if (!jsonString.includes('{') && !jsonString.includes('[')) {
++                core.warning(`Output does not appear to be JSON: ${jsonString}`);
++                
++                // Try to extract meaningful labels from the text content
++                const titleAndBody = `${process.env.ISSUE_TITLE || ''} ${process.env.ISSUE_BODY || ''}`.toLowerCase();
++                const suggestedLabels = [];
++                
++                if (titleAndBody.includes('bug') || titleAndBody.includes('error') || titleAndBody.includes('問題')) {
++                  suggestedLabels.push('bug');
++                }
++                if (titleAndBody.includes('feature') || titleAndBody.includes('enhancement') || titleAndBody.includes('機能')) {
++                  suggestedLabels.push('enhancement');
++                }
++                if (titleAndBody.includes('doc') || titleAndBody.includes('documentation') || titleAndBody.includes('ドキュメント')) {
++                  suggestedLabels.push('documentation');
++                }
++                if (titleAndBody.includes('example') || titleAndBody.includes('demo') || titleAndBody.includes('sample') || titleAndBody.includes('サンプル')) {
++                  suggestedLabels.push('example', 'demo');
++                }
++                if (titleAndBody.includes('todo') || titleAndBody.includes('task') || titleAndBody.includes('作成')) {
++                  suggestedLabels.push('kind/task');
++                }
++                if (titleAndBody.includes('app') || titleAndBody.includes('アプリ')) {
++                  suggestedLabels.push('example');
++                }
+                 
+-                // 基本的なフォールバック: 空のラベル配列を返す
+                 parsedLabels = {
+-                  labels_to_set: [],
+-                  explanation: `Failed to parse Gemini output: ${jsonString.substring(0, 100)}...`
++                  labels_to_set: [...new Set(suggestedLabels)],
++                  explanation: `Auto-detected from content analysis (Gemini output was not JSON): ${jsonString.substring(0, 100)}`
+                 };
++                
++                core.info(`Fallback labels selected: ${JSON.stringify(parsedLabels)}`);
+               } else {
+-                // 1. \```json \``` ブロックを抽出
+-                const jsonBlockMatch = jsonString.match(/\```json\s*([\s\S]*?)\s*\```/);
++                // Extract JSON from various formats
++                const jsonBlockMatch = jsonString.match(/\```json\s*([\s\S]*?)\s*\```/) ||
++                                    jsonString.match(/\```\s*([\s\S]*?)\s*\```/) ||
++                                    jsonString.match(/(\{[\s\S]*\})/) ||
++                                    jsonString.match(/(\[[\s\S]*\])/);
++                
+                 if (jsonBlockMatch) {
+                   jsonString = jsonBlockMatch[1].trim();
+-                  core.info(`Extracted JSON from json code block: ${jsonString}`);
+-                } else {
+-                  // 2. \``` \``` ブロックを抽出（json指定なし）
+-                  const codeBlockMatch = jsonString.match(/\```\s*([\s\S]*?)\s*\```/);
+-                  if (codeBlockMatch) {
+```
+
+---
+

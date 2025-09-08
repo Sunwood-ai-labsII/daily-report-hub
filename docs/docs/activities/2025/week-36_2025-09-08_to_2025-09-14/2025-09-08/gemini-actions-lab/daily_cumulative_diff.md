@@ -1,3 +1,4 @@
 # 📋 Daily File Changes
 
-- 📝 **No commits found for today:** `No commits found for today`
+- ✏️ **Modified:** `.github/prompts/gemini-cli_prompt.ja.md`
+- ✏️ **Modified:** `.github/workflows/gemini-issue-automated-triage.yml`

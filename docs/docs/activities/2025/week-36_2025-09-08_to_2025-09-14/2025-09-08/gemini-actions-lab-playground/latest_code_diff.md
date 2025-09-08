@@ -2,23 +2,16 @@
 
 ```diff
 diff --git a/.github/workflows/gemini-cli.yml b/.github/workflows/gemini-cli.yml
-index 3d6fc1f..b25cac0 100644
+index b25cac0..5881a57 100644
 --- a/.github/workflows/gemini-cli.yml
 +++ b/.github/workflows/gemini-cli.yml
-@@ -225,6 +225,13 @@ jobs:
-           prompt: ${{ steps.read_prompt.outputs.prompt }}
- 
-       - name: Fail clearly when secrets are missing
--        if: ${{ failure() && (secrets.GEMINI_API_KEY == '' && (vars.GOOGLE_GENAI_USE_VERTEXAI != 'true')) }}
-+        if: ${{ failure() }}
-+        env:
-+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-+          USE_VERTEX_AI: ${{ vars.GOOGLE_GENAI_USE_VERTEXAI }}
-         run: |
--          echo "::error:: GEMINI_API_KEY が未設定です（Vertex AI を使わない構成の場合は必須）。" && exit 1
-+          set -euo pipefail
-+          if [[ "${USE_VERTEX_AI}" != "true" && -z "${GEMINI_API_KEY}" ]]; then
-+            echo "::error:: GEMINI_API_KEY が未設定です（Vertex AI を使わない構成では必須）。"
-+            exit 1
-+          fi
+@@ -204,7 +204,7 @@ jobs:
+         # ↑↑ 必要なら v0 固定でもOKだが、マイナーの既知安定版を明示推奨
+         with:
+           # ---- 重要：CLI バージョンを固定して回帰を遮断 ----
+-          gemini_cli_version: '0.3.3'                  # ← 直近で動いた版に固定（例）
++          gemini_cli_version: '0.3.4'                  # ← 直近で動いた版に固定（例）
+           # ---- 認証/モデルは“入力”として明示（env 依存しない）----
+           gemini_api_key: ${{ secrets.GEMINI_API_KEY }} # Vertex を使わない場合は必須
+           gemini_model: 'gemini-2.5-pro'              # ← 明示的に指定（必要に応じて pro へ）
 ```

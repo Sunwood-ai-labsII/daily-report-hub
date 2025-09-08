@@ -317,7 +317,7 @@ index ad9e315..2dac199 100644
 -> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、必要に応じてPR本文の「Details」として取り込む運用を推奨します。
 +> メモ: 本ワークフローでは `response.md` を `${GITHUB_WORKSPACE}/response.md` に生成し、AON形式でのレポート内容をPR本文として活用する運用を推奨します。
 diff --git a/.github/workflows/gemini-issue-automated-triage.yml b/.github/workflows/gemini-issue-automated-triage.yml
-index 12875fe..32a71f6 100644
+index 12875fe..2ded6df 100644
 --- a/.github/workflows/gemini-issue-automated-triage.yml
 +++ b/.github/workflows/gemini-issue-automated-triage.yml
 @@ -2,9 +2,7 @@ name: '🏷️ Gemini Automated Issue Triage'
@@ -331,7 +331,7 @@ index 12875fe..32a71f6 100644
    workflow_dispatch:
      inputs:
        issue_number:
-@@ -12,304 +10,98 @@ on:
+@@ -12,304 +10,103 @@ on:
          required: true
          type: 'number'
  
@@ -511,22 +511,23 @@ index 12875fe..32a71f6 100644
 -            {"labels_to_set": ["label1", "label2"], "explanation": "reasoning for these labels"}
 -
 -            If the issue content appears to be empty or placeholder text, still try to categorize it based on any available information.
--
--      - name: 'Apply Labels to Issue'
--        if: |-
--          ${{ steps.gemini_issue_analysis.outputs.summary != '' }}
--        env:
--          REPOSITORY: '${{ github.repository }}'
--          ISSUE_NUMBER: '${{ steps.get_issue.outputs.issue_number }}'
--          LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
--        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
 +            Select appropriate labels for this GitHub issue. Use this XML format:
 +            <labels>
 +            <label>example</label>
 +            <label>kind/task</label>
 +            </labels>
-+
+ 
+-      - name: 'Apply Labels to Issue'
+-        if: |-
+-          ${{ steps.gemini_issue_analysis.outputs.summary != '' }}
 +      - name: 'Apply Labels'
+         env:
+-          REPOSITORY: '${{ github.repository }}'
+-          ISSUE_NUMBER: '${{ steps.get_issue.outputs.issue_number }}'
+-          LABELS_OUTPUT: '${{ steps.gemini_issue_analysis.outputs.summary }}'
+-        uses: 'actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea'
++          GEMINI_OUTPUT: ${{ steps.gemini.outputs.summary }}
++          ISSUE_NUMBER: ${{ steps.issue.outputs.number }}
 +        uses: actions/github-script@v7
          with:
 -          github-token: '${{ secrets.GH_PAT || steps.generate_token.outputs.token || secrets.GITHUB_TOKEN }}'
@@ -534,10 +535,7 @@ index 12875fe..32a71f6 100644
 -            // Strip code block markers if present and extract JSON
 -            const rawLabels = process.env.LABELS_OUTPUT;
 -            core.info(`Raw labels output: ${rawLabels}`);
-+          script: |
-+            const output = `${{ steps.gemini.outputs.summary }}`;
-+            console.log('Gemini output:', output);
-             
+-            
 -            let parsedLabels;
 -            try {
 -              // 改良されたJSON抽出ロジック
@@ -603,7 +601,9 @@ index 12875fe..32a71f6 100644
 -              return;
 -            }
 -
--            const issueNumber = parseInt(process.env.ISSUE_NUMBER);
++          script: |
++            const output = process.env.GEMINI_OUTPUT;
+             const issueNumber = parseInt(process.env.ISSUE_NUMBER);
 -
 -            // Track available labels and allow auto-create of missing labels using GH_PAT
 -            const available = new Set(
@@ -656,6 +656,9 @@ index 12875fe..32a71f6 100644
 -                const explanation = parsedLabels.explanation ? ` - ${parsedLabels.explanation}` : '';
 -                core.info(`Applied labels for #${issueNumber}: ${finalLabels.join(', ')}${explanation}`);
 -              }
++            
++            console.log('Gemini output:', output);
++            
 +            let labels = [];
 +            
 +            // XMLタグから正規表現でラベルを抽出
@@ -683,7 +686,7 @@ index 12875fe..32a71f6 100644
 +              await github.rest.issues.addLabels({
 +                owner: context.repo.owner,
 +                repo: context.repo.repo,
-+                issue_number: ${{ steps.issue.outputs.number }},
++                issue_number: issueNumber,
 +                labels: labels
 +              });
 +              console.log(`Applied labels: ${labels.join(', ')}`);
